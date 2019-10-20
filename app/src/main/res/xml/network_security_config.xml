@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">152.66.174.193</domain>
+        <domain includeSubdomains="true">192.168.0.100</domain> <!-- pc ip-->
+
+        <!--<domain includeSubdomains="true">152.66.174.193</domain>  //pc ip -->
     </domain-config>
 </network-security-config>
