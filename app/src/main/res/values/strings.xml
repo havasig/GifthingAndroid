@@ -38,4 +38,9 @@
     <string name="Cancel">Cancel</string>
     <string name="optional">(optional)</string>
     <string name="title_activity_gift_details">GiftDetailsActivity</string>
+    <string name="name">Name</string>
+    <string name="example">Example</string>
+    <string name="delete">delete</string>
+    <string name="i_got_it">I got it</string>
+    <string name="edit">Edit</string>
 </resources>
