@@ -1,7 +1,6 @@
 package hu.bme.aut.android.gifthing.Services
 
 import hu.bme.aut.android.gifthing.models.User
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 

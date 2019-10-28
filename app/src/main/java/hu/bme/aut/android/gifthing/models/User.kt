@@ -5,14 +5,23 @@ import com.google.gson.annotations.SerializedName
 class User(var email: String) {
     @SerializedName("id")
     var id: Long = 0
+
     @SerializedName("name")
     var name: String? = null
+
     @SerializedName("password")
     var password: String? = null
+
     @SerializedName("gifts")
     var gifts = mutableListOf<Gift>()
+
     @SerializedName("reservedGifts")
     var reservedGifts = mutableListOf<Gift>()
 
+    @SerializedName("myOwnedTeams")
+    var myOwnedTeams = mutableListOf<Team>()
+
+    @SerializedName("myTeams")
+    var myTeams = mutableListOf<Team>()
     //TODO? getters and setters
 }
