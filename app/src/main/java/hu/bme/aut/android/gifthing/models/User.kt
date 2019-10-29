@@ -9,6 +9,9 @@ class User(var email: String) {
     @SerializedName("name")
     var name: String? = null
 
+    @SerializedName("nickName")
+    var nickName: String? = null
+
     @SerializedName("password")
     var password: String? = null
 

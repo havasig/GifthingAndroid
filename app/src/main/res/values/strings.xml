@@ -43,4 +43,7 @@
     <string name="delete">delete</string>
     <string name="i_got_it">I got it</string>
     <string name="edit">Edit</string>
+    <string name="nickname">Nickname</string>
+    <string name="password_again">Password Again</string>
+    <string name="error">error</string>
 </resources>

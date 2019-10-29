@@ -10,14 +10,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
-import hu.bme.aut.android.gifthing.Services.UserService
-import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.*
 
 
-class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(){
+
+class MainActivity : AppCompatActivity(){
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -26,12 +22,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(){
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        launch(Dispatchers.Main) {
-            var loadedUser = loadUser(1)
-            tester.text = loadedUser.myOwnedTeams[0].name
-        }
-
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -46,16 +36,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(){
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    override fun onDestroy() {
-        cancel()
-        super.onDestroy()
-    }
-
-    private suspend fun loadUser(id: Int) : User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUser(id)
     }
 
     override fun onSupportNavigateUp(): Boolean {

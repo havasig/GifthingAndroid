@@ -1,10 +1,15 @@
 package hu.bme.aut.android.gifthing.Services
 
 import hu.bme.aut.android.gifthing.models.User
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserService {
     @GET("user/{id}")
-    suspend fun getUser(@Path("id") id: Int): User
+    suspend fun getUserById(@Path("id") id: Int): User?
+
+    @GET("user/email/{email}")
+    suspend fun getUserByEmail(@Path("email") id: String): User?
+
+    @POST("user/create")
+    suspend fun createUser(@Body createUser: User): Boolean
 }

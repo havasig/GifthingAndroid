@@ -40,7 +40,8 @@
             android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/loginEmail"/>
+            android:id="@+id/loginEmail"
+            android:inputType="textEmailAddress"/>
     </LinearLayout>
 
     <LinearLayout
@@ -56,19 +57,21 @@
             android:layout_height="wrap_content"
             android:text="@string/password"
             android:gravity="right"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <EditText
             android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/loginPassword"/>
+            android:id="@+id/loginPassword"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
+        android:id="@+id/loginBtn"
         android:layout_gravity="center"/>
 
     <Button
