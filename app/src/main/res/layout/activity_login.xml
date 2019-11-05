@@ -79,5 +79,6 @@
         android:layout_height="wrap_content"
         android:text="@string/forgot_password"
         android:layout_gravity="center"
+        android:id="@+id/forgotBtn"
         android:layout_margin="24dp"/>
 </LinearLayout>

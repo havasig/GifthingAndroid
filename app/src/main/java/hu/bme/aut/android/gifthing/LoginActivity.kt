@@ -35,24 +35,30 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 val email = loginEmail.text.toString()
                 val password = loginPassword.text.toString()
 
-                val checkUser = runBlocking { getUser(email) }
-
-                var success = false
-                //checkUser is not null and the password is correct
-                if (checkUser!!.password.toString() == password) {
-                    success = true
-                }
-
-                if (success) {
-                    val intent = Intent(this, MainActivity::class.java).apply {
-                        putExtra("USER_ID", checkUser.id)
-                    }
-                    startActivity(intent)
-                } else {
+                //TODO: ezt itt tuti nem így kell: runBlocking
+                var checkUser: User? = null
+                try {
+                    checkUser = runBlocking { getUser(email) }
+                } catch (e: Exception) {
                     val intent = Intent(this, ErrorActivity::class.java).apply {
                         putExtra("ERROR_MESSAGE", "User not found")
                     }
                     startActivity(intent)
+                }
+
+                //checkUser is not null and the password is correct
+                if (checkUser != null) {
+                    if (checkUser.password.toString() == password) {
+                        val intent = Intent(this, MainActivity::class.java).apply {
+                            putExtra("USER_ID", checkUser.id)
+                        }
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, ErrorActivity::class.java).apply {
+                            putExtra("ERROR_MESSAGE", "User not found")
+                        }
+                        startActivity(intent)
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package hu.bme.aut.android.gifthing.Services
 
 import hu.bme.aut.android.gifthing.models.User
 import retrofit2.http.*
+import java.util.*
 
 interface UserService {
     @GET("user/{id}")
