@@ -14,28 +14,55 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <activity android:name=".security.RegisterActivity"
-            android:noHistory="true"/>
+        <activity android:name=".security.RegisterActivity"/>
+
+        <activity android:name=".security.LoginActivity" />
+
+        <activity android:name=".WelcomeActivity"/>
+
+
+
 
         <activity android:name=".ErrorActivity"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
 
-        <activity android:name=".security.LoginActivity" />
 
-        <activity android:name=".GiftDetailsActivity"
-            android:label="@string/title_activity_gift_details"
-            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".WelcomeActivity">
-        </activity>
 
-        <activity android:name=".HomeActivity"
+        <activity android:name=".ui.about.AboutActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.createGroup.CreateGroupActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.myGifts.MyGiftsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.myInvites.MyInvitesActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.reservedGifts.ReservedGiftsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.settings.SettingsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.myGroups.MyGroupsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.home.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

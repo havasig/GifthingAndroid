@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.HomeActivity
+import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.Services.UserService
@@ -54,20 +54,22 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 newUser.password = etPassword.text.toString()
 
                  //save
-                val success = runBlocking { saveUser(newUser) }
+                 launch {
+                     val success = saveUser(newUser)
 
-                if(success) {
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    startActivity(intent)
-                } else {
-                    val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra( "ERROR_MESSAGE","Something went wrong, try again (Email is in use?)")
-                    }
-                    startActivity(intent)
+                     if(success) {
+                         val intent = Intent(this@RegisterActivity, HomeActivity::class.java).apply {
+                             //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                         }
+                         startActivity(intent)
+                     } else {
+                         val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
+                             putExtra( "ERROR_MESSAGE","Something went wrong, try again (Email is in use?)")
+                         }
+                         startActivity(intent)
 
-                }
+                     }
+                 }
             }
         }
     }

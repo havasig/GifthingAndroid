@@ -1,13 +1,13 @@
-package hu.bme.aut.android.gifthing.ui.home
+package hu.bme.aut.android.gifthing.ui.myGroups
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class MyGroupsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is Home Fragment"
+        value = "This is MyGroups Fragment"
     }
     val text: LiveData<String> = _text
 }

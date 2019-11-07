@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.HomeActivity
+import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.Services.UserService
@@ -41,27 +41,25 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 val email = loginEmail.text.toString()
                 val password = loginPassword.text.toString()
 
-                //TODO: ezt itt tuti nem így kell: runBlocking
-                var checkUser: User? = null
-                try {
-                    checkUser = runBlocking { getUser(email) }
-                } catch (e: Exception) {
-                    val intent = Intent(this, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "User not found")
-                    }
-                    startActivity(intent)
-                }
-
-                //checkUser is not null and the password is correct
-                if (checkUser != null) {
-                    if (checkUser.password.toString() == password) {
-                        val intent = Intent(this, HomeActivity::class.java).apply {
-                            putExtra("USER_ID", checkUser.id)
-                            //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                launch {
+                        val checkUser = getUser(email)
+                    //TODO: itt még mindig összeomlik h ha olyat hív ami nem létezik
+                    //checkUser is not null and the password is correct
+                    if (checkUser != null) {
+                        if (checkUser.password.toString() == password) {
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
+                                putExtra("USER_ID", checkUser.id)
+                                //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            startActivity(intent)
+                        } else {
+                            val intent = Intent(this@LoginActivity, ErrorActivity::class.java).apply {
+                                putExtra("ERROR_MESSAGE", "Not matching password and email")
+                            }
+                            startActivity(intent)
                         }
-                        startActivity(intent)
                     } else {
-                        val intent = Intent(this, ErrorActivity::class.java).apply {
+                        val intent = Intent(this@LoginActivity, ErrorActivity::class.java).apply {
                             putExtra("ERROR_MESSAGE", "User not found")
                         }
                         startActivity(intent)
@@ -69,7 +67,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 }
             }
         }
-
     }
 
     override fun onDestroy() {

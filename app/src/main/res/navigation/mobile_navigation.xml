@@ -8,48 +8,48 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="hu.bme.aut.android.gifthing.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_my_groups"
-        android:name="hu.bme.aut.android.gifthing.ui.myGroups.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="hu.bme.aut.android.gifthing.ui.myGroups.MyGroupsFragment"
+        android:label="@string/my_groups"
+        tools:layout="@layout/fragment_my_groups" />
 
     <fragment
         android:id="@+id/nav_my_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:name="hu.bme.aut.android.gifthing.ui.myGifts.MyGiftsFragment"
+        android:label="@string/my_gifts"
+        tools:layout="@layout/fragment_my_gifts" />
 
     <fragment
         android:id="@+id/nav_my_invites"
-        android:name="hu.bme.aut.android.gifthing.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
+        android:name="hu.bme.aut.android.gifthing.ui.myInvites.MyInvitesFragment"
+        android:label="@string/my_invites"
+        tools:layout="@layout/fragment_my_invites" />
 
     <fragment
         android:id="@+id/nav_reserved_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
+        android:name="hu.bme.aut.android.gifthing.ui.reservedGifts.ReservedGiftsFragment"
+        android:label="@string/reserved_gifts"
+        tools:layout="@layout/fragment_reserved_gifts" />
 
     <fragment
         android:id="@+id/nav_create_group"
-        android:name="hu.bme.aut.android.gifthing.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        android:name="hu.bme.aut.android.gifthing.ui.createGroup.CreateGroupFragment"
+        android:label="@string/create_group"
+        tools:layout="@layout/fragment_create_group" />
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="hu.bme.aut.android.gifthing.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        android:name="hu.bme.aut.android.gifthing.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="hu.bme.aut.android.gifthing.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        android:name="hu.bme.aut.android.gifthing.ui.about.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

@@ -1,13 +1,13 @@
-package hu.bme.aut.android.gifthing.ui.home
+package hu.bme.aut.android.gifthing.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class SettingsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is Home Fragment"
+        value = "This is not implemented"
     }
     val text: LiveData<String> = _text
 }
