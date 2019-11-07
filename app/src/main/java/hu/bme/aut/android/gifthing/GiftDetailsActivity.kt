@@ -31,8 +31,9 @@ class GiftDetailsActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send
+                R.id.nav_home, R.id.nav_my_groups, R.id.nav_my_gifts,
+                R.id.nav_my_invites, R.id.nav_reserved_gifts, R.id.nav_create_group,
+                R.id.nav_settings, R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -21,10 +21,10 @@ class User(var email: String) {
     @SerializedName("reservedGifts")
     var reservedGifts = mutableListOf<Gift>()
 
-    @SerializedName("myOwnedTeams")
-    var myOwnedTeams = mutableListOf<Team>()
+    @SerializedName("myOwnedGroups")
+    var myOwnedGroups = mutableListOf<Group>()
 
-    @SerializedName("myTeams")
-    var myTeams = mutableListOf<Team>()
+    @SerializedName("myGroups")
+    var myGroups = mutableListOf<Group>()
     //TODO? getters and setters
 }

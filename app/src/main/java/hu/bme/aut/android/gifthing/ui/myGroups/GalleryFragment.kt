@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.gallery
+package hu.bme.aut.android.gifthing.ui.myGroups
 
 import android.os.Bundle
 import android.view.LayoutInflater

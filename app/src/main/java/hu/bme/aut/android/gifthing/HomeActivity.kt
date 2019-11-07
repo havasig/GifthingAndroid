@@ -13,25 +13,27 @@ import com.google.android.material.navigation.NavigationView
 
 
 
-class MainActivity : AppCompatActivity(){
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each main ID as a set of Ids because each
         // main should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send
+                R.id.nav_home, R.id.nav_my_groups, R.id.nav_my_gifts,
+                R.id.nav_my_invites, R.id.nav_reserved_gifts, R.id.nav_create_group,
+                R.id.nav_settings, R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -43,3 +45,10 @@ class MainActivity : AppCompatActivity(){
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
+/*
+    }
+
+
+}
+
+ */

@@ -1,8 +1,11 @@
-package hu.bme.aut.android.gifthing
+package hu.bme.aut.android.gifthing.security
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.HomeActivity
+import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.User
@@ -54,9 +57,10 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 val success = runBlocking { saveUser(newUser) }
 
                 if(success) {
-                    val intent = Intent(this, MainActivity::class.java).apply {}
+                    val intent = Intent(this, HomeActivity::class.java).apply {
+                        //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                     startActivity(intent)
-                    //TODO register activity off from backstack
                 } else {
                     val intent = Intent(this, ErrorActivity::class.java).apply {
                     putExtra( "ERROR_MESSAGE","Something went wrong, try again (Email is in use?)")
@@ -67,7 +71,6 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
         }
     }
-
 
     override fun onDestroy() {
         cancel()

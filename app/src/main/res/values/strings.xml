@@ -17,7 +17,6 @@
     <string name="user_nickname">(Nickname)</string>
     <string name="user_email">example@gmail.com</string>
     <string name="my_groups">My groups</string>
-    <string name="my_gifts">My gifts</string>
     <string name="my_invites">My invites</string>
     <string name="reserved_gifts">Reserved gifts</string>
     <string name="settings">Settings</string>
@@ -46,4 +45,5 @@
     <string name="nickname">Nickname</string>
     <string name="password_again">Password Again</string>
     <string name="error">error</string>
+    <string name="my_gifts">My gifts</string>
 </resources>

@@ -1,13 +1,16 @@
-package hu.bme.aut.android.gifthing
+package hu.bme.aut.android.gifthing.security
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.HomeActivity
+import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.User
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.*
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -18,6 +21,9 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.+[a-z]+"
 
+        forgotBtn.setOnClickListener {
+            Toast.makeText(applicationContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
+        }
 
         loginBtn.setOnClickListener {
             if(loginEmail.text.toString() == "" ||
@@ -49,8 +55,9 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 //checkUser is not null and the password is correct
                 if (checkUser != null) {
                     if (checkUser.password.toString() == password) {
-                        val intent = Intent(this, MainActivity::class.java).apply {
+                        val intent = Intent(this, HomeActivity::class.java).apply {
                             putExtra("USER_ID", checkUser.id)
+                            //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
                         startActivity(intent)
                     } else {

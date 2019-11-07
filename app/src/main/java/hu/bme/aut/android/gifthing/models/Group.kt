@@ -2,7 +2,7 @@ package hu.bme.aut.android.gifthing.models
 
 import com.google.gson.annotations.SerializedName
 
-class Team {
+class Group {
     @SerializedName("id")
     var id: Long = 0
 

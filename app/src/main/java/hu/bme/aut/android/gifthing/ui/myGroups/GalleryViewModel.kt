@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.gallery
+package hu.bme.aut.android.gifthing.ui.myGroups
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
