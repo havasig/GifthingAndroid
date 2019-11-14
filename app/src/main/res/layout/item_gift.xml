@@ -11,10 +11,10 @@
 
 
     <TextView
-        android:id="@+id/ShoppingListItemNameTextView"
+        android:id="@+id/giftName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="24sp"
         tools:text="@string/gift_name"
         android:layout_alignParentStart="true" />
 
@@ -22,7 +22,7 @@
         android:id="@+id/giftPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:layout_alignParentEnd="true"
         tools:text="@string/price" />
 

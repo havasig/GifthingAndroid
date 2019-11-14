@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.myGifts
+package hu.bme.aut.android.gifthing.ui.gift.myGifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

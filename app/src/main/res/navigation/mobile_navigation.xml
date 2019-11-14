@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_my_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.myGifts.MyGiftsFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.gift.myGifts.MyGiftsFragment"
         android:label="@string/my_gifts"
         tools:layout="@layout/fragment_my_gifts" />
 

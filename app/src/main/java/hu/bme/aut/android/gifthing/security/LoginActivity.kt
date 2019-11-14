@@ -44,12 +44,10 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 launch {
                         val checkUser = getUser(email)
                     //TODO: itt még mindig összeomlik h ha olyat hív ami nem létezik
-                    //checkUser is not null and the password is correct
                     if (checkUser != null) {
                         if (checkUser.password.toString() == password) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
                                 putExtra("USER_ID", checkUser.id)
-                                //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             }
                             startActivity(intent)
                         } else {

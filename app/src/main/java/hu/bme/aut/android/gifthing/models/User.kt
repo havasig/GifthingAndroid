@@ -26,5 +26,4 @@ class User(var email: String) {
 
     @SerializedName("myGroups")
     var myGroups = mutableListOf<Group>()
-    //TODO? getters and setters
 }

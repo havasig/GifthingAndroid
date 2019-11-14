@@ -23,7 +23,7 @@
     <string name="details">Details</string>
     <string name="description">Description</string>
     <string name="OK">OK</string>
-    <string name="Cancel">Cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="optional">(optional)</string>
     <string name="title_activity_gift_details">GiftDetailsActivity</string>
     <string name="name">Name</string>
@@ -43,5 +43,6 @@
     <string name="create_group">Create group</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="create">Create</string>
 
 </resources>

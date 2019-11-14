@@ -15,13 +15,20 @@ import hu.bme.aut.android.gifthing.R
 
 class HomeActivity : AppCompatActivity() {
 
+
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    companion object {
+        public var CURRENT_USER_ID: Long = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ui)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        CURRENT_USER_ID = intent.getLongExtra("USER_ID", 1)
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

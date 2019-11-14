@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.myGifts
+package hu.bme.aut.android.gifthing.ui.gift.myGifts
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,35 +10,34 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import hu.bme.aut.android.gifthing.R
 
 
 class MyGiftsActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ui)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setContentView(hu.bme.aut.android.gifthing.R.layout.activity_ui)
+        val toolbar: Toolbar = findViewById(hu.bme.aut.android.gifthing.R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(hu.bme.aut.android.gifthing.R.id.nav_view)
+        val drawerLayout: DrawerLayout = findViewById(hu.bme.aut.android.gifthing.R.id.drawer_layout)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navController = findNavController(hu.bme.aut.android.gifthing.R.id.nav_host_fragment)
         // Passing each main ID as a set of Ids because each
         // main should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home,
-                R.id.nav_my_groups,
-                R.id.nav_my_gifts,
-                R.id.nav_my_invites,
-                R.id.nav_reserved_gifts,
-                R.id.nav_create_group,
-                R.id.nav_settings,
-                R.id.nav_about
+                hu.bme.aut.android.gifthing.R.id.nav_home,
+                hu.bme.aut.android.gifthing.R.id.nav_my_groups,
+                hu.bme.aut.android.gifthing.R.id.nav_my_gifts,
+                hu.bme.aut.android.gifthing.R.id.nav_my_invites,
+                hu.bme.aut.android.gifthing.R.id.nav_reserved_gifts,
+                hu.bme.aut.android.gifthing.R.id.nav_create_group,
+                hu.bme.aut.android.gifthing.R.id.nav_settings,
+                hu.bme.aut.android.gifthing.R.id.nav_about
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -46,7 +45,7 @@ class MyGiftsActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navController = findNavController(hu.bme.aut.android.gifthing.R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
