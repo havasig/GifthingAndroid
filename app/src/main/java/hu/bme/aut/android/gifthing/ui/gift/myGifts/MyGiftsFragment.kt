@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import hu.bme.aut.android.gifthing.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftDetailsActivity
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
@@ -28,7 +30,8 @@ class MyGiftsFragment : Fragment(),
     MyGiftsAdapter.OnGiftSelectedListener,
     CoroutineScope by MainScope() {
 
-    private lateinit var myGiftsViewModel: MyGiftsViewModel
+    private val GIFT_CREATE_REQUEST = 1
+    private lateinit var mAdapter: MyGiftsAdapter
 
     override fun onGiftSelected(gift: Gift) {
         val intent = Intent(activity, GiftDetailsActivity::class.java).apply {
@@ -49,26 +52,73 @@ class MyGiftsFragment : Fragment(),
         val fab: FloatingActionButton = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
         fab.setOnClickListener{
             val intent = Intent(activity, CreateGiftActivity::class.java).apply {}
+            startActivityForResult(intent, GIFT_CREATE_REQUEST)
             activity?.startActivity(intent)
-}
+
+
+            /*CreateGiftActivity()
+                .show(
+                    fragmentManager!!,
+                    CreateGiftActivity::class.java.simpleName
+                )*/
+
+        }
+        return rootView
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        Toast.makeText(context, "onActivityResult", Toast.LENGTH_SHORT).show()
+        when(requestCode) {
+            GIFT_CREATE_REQUEST -> {
+                saveGift(data)
+                Toast.makeText(context, "saveGift", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+
+                Toast.makeText(context, "nosaveGift", Toast.LENGTH_SHORT).show()
+
+                /*val intent = Intent(activity, ErrorActivity::class.java).apply {
+                    putExtra("ERROR_MESSAGE", "nem volt jo a create visszateresi erteke")
+                }
+                activity?.startActivity(intent)
+            */
+            }
+        }
+    }
+
+    private suspend fun getUser(id: Long) : User? {
+        val userService = ServiceBuilder.buildService(UserService::class.java)
+        return userService.getUserById(id)
+    }
+
+    private fun saveGift(data: Intent?) {
+        Toast.makeText(context, "saveGift", Toast.LENGTH_SHORT).show()
 
         launch {
-            val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+            if(data != null && data.data != null) {
+                mAdapter.addGift(Gson().fromJson(data.getSerializableExtra("GIFT").toString(), Gift::class.java))
+                Toast.makeText(context, "je", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(activity, ErrorActivity::class.java).apply {
+                    putExtra("ERROR_MESSAGE", "null-al tér vissza a create gift")
+                }
+                activity?.startActivity(intent)
+            }
+
+
+
+            /*val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
             if (currentUser != null) {
-                val mAdapter = MyGiftsAdapter(this@MyGiftsFragment, currentUser.gifts)
+                mAdapter = MyGiftsAdapter(this@MyGiftsFragment, currentUser.gifts)
                 recyclerView.adapter = mAdapter
             } else {
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (nincs bejelentkezve a felhasznalo)")
                 }
                 activity?.startActivity(intent)
-            }
+            }*/
         }
-        return rootView
-    }
-
-    private suspend fun getUser(id: Long) : User? {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUserById(id)
     }
 }

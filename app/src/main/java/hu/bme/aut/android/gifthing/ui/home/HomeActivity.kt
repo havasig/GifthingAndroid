@@ -19,7 +19,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object {
-        public var CURRENT_USER_ID: Long = 1
+        var CURRENT_USER_ID: Long = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
