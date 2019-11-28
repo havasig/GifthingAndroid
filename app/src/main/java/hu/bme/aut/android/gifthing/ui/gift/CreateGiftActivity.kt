@@ -77,12 +77,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     putExtra("ERROR_MESSAGE", "Name is required")
                 }
                 startActivity(intent)
-                finish()
-                Toast.makeText(
-                    this@CreateGiftActivity,
-                    "ez itt már nem kéne, hogy fusson, mert finish()-t hívtam",
-                    Toast.LENGTH_SHORT
-                ).show()
+                return@setOnClickListener
             }
             var link: String? = null
             if (etGiftLink.text.toString() != "") {
@@ -91,7 +86,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         putExtra("ERROR_MESSAGE", "Add a valid link (or leave it empty")
                     }
                     startActivity(intent)
-                    finish()
+                    return@setOnClickListener
                 } else {
                     link = etGiftLink.text.toString()
                 }
@@ -114,15 +109,14 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             launch {
 
-                val successCreateGift = createGift(newGift)
-                if (!successCreateGift) {
-                    Toast.makeText(
-                        this@CreateGiftActivity,
-                        "Something went wrong",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    finish()
+                val savedGift = createGift(newGift)
+
+                val result = Intent().apply {
+                    putExtra("GIFT", savedGift)
                 }
+                setResult(Activity.RESULT_OK, result)
+
+                finish()
             }
 
 
@@ -140,23 +134,14 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         Toast.makeText(this@CreateGiftActivity, "Could not update user", Toast.LENGTH_SHORT).show()
                     }
                     Toast.makeText(this@CreateGiftActivity, "Gift created successfully", Toast.LENGTH_SHORT).show()*/
-
-
-            val result = Intent().apply {
-                val g: Gift = Gift()
-                g.name = "asd"
-                putExtra("GIFT", g)
-            }
-            setResult(Activity.RESULT_OK, result)
-            finish()
         }
 
         btnCancel.setOnClickListener{
-            finish()
+            super.onBackPressed()
         }
     }
 
-    private suspend fun createGift(newGift: Gift) : Boolean {
+    private suspend fun createGift(newGift: Gift) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.create(newGift)
     }

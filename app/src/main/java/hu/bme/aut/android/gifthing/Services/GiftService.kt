@@ -11,5 +11,5 @@ interface GiftService {
     suspend fun deleteById(@Path("id") id: Long): Boolean
 
     @POST("gift/create")
-    suspend fun create(@Body newGift: Gift): Boolean
+    suspend fun create(@Body newGift: Gift): Gift
 }

@@ -49,11 +49,31 @@ class MyGiftsFragment : Fragment(),
         val recyclerView: RecyclerView = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
+
+        launch {
+
+            val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+            if (currentUser != null) {
+                mAdapter = MyGiftsAdapter(this@MyGiftsFragment, currentUser.gifts)
+                recyclerView.adapter = mAdapter
+            } else {
+                val intent = Intent(activity, ErrorActivity::class.java).apply {
+                    putExtra(
+                        "ERROR_MESSAGE",
+                        "Na itt valami komoly baj van (nincs bejelentkezve a felhasznalo)"
+                    )
+                }
+                activity?.startActivity(intent)
+            }
+
+        }
+
+
         val fab: FloatingActionButton = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
         fab.setOnClickListener{
             val intent = Intent(activity, CreateGiftActivity::class.java).apply {}
             startActivityForResult(intent, GIFT_CREATE_REQUEST)
-            activity?.startActivity(intent)
+            //activity?.startActivity(intent)
 
 
             /*CreateGiftActivity()
@@ -73,7 +93,6 @@ class MyGiftsFragment : Fragment(),
         when(requestCode) {
             GIFT_CREATE_REQUEST -> {
                 saveGift(data)
-                Toast.makeText(context, "saveGift", Toast.LENGTH_SHORT).show()
             }
             else -> {
 
@@ -97,8 +116,8 @@ class MyGiftsFragment : Fragment(),
         Toast.makeText(context, "saveGift", Toast.LENGTH_SHORT).show()
 
         launch {
-            if(data != null && data.data != null) {
-                mAdapter.addGift(Gson().fromJson(data.getSerializableExtra("GIFT").toString(), Gift::class.java))
+            if(data != null) {
+                mAdapter.addGift(data.getSerializableExtra("GIFT") as Gift)
                 Toast.makeText(context, "je", Toast.LENGTH_SHORT).show()
             } else {
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
@@ -109,16 +128,7 @@ class MyGiftsFragment : Fragment(),
 
 
 
-            /*val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
-            if (currentUser != null) {
-                mAdapter = MyGiftsAdapter(this@MyGiftsFragment, currentUser.gifts)
-                recyclerView.adapter = mAdapter
-            } else {
-                val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (nincs bejelentkezve a felhasznalo)")
-                }
-                activity?.startActivity(intent)
-            }*/
+
         }
     }
 }

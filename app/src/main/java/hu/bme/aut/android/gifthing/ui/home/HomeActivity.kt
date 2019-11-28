@@ -15,7 +15,6 @@ import hu.bme.aut.android.gifthing.R
 
 class HomeActivity : AppCompatActivity() {
 
-
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object {
