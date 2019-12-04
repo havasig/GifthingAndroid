@@ -21,9 +21,9 @@ class User(var email: String) {
     @SerializedName("reservedGifts")
     var reservedGifts = mutableListOf<Gift>()
 
-    @SerializedName("myOwnedGroups")
-    var myOwnedGroups = mutableListOf<Group>()
+    @SerializedName("myOwnedTeams")
+    var myOwnedTeams = mutableListOf<Team>()
 
-    @SerializedName("myGroups")
-    var myGroups = mutableListOf<Group>()
+    @SerializedName("myTeams")
+    var myTeams = mutableListOf<Team>()
 }

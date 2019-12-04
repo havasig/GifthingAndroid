@@ -31,11 +31,11 @@ class MyGiftsActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 hu.bme.aut.android.gifthing.R.id.nav_home,
-                hu.bme.aut.android.gifthing.R.id.nav_my_groups,
+                hu.bme.aut.android.gifthing.R.id.nav_my_teams,
                 hu.bme.aut.android.gifthing.R.id.nav_my_gifts,
                 hu.bme.aut.android.gifthing.R.id.nav_my_invites,
                 hu.bme.aut.android.gifthing.R.id.nav_reserved_gifts,
-                hu.bme.aut.android.gifthing.R.id.nav_create_group,
+                hu.bme.aut.android.gifthing.R.id.nav_create_team,
                 hu.bme.aut.android.gifthing.R.id.nav_settings,
                 hu.bme.aut.android.gifthing.R.id.nav_about
             ), drawerLayout

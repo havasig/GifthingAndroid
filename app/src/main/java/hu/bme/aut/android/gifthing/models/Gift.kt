@@ -20,8 +20,8 @@ class Gift: Serializable {
     var price: Int? = null
 
     @SerializedName("owner")
-    var owner: User? = null
+    var owner: Long? = null
 
     @SerializedName("reservedBy")
-    var reservedBy: User? = null
+    var reservedBy: Long? = null
 }

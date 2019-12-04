@@ -7,7 +7,7 @@ import java.util.*
 
 interface UserService {
     @GET("user/{id}")
-    suspend fun getUserById(@Path("id") id: Long): User?
+    suspend fun getUserById(@Path("id") id: Long): User
 
     @GET("user/email/{email}")
     suspend fun getUserByEmail(@Path("email") id: String): User?

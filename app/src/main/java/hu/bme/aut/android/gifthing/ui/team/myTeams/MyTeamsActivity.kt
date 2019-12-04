@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.myGroups
+package hu.bme.aut.android.gifthing.ui.team.myTeams
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import hu.bme.aut.android.gifthing.R
 
-class MyGroupsActivity : AppCompatActivity() {
+class MyTeamsActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,11 +30,11 @@ class MyGroupsActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
-                R.id.nav_my_groups,
+                R.id.nav_my_teams,
                 R.id.nav_my_gifts,
                 R.id.nav_my_invites,
                 R.id.nav_reserved_gifts,
-                R.id.nav_create_group,
+                R.id.nav_create_team,
                 R.id.nav_settings,
                 R.id.nav_about
             ), drawerLayout

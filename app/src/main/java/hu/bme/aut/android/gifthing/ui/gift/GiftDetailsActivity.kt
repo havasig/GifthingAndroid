@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.GiftService
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
@@ -14,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import hu.bme.aut.android.gifthing.R
 
 class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -39,25 +39,29 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         btnDelete.setOnClickListener{
-            launch {
-                val success = deleteGift(giftId)
-                if (success) {
-                    val intent = Intent(this@GiftDetailsActivity, MyGiftsActivity::class.java).apply {}
-                    Toast.makeText(this@GiftDetailsActivity, "Deleted successfully", Toast.LENGTH_SHORT).show()
-                    startActivity(intent)
-                    finish()
-                } else {
-                    val intent = Intent(this@GiftDetailsActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "We could not delete this gift (talan nem is letezik?)")
-                    }
-                    startActivity(intent)
-                }
-            }
+            onDelete(giftId)
         }
 
-        /*btnEdit.setOnClickListener{
-            //TODO: create gift dialog megadott paraméterekkel
-        }*/
+        btnEdit.setOnClickListener{
+            Toast.makeText(baseContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onDelete(giftId: Long) {
+        launch {
+            val success = deleteGift(giftId)
+            if (success) {
+                val intent = Intent(this@GiftDetailsActivity, MyGiftsActivity::class.java).apply {}
+                Toast.makeText(this@GiftDetailsActivity, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this@GiftDetailsActivity, ErrorActivity::class.java).apply {
+                    putExtra("ERROR_MESSAGE", "We could not delete this gift (wtf ??? )")
+                }
+                startActivity(intent)
+            }
+        }
     }
 
     private suspend fun getGift(id: Long) : Gift? {

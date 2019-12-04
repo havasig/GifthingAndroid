@@ -9,9 +9,9 @@
             android:icon="@drawable/account_group"
             android:title="@string/home" />
         <item
-            android:id="@+id/nav_my_groups"
+            android:id="@+id/nav_my_teams"
             android:icon="@drawable/account_group"
-            android:title="@string/my_groups" />
+            android:title="@string/my_teams" />
         <item
             android:id="@+id/nav_my_gifts"
             android:icon="@drawable/gift"
@@ -25,9 +25,9 @@
             android:icon="@drawable/cart"
             android:title="@string/reserved_gifts" />
         <item
-            android:id="@+id/nav_create_group"
+            android:id="@+id/nav_create_team"
             android:icon="@drawable/account_multiple_plus_outline"
-            android:title="@string/create_group" />
+            android:title="@string/create_team" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black"
