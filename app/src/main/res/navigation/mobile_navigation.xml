@@ -31,13 +31,13 @@
 
     <fragment
         android:id="@+id/nav_reserved_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.reservedGifts.ReservedGiftsFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.gift.reservedGifts.ReservedGiftsFragment"
         android:label="@string/reserved_gifts"
         tools:layout="@layout/fragment_reserved_gifts" />
 
     <fragment
         android:id="@+id/nav_create_team"
-        android:name="hu.bme.aut.android.gifthing.ui.createTeam.CreateTeamFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.team.create.CreateTeamFragment"
         android:label="@string/create_team"
         tools:layout="@layout/fragment_create_team" />
 

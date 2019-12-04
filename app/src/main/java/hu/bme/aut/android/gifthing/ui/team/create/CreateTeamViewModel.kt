@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.createTeam
+package hu.bme.aut.android.gifthing.ui.team.create
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

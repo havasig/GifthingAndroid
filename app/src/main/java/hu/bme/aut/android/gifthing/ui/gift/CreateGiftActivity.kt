@@ -37,15 +37,17 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
             var link: String? = null
             if (etGiftLink.text.toString() != "") {
+                link = etGiftLink.text.toString()
+                /*TODO: link is valid or not
                 if (!URLUtil.isValidUrl(etGiftLink.text.toString())) {
                     val intent = Intent(this, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Add a valid link (or leave it empty")
+                        putExtra("ERROR_MESSAGE", "Add a valid link (or leave it empty)")
                     }
                     startActivity(intent)
                     return@setOnClickListener
                 } else {
                     link = etGiftLink.text.toString()
-                }
+                }*/
             }
 
             val newGift = Gift()

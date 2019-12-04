@@ -16,9 +16,9 @@ import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.ui.createTeam.CreateTeamActivity
-import hu.bme.aut.android.gifthing.ui.gift.GiftDetailsActivity
+import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
+import hu.bme.aut.android.gifthing.ui.team.details.TeamDetailsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -81,8 +81,8 @@ class MyTeamsFragment : Fragment(),
     }
 
     override fun onTeamSelected(team: Team) {
-        val intent = Intent(activity, GiftDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", team.id)
+        val intent = Intent(activity, TeamDetailsActivity::class.java).apply {
+            putExtra("TEAM_ID", team.id)
         }
         activity?.startActivity(intent)
     }

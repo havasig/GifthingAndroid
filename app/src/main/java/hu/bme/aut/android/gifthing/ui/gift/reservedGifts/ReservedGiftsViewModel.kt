@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.reservedGifts
+package hu.bme.aut.android.gifthing.ui.gift.reservedGifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

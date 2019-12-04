@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.reservedGifts
+package hu.bme.aut.android.gifthing.ui.team.create
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import hu.bme.aut.android.gifthing.R
 
 
-class ReservedGiftsActivity : AppCompatActivity() {
+class CreateTeamActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 

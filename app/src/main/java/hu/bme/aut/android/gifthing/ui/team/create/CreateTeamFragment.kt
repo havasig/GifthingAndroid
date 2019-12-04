@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.createTeam
+package hu.bme.aut.android.gifthing.ui.team.create
 
 import android.os.Bundle
 import android.view.LayoutInflater

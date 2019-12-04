@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.reservedGifts
+package hu.bme.aut.android.gifthing.ui.gift.reservedGifts
 
 import android.os.Bundle
 import android.view.LayoutInflater
