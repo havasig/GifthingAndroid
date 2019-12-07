@@ -55,13 +55,12 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                  //save
                  launch {
-                     val success = saveUser(newUser)
+                     val createdUser = saveUser(newUser)
 
-                     if(success) {
-                         val createdUser = getUser(etEmail.text.toString())
+                     if(createdUser != null) {
                          val intent = Intent(this@RegisterActivity, HomeActivity::class.java).apply {
                              //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                             putExtra("USER_ID", createdUser!!.id)
+                             putExtra("USER_ID", createdUser.id)
                          }
                          startActivity(intent)
                      } else {
@@ -81,13 +80,13 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private suspend fun saveUser(user: User) : Boolean {
+    private suspend fun saveUser(user: User) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.createUser(user)
+        return userService.create(user)
     }
 
     private suspend fun getUser(email: String) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUserByEmail(email)
+        return userService.getByEmail(email)
     }
 }

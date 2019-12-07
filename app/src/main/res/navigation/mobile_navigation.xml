@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_my_teams"
-        android:name="hu.bme.aut.android.gifthing.ui.team.myTeams.MyTeamsFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.team.my.MyTeamsFragment"
         android:label="@string/my_teams"
         tools:layout="@layout/fragment_my_teams" />
 
     <fragment
         android:id="@+id/nav_my_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.gift.myGifts.MyGiftsFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.gift.my.MyGiftsFragment"
         android:label="@string/my_gifts"
         tools:layout="@layout/fragment_my_gifts" />
 
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/nav_reserved_gifts"
-        android:name="hu.bme.aut.android.gifthing.ui.gift.reservedGifts.ReservedGiftsFragment"
+        android:name="hu.bme.aut.android.gifthing.ui.gift.reserved.ReservedGiftsFragment"
         android:label="@string/reserved_gifts"
         tools:layout="@layout/fragment_reserved_gifts" />
 

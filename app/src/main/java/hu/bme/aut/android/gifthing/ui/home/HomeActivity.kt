@@ -18,7 +18,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object {
-        var CURRENT_USER_ID: Long = 1
+        var CURRENT_USER_ID: Long = -1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,7 @@ class HomeActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        CURRENT_USER_ID = intent.getLongExtra("USER_ID", 1)
+        CURRENT_USER_ID = intent.getLongExtra("USER_ID", -1)
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

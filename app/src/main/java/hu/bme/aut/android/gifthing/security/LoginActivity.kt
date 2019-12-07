@@ -74,6 +74,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private suspend fun getUser(email: String) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUserByEmail(email)
+        return userService.getByEmail(email)
     }
 }

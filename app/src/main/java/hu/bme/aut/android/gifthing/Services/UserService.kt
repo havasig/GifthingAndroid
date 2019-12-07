@@ -7,14 +7,14 @@ import java.util.*
 
 interface UserService {
     @GET("user/{id}")
-    suspend fun getUserById(@Path("id") id: Long): User
+    suspend fun getById(@Path("id") id: Long): User?
 
     @GET("user/email/{email}")
-    suspend fun getUserByEmail(@Path("email") id: String): User?
+    suspend fun getByEmail(@Path("email") email: String): User?
 
     @POST("user/create")
-    suspend fun createUser(@Body createUser: User): Boolean
+    suspend fun create(@Body createUser: User): User?
 
     @PUT("user/update")
-    suspend fun updateUser(@Body user: User): Boolean
+    suspend fun update(@Body user: User): Boolean
 }

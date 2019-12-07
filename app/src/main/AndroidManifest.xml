@@ -14,13 +14,17 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
-
-
+        <activity android:name=".ui.gift.reserved.ReservedGiftDetailsActivity"/>
+        <activity android:name=".ui.gift.details.GiftToReserveDetailsActivity" />
         <activity android:name=".security.RegisterActivity" />
         <activity android:name=".security.LoginActivity" />
         <activity android:name=".WelcomeActivity">
-        </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ErrorActivity"
             android:excludeFromRecents="true"
@@ -29,36 +33,27 @@
             android:name=".ui.gift.CreateGiftActivity"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
-
         <activity android:name=".ui.team.details.TeamDetailsActivity" />
-        <activity android:name=".ui.gift.GiftDetailsActivity" />
-
+        <activity android:name=".ui.gift.my.MyGiftDetailsActivity" />
+        <activity android:name=".ui.user.UserGiftListActivity" />
         <activity
             android:name=".ui.about.AboutActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity"
+            android:name=".ui.team.create.CreateTeamActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.gift.myGifts.MyGiftsActivity"
+            android:name=".ui.gift.my.MyGiftsActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ui.myInvites.MyInvitesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="hu.bme.aut.android.gifthing.ui.gift.reservedGifts.ReservedGiftsActivity"
+            android:name=".ui.gift.reserved.ReservedGiftsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -66,7 +61,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="hu.bme.aut.android.gifthing.ui.team.myTeams.MyTeamsActivity"
+            android:name=".ui.team.my.MyTeamsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

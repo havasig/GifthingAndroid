@@ -80,7 +80,8 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         btnCancel.setOnClickListener{
-            super.onBackPressed()
+            setResult(Activity.RESULT_CANCELED) //TODO: ezt Ok-nak veszi át a mygiftfragment
+            finish()
         }
     }
 

@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 class Team: Serializable {
-    @SerializedName("id")
-    var id: Long = 0
-
     @SerializedName("name")
     var name: String? = null
 
-    @SerializedName("admin")
-    private var admin: Long? = null
+    @SerializedName("id")
+    var id: Long = 0
+
+    @SerializedName("adminId")
+    var adminId: Long? = null
 
     @SerializedName("members")
     var members = mutableListOf<User>()

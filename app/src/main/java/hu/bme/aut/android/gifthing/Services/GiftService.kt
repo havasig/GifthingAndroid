@@ -12,4 +12,7 @@ interface GiftService {
 
     @POST("gift/create")
     suspend fun create(@Body newGift: Gift): Gift
+
+    @PUT("gift/reserve/{giftId}/{userId}")
+    suspend fun reserveGift(@Path("giftId") giftId: Long, @Path("userId") userId: Long): Gift?
 }

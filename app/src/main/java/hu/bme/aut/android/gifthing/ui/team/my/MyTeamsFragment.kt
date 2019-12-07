@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.team.myTeams
+package hu.bme.aut.android.gifthing.ui.team.my
 
 import android.content.Intent
 import android.os.Bundle
@@ -88,7 +88,7 @@ class MyTeamsFragment : Fragment(),
     }
     private suspend fun getUser(id: Long) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUserById(id)
+        return userService.getById(id)
     }
 
     private fun saveTeam(data: Intent?) {
@@ -97,10 +97,7 @@ class MyTeamsFragment : Fragment(),
                 mAdapter.addTeam(data.getSerializableExtra("TEAM") as Team)
                 Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
             } else {
-                val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "create team null result")
-                }
-                activity?.startActivity(intent)
+                Toast.makeText(context, "Cancelled", Toast.LENGTH_SHORT).show()
             }
         }
     }

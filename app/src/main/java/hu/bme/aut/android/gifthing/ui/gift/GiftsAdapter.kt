@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.gift.myGifts
+package hu.bme.aut.android.gifthing.ui.gift
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +9,11 @@ import android.widget.TextView
 
 
 
-class MyGiftsAdapter
+class GiftsAdapter
     (private var listener: OnGiftSelectedListener,
      private var gifts : MutableList<Gift>
      ) :
-    RecyclerView.Adapter<MyGiftsAdapter.GiftsViewHolder>() {
+    RecyclerView.Adapter<GiftsAdapter.GiftsViewHolder>() {
 
     interface OnGiftSelectedListener {
         fun onGiftSelected(gift: Gift)

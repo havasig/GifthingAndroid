@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.ui.gift.myGifts
+package hu.bme.aut.android.gifthing.ui.gift.my
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,28 +10,29 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.ui.gift.GiftDetailsActivity
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
+import hu.bme.aut.android.gifthing.Services.TeamService
 import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.Gift
+import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
+import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MyGiftsFragment : Fragment(),
-    MyGiftsAdapter.OnGiftSelectedListener,
+    GiftsAdapter.OnGiftSelectedListener,
     CoroutineScope by MainScope() {
 
     private val GIFT_CREATE_REQUEST = 1
-    private lateinit var mAdapter: MyGiftsAdapter
+    private lateinit var mAdapter: GiftsAdapter
 
     override fun onGiftSelected(gift: Gift) {
-        val intent = Intent(activity, GiftDetailsActivity::class.java).apply {
+        val intent = Intent(activity, MyGiftDetailsActivity::class.java).apply {
             putExtra("GIFT_ID", gift.id)
         }
         activity?.startActivity(intent)
@@ -46,12 +47,15 @@ class MyGiftsFragment : Fragment(),
         val recyclerView: RecyclerView = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        mAdapter = MyGiftsAdapter(this, mutableListOf())
+        mAdapter = GiftsAdapter(this, mutableListOf())
 
         launch {
             val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
             if (currentUser != null) {
-                mAdapter = MyGiftsAdapter(this@MyGiftsFragment, currentUser.gifts)
+                mAdapter = GiftsAdapter(
+                    this@MyGiftsFragment,
+                    currentUser.gifts
+                )
                 recyclerView.adapter = mAdapter
             } else {
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
@@ -75,7 +79,6 @@ class MyGiftsFragment : Fragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Toast.makeText(context, "onActivityResult", Toast.LENGTH_SHORT).show()
         when(requestCode) {
             GIFT_CREATE_REQUEST -> {
                 saveGift(data)
@@ -88,7 +91,12 @@ class MyGiftsFragment : Fragment(),
 
     private suspend fun getUser(id: Long) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getUserById(id)
+        return userService.getById(id)
+    }
+
+    private suspend fun getTeam(id: Long) : Team? {
+        val teamService = ServiceBuilder.buildService(TeamService::class.java)
+        return teamService.getById(id)
     }
 
     private fun saveGift(data: Intent?) {
@@ -96,12 +104,8 @@ class MyGiftsFragment : Fragment(),
             if(data != null) {
                 mAdapter.addGift(data.getSerializableExtra("GIFT") as Gift)
                 Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "create gift null result")
-                }
-                activity?.startActivity(intent)
+            } else
+                Toast.makeText(context, "cancelled", Toast.LENGTH_SHORT).show()
             }
         }
     }
-}
