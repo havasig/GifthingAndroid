@@ -32,7 +32,7 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
                 tvGiftDescription.text = currentGift.description
             } else {
                 val intent = Intent(this@MyGiftDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (0 id gift-et akart elkérni)")
+                    putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
                 startActivity(intent)
             }

@@ -12,6 +12,7 @@ import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.*
+import retrofit2.HttpException
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -19,9 +20,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.+[a-z]+"
-
         forgotBtn.setOnClickListener {
+            //TODO: forgotBtn
             Toast.makeText(applicationContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
         }
 
@@ -32,18 +32,16 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     putExtra( "ERROR_MESSAGE","Fill every required field")
                 }
                 startActivity(intent)
-            }else if(!loginEmail.text.toString().trim().matches(emailPattern.toRegex())) {
-                val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra( "ERROR_MESSAGE","Enter a valid email address")
-                }
-                startActivity(intent)
             } else {
                 val email = loginEmail.text.toString()
                 val password = loginPassword.text.toString()
 
                 launch {
-                        val checkUser = getUser(email)
-                    //TODO: itt még mindig összeomlik h ha olyat hív ami nem létezik
+                    val checkUser : User? = try {
+                        getUser(email)
+                    } catch (e : HttpException){
+                        null
+                    }
                     if (checkUser != null) {
                         if (checkUser.password.toString() == password) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
@@ -72,7 +70,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private suspend fun getUser(email: String) : User? {
+    private suspend fun getUser(email: String) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getByEmail(email)
     }

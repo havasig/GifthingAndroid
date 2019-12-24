@@ -22,6 +22,7 @@ import hu.bme.aut.android.gifthing.ui.team.details.TeamDetailsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class MyTeamsFragment : Fragment(),
     MyTeamsAdapter.OnTeamSelectedListener,
@@ -48,7 +49,20 @@ class MyTeamsFragment : Fragment(),
         }
 
         launch {
-            val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+            val currentUser = try{
+                getUser(HomeActivity.CURRENT_USER_ID)
+            } catch (e: HttpException) {
+                if(e.code() != 404) {
+                    val intent = Intent(activity, ErrorActivity::class.java).apply {
+                        putExtra(
+                            "ERROR_MESSAGE",
+                            "Hiba van, de nem 404"
+                        )
+                    }
+                    activity?.startActivity(intent)
+                }
+                null
+            }
             if (currentUser != null) {
                 mAdapter = MyTeamsAdapter(this@MyTeamsFragment, currentUser.myTeams)
                 recyclerView.adapter = mAdapter
@@ -56,7 +70,7 @@ class MyTeamsFragment : Fragment(),
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
                     putExtra(
                         "ERROR_MESSAGE",
-                        "Na itt valami komoly baj van (nincs bejelentkezve a felhasznalo)"
+                        "User is not logged in"
                     )
                 }
                 activity?.startActivity(intent)
@@ -86,7 +100,7 @@ class MyTeamsFragment : Fragment(),
         }
         activity?.startActivity(intent)
     }
-    private suspend fun getUser(id: Long) : User? {
+    private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }

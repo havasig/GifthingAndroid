@@ -16,12 +16,11 @@ import hu.bme.aut.android.gifthing.models.User
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.ui.user.UserListAdapter
 import kotlinx.android.synthetic.main.dialog_create_team.*
-import kotlinx.android.synthetic.main.item_email.*
-import kotlinx.android.synthetic.main.item_team.*
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 
 class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener, CoroutineScope by MainScope() {
@@ -41,8 +40,16 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         recyclerView.layoutManager = LinearLayoutManager(this)
         mAdapter = UserListAdapter(this, mutableListOf())
         recyclerView.adapter = mAdapter
+
         launch {
-            mAdapter.addUser(getUser(HomeActivity.CURRENT_USER_ID)!!)
+            try {
+                mAdapter.addUser(getUser(HomeActivity.CURRENT_USER_ID))
+            } catch (e: HttpException) {
+                val intent = Intent(this@CreateTeamActivity, ErrorActivity::class.java).apply {
+                    putExtra("ERROR_MESSAGE", "User is not logged in")
+                }
+                startActivity(intent)
+            }
         }
 
         btnCreateTeam.setOnClickListener {
@@ -74,9 +81,9 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
         newTeam.adminId = HomeActivity.CURRENT_USER_ID
         newTeam.name = etTeamName.text.toString()
-        newTeam.members = mAdapter.getUser()
+        newTeam.members = mAdapter.getUsers()
 
-        val tmpList = mAdapter.getUser()
+        val tmpList = mAdapter.getUsers()
         val userList = mutableListOf<User>()
         for (user in tmpList) {
             userList.add(user)
@@ -99,7 +106,17 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
     private fun onAdd(userEmail: String) {
         launch {
-            val insertedUser= getUser(userEmail)
+            val insertedUser= try {
+                getUser(userEmail)
+            } catch (e: HttpException) {
+                if(e.code() != 404) {
+                    val intent = Intent(this@CreateTeamActivity, ErrorActivity::class.java).apply {
+                        putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
+                    }
+                    startActivity(intent)
+                }
+                null
+            }
             if(insertedUser != null && insertedUser.id != 0L) { //TODO: team response teljesen szar
                 mAdapter.addUser(insertedUser)
             } else {
@@ -114,12 +131,12 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         return teamService.create(newTeam)
     }
 
-    private suspend fun getUser(email: String): User?{
+    private suspend fun getUser(email: String): User{
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getByEmail(email)
     }
 
-    private suspend fun getUser(id: Long): User?{
+    private suspend fun getUser(id: Long): User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }

@@ -59,7 +59,7 @@ class TeamDetailsActivity : AppCompatActivity(),
                     tmpMembers.removeAt(indx)
                 } else {
                     val intent = Intent(this@TeamDetailsActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (a felhasználó nincs benne a team-ben)")
+                        putExtra("ERROR_MESSAGE", "User is not member of the team")
                     }
                     startActivity(intent)
                 }
@@ -68,7 +68,7 @@ class TeamDetailsActivity : AppCompatActivity(),
                 membersContainer.adapter = mAdapter
             } else {
                 val intent = Intent(this@TeamDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (0 id team-et akart elkérni)")
+                    putExtra("ERROR_MESSAGE", "Current team is null")
                 }
                 startActivity(intent)
             }
@@ -101,10 +101,5 @@ class TeamDetailsActivity : AppCompatActivity(),
     private suspend fun deleteTeam(id: Long) : Boolean {
         val teamService = ServiceBuilder.buildService(TeamService::class.java)
         return teamService.deleteById(id)
-    }
-
-    private suspend fun getUser(id: Long) : User? {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
     }
 }

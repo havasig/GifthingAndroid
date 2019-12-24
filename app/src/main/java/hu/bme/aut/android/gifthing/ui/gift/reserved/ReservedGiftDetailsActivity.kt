@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.ui.gift.reserved
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,9 +16,11 @@ import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserved_gift_details)
@@ -33,7 +36,17 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
                 tvGiftDescription.text = currentGift.description
 
 
-                val owner = getUser(currentGift.owner!!)
+                val owner = try {
+                    getUser(currentGift.owner!!)
+                } catch (e: HttpException) {
+                    if(e.code() != 404) {
+                        val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
+                            putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
+                        }
+                        startActivity(intent)
+                    }
+                    null
+                }
                 if(owner != null) {
                     tvOwnerName.text = owner.firstName + " " + owner.lastName
                 } else {
@@ -44,7 +57,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
                 }
             } else {
                 val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (0 id gift-et akart elkérni)")
+                    putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
                 startActivity(intent)
             }
@@ -55,7 +68,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
         return giftService.getById(id)
     }
 
-    private suspend fun getUser(id: Long) : User? {
+    private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }

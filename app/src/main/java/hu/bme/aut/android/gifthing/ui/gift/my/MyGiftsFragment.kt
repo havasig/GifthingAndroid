@@ -23,6 +23,7 @@ import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
@@ -50,7 +51,17 @@ class MyGiftsFragment : Fragment(),
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         launch {
-            val currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+            val currentUser = try {
+                getUser(HomeActivity.CURRENT_USER_ID)
+            } catch (e: HttpException) {
+                if(e.code() != 404) {
+                    val intent = Intent(activity, ErrorActivity::class.java).apply {
+                        putExtra("ERROR_MESSAGE", "Valami hiba van, de nem 404")
+                    }
+                    activity?.startActivity(intent)
+                }
+                null
+            }
             if (currentUser != null) {
                 mAdapter = GiftsAdapter(
                     this@MyGiftsFragment,
@@ -61,7 +72,7 @@ class MyGiftsFragment : Fragment(),
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
                     putExtra(
                         "ERROR_MESSAGE",
-                        "Na itt valami komoly baj van (nincs bejelentkezve a felhasznalo)"
+                        "User is not logged in"
                     )
                 }
                 activity?.startActivity(intent)
@@ -89,7 +100,7 @@ class MyGiftsFragment : Fragment(),
         }
     }
 
-    private suspend fun getUser(id: Long) : User? {
+    private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }

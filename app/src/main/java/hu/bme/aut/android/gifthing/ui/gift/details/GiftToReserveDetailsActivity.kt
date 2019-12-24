@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.ui.gift.details
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,7 @@ import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.User
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
+import retrofit2.HttpException
 
 
 class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -34,12 +36,12 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
 
 
         btnReserve.setOnClickListener{
-            val tmp = onReserve(giftId)
-            //TODO: (az ajándék nem érkezik vissza mire a ui-t már be akarná tölteni újra)
+            //TODO: val tmp = onReserve(giftId)(az ajándék nem érkezik vissza mire a ui-t már be akarná tölteni újra)
             loadGiftDetails()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadGiftDetails() {
         launch {
             val currentGift: Gift? = getGift(giftId)
@@ -54,12 +56,15 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
 
                     btnReserve.visibility = View.GONE
 
-                    val reserveUser = getUser(it)
-                    reserveUser?.let {
-                            tvReservedBy.text = reserveUser.firstName + " " + reserveUser.lastName
+                    try {
+                        val reserveUser = getUser(it)
+                        tvReservedBy.text = reserveUser.firstName + " " + reserveUser.lastName
+                    } catch (e: HttpException) {
+                        if(e.code() == 404)
+                            tvReservedBy.text = resources.getString(R.string.currently_free)
                     }
+                }
 
-                } ?: let { tvReservedBy.text = resources.getString(R.string.currently_free) }
 
                 //TODO: reserve gift should work with this added:
                 /*if(currentGift.reservedBy == HomeActivity.CURRENT_USER_ID)
@@ -70,7 +75,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
 
             } else {
                 val intent = Intent(this@GiftToReserveDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (0 id gift-et akart elkérni)")
+                    putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
                 startActivity(intent)
             }
@@ -108,7 +113,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.getById(id)
     }
-    private suspend fun getUser(id: Long) : User? {
+    private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }

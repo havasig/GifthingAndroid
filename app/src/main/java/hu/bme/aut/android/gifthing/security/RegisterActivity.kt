@@ -70,6 +70,10 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                  }
             }
         }
+
+        cancelBtn.setOnClickListener{
+            super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {

@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.ui.user
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_user_gift_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedListener, CoroutineScope by MainScope() {
 
@@ -28,6 +30,7 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         startActivity(intent)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_gift_list)
@@ -38,21 +41,31 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         launch {
-            val currentUser = getUser(userId)
+            val currentUser = try {
+                getUser(userId)
+            } catch (e: HttpException) {
+                if(e.code() != 404) {
+                    val intent = Intent(this@UserGiftListActivity, ErrorActivity::class.java).apply {
+                        putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
+                    }
+                    startActivity(intent)
+                }
+                null
+            }
             if (currentUser  != null) {
                 nameTv.text = currentUser.firstName + " " + currentUser.lastName
                 mAdapter = GiftsAdapter(this@UserGiftListActivity, currentUser.gifts)
                 giftsContainer.adapter = mAdapter
             } else {
                 val intent = Intent(this@UserGiftListActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Na itt valami komoly baj van (0 id user-t akart elkérni)")
+                    putExtra("ERROR_MESSAGE", "Current user is null")
                 }
                 startActivity(intent)
             }
         }
     }
 
-    private suspend fun getUser(id: Long) : User? {
+    private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
     }
