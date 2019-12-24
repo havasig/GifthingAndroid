@@ -3,12 +3,13 @@ package hu.bme.aut.android.gifthing.models
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class User(var email: String) : Serializable {
+class User(
+    var email: String,
+    var firstName: String,
+    var lastName: String
+) : Serializable {
     @SerializedName("id")
     var id: Long = 0
-
-    @SerializedName("name")
-    var name: String? = null
 
     @SerializedName("nickName")
     var nickName: String? = null

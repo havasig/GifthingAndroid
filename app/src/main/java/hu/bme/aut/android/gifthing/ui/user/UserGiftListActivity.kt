@@ -40,7 +40,7 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         launch {
             val currentUser = getUser(userId)
             if (currentUser  != null) {
-                currentUser.name?.let { nameTv.text = it } ?: let{nameTv.text = currentUser.email}
+                nameTv.text = currentUser.firstName + " " + currentUser.lastName
                 mAdapter = GiftsAdapter(this@UserGiftListActivity, currentUser.gifts)
                 giftsContainer.adapter = mAdapter
             } else {

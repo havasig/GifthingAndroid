@@ -28,10 +28,10 @@ class UserListAdapter
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
         val item = users[position]
-        if(item.name != null)
-            holder.userName.text = item.name
+        if(item.nickName != null)
+            holder.userName.text = item.nickName
         else
-            holder.userName.text = item.email
+            holder.userName.text = item.firstName + " " + item.lastName
 
         holder.item = item
 

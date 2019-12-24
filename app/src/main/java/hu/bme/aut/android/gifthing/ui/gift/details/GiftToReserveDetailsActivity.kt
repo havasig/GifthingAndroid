@@ -56,10 +56,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
 
                     val reserveUser = getUser(it)
                     reserveUser?.let {
-                        if(reserveUser.name != null){
-                            tvReservedBy.text = reserveUser.name
-                        }
-                        else { tvReservedBy.text = reserveUser.email }
+                            tvReservedBy.text = reserveUser.firstName + " " + reserveUser.lastName
                     }
 
                 } ?: let { tvReservedBy.text = resources.getString(R.string.currently_free) }

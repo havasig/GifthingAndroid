@@ -35,7 +35,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
 
                 val owner = getUser(currentGift.owner!!)
                 if(owner != null) {
-                    tvOwnerName.text = owner.name ?: owner.email
+                    tvOwnerName.text = owner.firstName + " " + owner.lastName
                 } else {
                     val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
                         putExtra("ERROR_MESSAGE", "Nincs tuljadonosa az ajándéknak :O")

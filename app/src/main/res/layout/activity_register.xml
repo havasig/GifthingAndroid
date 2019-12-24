@@ -41,7 +41,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/etEmail"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/required"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,7 +55,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
+                    android:text="@string/firstName"
                     android:gravity="right"
                     android:textSize="18sp"/>
 
@@ -62,9 +63,31 @@
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etName"
-                    android:hint="@string/optional"/>
+                    android:id="@+id/etFirstName"
+                    android:hint="@string/required"/>
             </LinearLayout>
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="3"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/lastName"
+                android:gravity="right"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/etLastName"
+                android:hint="@string/required"/>
+        </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,8 +107,7 @@
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etNickname"
-                    android:hint="@string/optional"/>
+                    android:id="@+id/etNickname"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,7 +133,8 @@
                     android:layout_width="0dp"
                     android:scrollbars="vertical"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etPassword"/>
+                    android:id="@+id/etPassword"
+                    android:hint="@string/required"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,7 +160,8 @@
                     android:layout_width="0dp"
                     android:scrollbars="vertical"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etPasswordAgain"/>
+                    android:id="@+id/etPasswordAgain"
+                    android:hint="@string/required"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

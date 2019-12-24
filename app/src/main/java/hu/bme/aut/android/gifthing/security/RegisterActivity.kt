@@ -24,7 +24,9 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             //TODO: if not correct pwd or email is exists
              if( etEmail.text.toString() == "" ||
                  etPassword.text.toString()== "" ||
-                 etPasswordAgain.text.toString()== "") {
+                 etPasswordAgain.text.toString()== "" ||
+                 etFirstName.text.toString()== "" ||
+                 etLastName.text.toString()== "") {
                 val intent = Intent(this, ErrorActivity::class.java).apply {
                     putExtra( "ERROR_MESSAGE","Fill every required field")
                 }
@@ -40,12 +42,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
              }
                  startActivity(intent)
         } else {
-                val newUser = User(etEmail.text.toString())
-                 if(etName.text.toString() == "") {
-                     newUser.name = null
-                 } else {
-                     newUser.name = etName.text.toString()
-                 }
+                val newUser = User(etEmail.text.toString(), etFirstName.text.toString(), etLastName.text.toString())
                  if(etNickname.text.toString() == "") {
                      newUser.nickName = null
                  } else {
@@ -83,10 +80,5 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private suspend fun saveUser(user: User) : User? {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.create(user)
-    }
-
-    private suspend fun getUser(email: String) : User? {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getByEmail(email)
     }
 }
