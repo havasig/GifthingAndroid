@@ -28,34 +28,24 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
         val giftId = intent.getLongExtra("GIFT_ID", 0)
 
         launch {
-            val currentGift = getGift(giftId)
-            if (currentGift != null) {
+            try{
+                val currentGift = getGift(giftId)
                 tvGiftName.text = currentGift.name
                 tvGiftPrice.text = currentGift.price.toString()
                 tvGiftLink.text = currentGift.link
                 tvGiftDescription.text = currentGift.description
 
-
-                val owner = try {
-                    getUser(currentGift.owner!!)
-                } catch (e: HttpException) {
-                    if(e.code() != 404) {
-                        val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
-                            putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
-                        }
-                        startActivity(intent)
-                    }
-                    null
-                }
-                if(owner != null) {
+                try {
+                    val owner = getUser(currentGift.owner!!)
                     tvOwnerName.text = owner.firstName + " " + owner.lastName
-                } else {
+                } catch (e: HttpException) {
                     val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Nincs tuljadonosa az ajándéknak :O")
+                        putExtra("ERROR_MESSAGE", "Gift owner not found")
                     }
                     startActivity(intent)
                 }
-            } else {
+
+            } catch (e: HttpException){
                 val intent = Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
@@ -63,7 +53,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
             }
         }
     }
-    private suspend fun getGift(id: Long) : Gift? {
+    private suspend fun getGift(id: Long) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.getById(id)
     }

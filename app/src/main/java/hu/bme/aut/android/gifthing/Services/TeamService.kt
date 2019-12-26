@@ -5,7 +5,7 @@ import retrofit2.http.*
 
 interface TeamService {
     @GET("team/{id}")
-    suspend fun getById(@Path("id") id: Long): Team?
+    suspend fun getById(@Path("id") id: Long): Team
 
     @DELETE("team/delete/{id}")
     suspend fun deleteById(@Path("id") id: Long): Boolean

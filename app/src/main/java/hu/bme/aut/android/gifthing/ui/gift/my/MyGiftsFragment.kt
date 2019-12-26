@@ -51,29 +51,17 @@ class MyGiftsFragment : Fragment(),
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         launch {
-            val currentUser = try {
-                getUser(HomeActivity.CURRENT_USER_ID)
-            } catch (e: HttpException) {
-                if(e.code() != 404) {
-                    val intent = Intent(activity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Valami hiba van, de nem 404")
-                    }
-                    activity?.startActivity(intent)
-                }
-                null
-            }
-            if (currentUser != null) {
+            val currentUser: User?
+            try {
+                currentUser = getUser(HomeActivity.CURRENT_USER_ID)
                 mAdapter = GiftsAdapter(
                     this@MyGiftsFragment,
                     currentUser.gifts
                 )
                 recyclerView.adapter = mAdapter
-            } else {
+            } catch (e: HttpException) {
                 val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra(
-                        "ERROR_MESSAGE",
-                        "User is not logged in"
-                    )
+                    putExtra("ERROR_MESSAGE", "User not found")
                 }
                 activity?.startActivity(intent)
             }
@@ -103,11 +91,6 @@ class MyGiftsFragment : Fragment(),
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getById(id)
-    }
-
-    private suspend fun getTeam(id: Long) : Team? {
-        val teamService = ServiceBuilder.buildService(TeamService::class.java)
-        return teamService.getById(id)
     }
 
     private fun saveGift(data: Intent?) {

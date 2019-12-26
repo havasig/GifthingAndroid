@@ -106,20 +106,13 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
     private fun onAdd(userEmail: String) {
         launch {
-            val insertedUser= try {
-                getUser(userEmail)
-            } catch (e: HttpException) {
-                if(e.code() != 404) {
-                    val intent = Intent(this@CreateTeamActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
-                    }
-                    startActivity(intent)
+            val insertedUser: User
+            try {
+                insertedUser = getUser(userEmail)
+                if(insertedUser.id != 0L) { //TODO: team response teljesen szar
+                    mAdapter.addUser(insertedUser)
                 }
-                null
-            }
-            if(insertedUser != null && insertedUser.id != 0L) { //TODO: team response teljesen szar
-                mAdapter.addUser(insertedUser)
-            } else {
+            } catch (e: HttpException) {
                 Toast.makeText(baseContext, "Not existing user", Toast.LENGTH_SHORT).show()
             }
         }

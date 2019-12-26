@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_team_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class TeamDetailsActivity : AppCompatActivity(),
     UserListAdapter.OnUserSelectedListener,
@@ -46,8 +47,9 @@ class TeamDetailsActivity : AppCompatActivity(),
         val currentUserID = HomeActivity.CURRENT_USER_ID
 
         launch {
-            val currentTeam = getTeam(teamId)
-            if (currentTeam != null) {
+            try{
+                //TODO: itt mi történik az indexekkel? :O
+                val currentTeam = getTeam(teamId)
                 val tmpMembers = currentTeam.members
                 var indx = -1
                 for (i in tmpMembers.indices) {
@@ -66,7 +68,7 @@ class TeamDetailsActivity : AppCompatActivity(),
 
                 mAdapter = UserListAdapter(this@TeamDetailsActivity, tmpMembers)
                 membersContainer.adapter = mAdapter
-            } else {
+            } catch (e: HttpException){
                 val intent = Intent(this@TeamDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current team is null")
                 }
@@ -93,7 +95,7 @@ class TeamDetailsActivity : AppCompatActivity(),
         }
     }
 
-    private suspend fun getTeam(id: Long) : Team? {
+    private suspend fun getTeam(id: Long) : Team {
         val teamService = ServiceBuilder.buildService(TeamService::class.java)
         return teamService.getById(id)
     }

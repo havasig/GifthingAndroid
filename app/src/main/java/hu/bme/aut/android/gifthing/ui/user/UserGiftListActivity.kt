@@ -41,22 +41,13 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         launch {
-            val currentUser = try {
-                getUser(userId)
-            } catch (e: HttpException) {
-                if(e.code() != 404) {
-                    val intent = Intent(this@UserGiftListActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
-                    }
-                    startActivity(intent)
-                }
-                null
-            }
-            if (currentUser  != null) {
+            val currentUser: User
+            try {
+                currentUser = getUser(userId)
                 nameTv.text = currentUser.firstName + " " + currentUser.lastName
                 mAdapter = GiftsAdapter(this@UserGiftListActivity, currentUser.gifts)
                 giftsContainer.adapter = mAdapter
-            } else {
+            } catch (e: HttpException) {
                 val intent = Intent(this@UserGiftListActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current user is null")
                 }

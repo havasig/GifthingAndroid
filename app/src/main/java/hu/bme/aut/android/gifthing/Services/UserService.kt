@@ -17,8 +17,6 @@ interface UserService {
     @Throws(Exception::class)
     suspend fun create(@Body createUser: User): User
 
-    @PUT("user/update")
-    suspend fun update(@Body user: User): User
 
-    //TODO: user/delete
+    //TODO: @PUT("user/update") suspend fun update(@Body user: User): User, {update, all, delete}
 }

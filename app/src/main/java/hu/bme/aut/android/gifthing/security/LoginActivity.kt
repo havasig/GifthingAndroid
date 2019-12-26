@@ -37,12 +37,9 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 val password = loginPassword.text.toString()
 
                 launch {
-                    val checkUser : User? = try {
-                        getUser(email)
-                    } catch (e : HttpException){
-                        null
-                    }
-                    if (checkUser != null) {
+                    val checkUser : User?
+                    try {
+                        checkUser = getUser(email)
                         if (checkUser.password.toString() == password) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
                                 putExtra("USER_ID", checkUser.id)
@@ -54,7 +51,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             }
                             startActivity(intent)
                         }
-                    } else {
+                    } catch (e : HttpException){
                         val intent = Intent(this@LoginActivity, ErrorActivity::class.java).apply {
                             putExtra("ERROR_MESSAGE", "User not found")
                         }

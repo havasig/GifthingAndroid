@@ -14,6 +14,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import hu.bme.aut.android.gifthing.R
 import kotlinx.android.synthetic.main.gift_details.*
+import retrofit2.HttpException
 
 class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -24,13 +25,13 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
         val giftId = intent.getLongExtra("GIFT_ID", 0)
 
         launch {
-            val currentGift = getGift(giftId)
-            if (currentGift != null) {
+            try {
+                val currentGift = getGift(giftId)
                 tvGiftName.text = currentGift.name
                 tvGiftPrice.text = currentGift.price.toString()
                 tvGiftLink.text = currentGift.link
                 tvGiftDescription.text = currentGift.description
-            } else {
+            } catch (e: HttpException){
                 val intent = Intent(this@MyGiftDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
@@ -64,7 +65,7 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
         }
     }
 
-    private suspend fun getGift(id: Long) : Gift? {
+    private suspend fun getGift(id: Long) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.getById(id)
     }

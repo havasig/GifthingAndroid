@@ -3,13 +3,9 @@ package hu.bme.aut.android.gifthing.ui.gift
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.webkit.URLUtil
-import android.widget.Toast
 import hu.bme.aut.android.gifthing.Services.GiftService
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
-import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.Gift
-import hu.bme.aut.android.gifthing.models.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +13,8 @@ import hu.bme.aut.android.gifthing.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
+import retrofit2.HttpException
+import java.lang.Exception
 
 
 class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -66,14 +63,30 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
 
             launch {
-                val currentUserId = HomeActivity.CURRENT_USER_ID
-                newGift.owner = currentUserId
-                val savedGift = createGift(newGift)
+                try {
+                    val currentUserId = HomeActivity.CURRENT_USER_ID
+                    if(currentUserId == 0L) {
+                        throw Exception("User not logged in")
+                    }
+                    newGift.owner = currentUserId
+                    val savedGift = createGift(newGift)
 
-                val result = Intent().apply {
-                    putExtra("GIFT", savedGift)
+                    val result = Intent().apply {
+                        putExtra("GIFT", savedGift)
+                    }
+                    setResult(Activity.RESULT_OK, result)
+                } catch (e: HttpException) {
+                    val intent = Intent(this@CreateGiftActivity, ErrorActivity::class.java).apply {
+                        putExtra("ERROR_MESSAGE", "Something went wrong")
+                    }
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    val intent = Intent(this@CreateGiftActivity, ErrorActivity::class.java).apply {
+                        putExtra("ERROR_MESSAGE", e.message)
+                    }
+                    startActivity(intent)
                 }
-                setResult(Activity.RESULT_OK, result)
+
 
                 finish()
             }
