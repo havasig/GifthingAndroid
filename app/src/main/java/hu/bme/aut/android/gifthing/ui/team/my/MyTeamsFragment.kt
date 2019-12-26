@@ -24,6 +24,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
+//This is master
 class MyTeamsFragment : Fragment(),
     MyTeamsAdapter.OnTeamSelectedListener,
     CoroutineScope by MainScope() {
