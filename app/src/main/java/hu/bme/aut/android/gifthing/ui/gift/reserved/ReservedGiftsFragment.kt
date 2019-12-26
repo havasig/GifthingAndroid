@@ -46,28 +46,19 @@ class ReservedGiftsFragment : Fragment(),
             mAdapter = GiftsAdapter(this, mutableListOf())
 
             launch {
-                val currentUser = try {
-                    getUser(HomeActivity.CURRENT_USER_ID)
-                } catch (e: HttpException) {
-                    if(e.code() != 404) {
-                        val intent = Intent(activity, ErrorActivity::class.java).apply {
-                            putExtra("ERROR_MESSAGE", "Hiba van, de nem 404")
-                        }
-                        activity?.startActivity(intent)
-                    }
-                    null
-                }
-                if (currentUser != null) {
+                val currentUser: User
+                try {
+                    currentUser = getUser(HomeActivity.CURRENT_USER_ID)
                     mAdapter = GiftsAdapter(
                         this@ReservedGiftsFragment,
                         currentUser.reservedGifts
                     )
                     recyclerView.adapter = mAdapter
-                } else {
+                } catch (e: HttpException) {
                     val intent = Intent(activity, ErrorActivity::class.java).apply {
                         putExtra(
                             "ERROR_MESSAGE",
-                            "User is not logged in"
+                            "Current user not found"
                         )
                     }
                     activity?.startActivity(intent)

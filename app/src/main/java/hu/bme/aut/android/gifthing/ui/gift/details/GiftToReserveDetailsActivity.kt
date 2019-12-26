@@ -44,27 +44,23 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
     @SuppressLint("SetTextI18n")
     private fun loadGiftDetails() {
         launch {
-            val currentGift: Gift? = getGift(giftId)
-
-            if (currentGift != null) {
+            try {
+                val currentGift = getGift(giftId)
                 tvGiftName.text = currentGift.name
                 tvGiftPrice.text = currentGift.price.toString()
                 tvGiftLink.text = currentGift.link
                 tvGiftDescription.text = currentGift.description
 
                 currentGift.reservedBy?.let {
-
                     btnReserve.visibility = View.GONE
-
                     try {
                         val reserveUser = getUser(it)
                         tvReservedBy.text = reserveUser.firstName + " " + reserveUser.lastName
                     } catch (e: HttpException) {
-                        if(e.code() == 404)
+                        if (e.code() == 404)
                             tvReservedBy.text = resources.getString(R.string.currently_free)
                     }
                 }
-
 
                 //TODO: reserve gift should work with this added:
                 /*if(currentGift.reservedBy == HomeActivity.CURRENT_USER_ID)
@@ -73,7 +69,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
                     btnReserve.text = resources.getString(R.string.reserve)
                 }*/
 
-            } else {
+            }catch (e: HttpException){
                 val intent = Intent(this@GiftToReserveDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
@@ -82,11 +78,12 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         }
     }
 
+    //TODO: fun onReserve(giftId: Long): Gift?
     private fun onReserve(giftId: Long): Gift? {
         var reservedGift: Gift? = null
         launch {
-            reservedGift = reserveGift(giftId, HomeActivity.CURRENT_USER_ID)
-            if (reservedGift != null) {
+            try {
+                reservedGift = reserveGift(giftId, HomeActivity.CURRENT_USER_ID)
                 if(reservedGift!!.reservedBy == HomeActivity.CURRENT_USER_ID) {
                     Toast.makeText(baseContext, "Reserved successfully", Toast.LENGTH_SHORT).show()
                     //Snackbar.make(gift_constraint_layout, "Reserved successfully", Snackbar.LENGTH_LONG).show()
@@ -99,7 +96,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
                     Toast.makeText(baseContext, "Reserved by someone else", Toast.LENGTH_SHORT).show()
                     //Snackbar.make(gift_constraint_layout, "Reserved by someone else", Snackbar.LENGTH_LONG).show()
                 }
-            } else {
+            } catch (e: HttpException){
                 val intent = Intent(this@GiftToReserveDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "reserved gift is null wtf")
                 }
@@ -109,7 +106,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         return reservedGift
     }
 
-    private suspend fun getGift(id: Long) : Gift? {
+    private suspend fun getGift(id: Long) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.getById(id)
     }
@@ -118,7 +115,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         return userService.getById(id)
     }
 
-    private suspend fun reserveGift(giftId: Long, userId: Long) : Gift? {
+    private suspend fun reserveGift(giftId: Long, userId: Long) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.reserveGift(giftId, userId)
     }

@@ -11,6 +11,7 @@ import hu.bme.aut.android.gifthing.Services.UserService
 import hu.bme.aut.android.gifthing.models.User
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.*
+import retrofit2.HttpException
 
 class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -52,20 +53,26 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                  //save
                  launch {
-                     val createdUser = saveUser(newUser)
-
-                     if(createdUser != null) {
+                     val createdUser: User?
+                     try {
+                         createdUser = saveUser(newUser)
                          val intent = Intent(this@RegisterActivity, HomeActivity::class.java).apply {
                              //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                              putExtra("USER_ID", createdUser.id)
                          }
                          startActivity(intent)
-                     } else {
-                         val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
-                             putExtra( "ERROR_MESSAGE","Something went wrong, try again (Email is in use?)")
+                     } catch (e: HttpException) {
+                         if(e.code() == 409) {
+                             val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
+                                 putExtra( "ERROR_MESSAGE","Email is in use")
+                             }
+                             startActivity(intent)
+                         } else {
+                             val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
+                                 putExtra( "ERROR_MESSAGE","Something went wrong")
+                             }
+                             startActivity(intent)
                          }
-                         startActivity(intent)
-
                      }
                  }
             }
@@ -81,7 +88,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private suspend fun saveUser(user: User) : User? {
+    private suspend fun saveUser(user: User) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.create(user)
     }

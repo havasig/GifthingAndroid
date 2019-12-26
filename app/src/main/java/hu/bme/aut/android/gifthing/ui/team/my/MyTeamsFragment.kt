@@ -50,31 +50,19 @@ class MyTeamsFragment : Fragment(),
         }
 
         launch {
-            val currentUser = try{
-                getUser(HomeActivity.CURRENT_USER_ID)
+            val currentUser: User
+            try{
+                currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+                mAdapter = MyTeamsAdapter(this@MyTeamsFragment, currentUser.myTeams)
+                recyclerView.adapter = mAdapter
             } catch (e: HttpException) {
-                if(e.code() != 404) {
                     val intent = Intent(activity, ErrorActivity::class.java).apply {
                         putExtra(
                             "ERROR_MESSAGE",
-                            "Hiba van, de nem 404"
+                            "Current user is null"
                         )
                     }
                     activity?.startActivity(intent)
-                }
-                null
-            }
-            if (currentUser != null) {
-                mAdapter = MyTeamsAdapter(this@MyTeamsFragment, currentUser.myTeams)
-                recyclerView.adapter = mAdapter
-            } else {
-                val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra(
-                        "ERROR_MESSAGE",
-                        "User is not logged in"
-                    )
-                }
-                activity?.startActivity(intent)
             }
         }
 
