@@ -21,9 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import android.text.InputFilter
-
-
 
 
 class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener, CoroutineScope by MainScope() {
@@ -34,6 +31,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
 
     private lateinit var mAdapter: UserListAdapter
+    private  lateinit var currentUserEmail: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +59,14 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         }
 
         btnAdd.setOnClickListener {
-            val userEmail = etEmail.text.toString()
-            if(userEmail != "")
-                onAdd(userEmail)
-            else
-                Toast.makeText(baseContext, "email field is empty", Toast.LENGTH_SHORT).show()
+            when(val userEmail = etEmail.text.toString()) {
+                "" -> Toast.makeText(baseContext, "email field is empty", Toast.LENGTH_SHORT).show()
+                currentUserEmail -> {
+                    Toast.makeText(baseContext, "You are already member of the group", Toast.LENGTH_SHORT).show()
+                    etEmail.setText("")
+                }
+                else -> onAdd(userEmail)
+            }
         }
 
         btnCancelTeam.setOnClickListener {
@@ -136,6 +137,8 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
     private suspend fun getUser(id: Long): User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        val tmp = userService.getById(id)
+        currentUserEmail = tmp.email
+        return tmp
     }
 }
