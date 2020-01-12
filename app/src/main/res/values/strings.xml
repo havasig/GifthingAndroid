@@ -56,5 +56,7 @@
     <string name="required">Required</string>
     <string name="lastName">Last Name</string>
     <string name="firstName">First Name</string>
+    <string name="allowed_characters">0123456789qwertzuiopasdfghjklyxcvbnm</string>
+    <string name="name_of_the_group">Name of the group</string>
 
 </resources>

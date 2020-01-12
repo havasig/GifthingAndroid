@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:hint="Name of the gift"
+            android:inputType="text"
             android:textSize="18sp"
             android:layout_weight="2"/>
     </LinearLayout>
@@ -91,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:hint="Link where to buy"
+            android:inputType="text"
             android:textSize="18sp"
             android:layout_weight="2"/>
     </LinearLayout>

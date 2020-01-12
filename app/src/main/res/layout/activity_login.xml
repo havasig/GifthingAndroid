@@ -41,7 +41,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/loginEmail"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress">
+            <requestFocus />
+        </EditText>
     </LinearLayout>
 
     <LinearLayout

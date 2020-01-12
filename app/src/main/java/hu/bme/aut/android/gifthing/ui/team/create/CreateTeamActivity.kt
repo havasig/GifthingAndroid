@@ -21,6 +21,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import android.text.InputFilter
+
+
 
 
 class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener, CoroutineScope by MainScope() {
@@ -35,6 +38,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_create_team)
+
 
         val recyclerView = emailContainer
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -68,6 +72,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
             super.onBackPressed()
         }
     }
+
 
     private fun onCreate() {
         if (etTeamName.text.toString() == "") {

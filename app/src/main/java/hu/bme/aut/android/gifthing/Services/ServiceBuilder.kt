@@ -8,7 +8,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 object ServiceBuilder {
-    private const val URL = "http://192.168.88.78:8080/"
+    private const val URL = "http://192.168.0.104:8080/"
 
     private val okHttpClient = OkHttpClient.Builder()
 
