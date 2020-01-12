@@ -1,8 +1,11 @@
 package hu.bme.aut.android.gifthing.ui.gift
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import hu.bme.aut.android.gifthing.Services.GiftService
 import hu.bme.aut.android.gifthing.Services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
@@ -23,6 +26,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(hu.bme.aut.android.gifthing.R.layout.dialog_create_gift)
         setFinishOnTouchOutside(false)
+        showSoftKeyboard(etGiftName)
 
         btnCreate.setOnClickListener {
             if (etGiftName.text.toString() == "") {
@@ -101,5 +105,12 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private suspend fun createGift(newGift: Gift) : Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.create(newGift)
+    }
+
+    private fun showSoftKeyboard(view: View){
+        if(view.requestFocus()){
+            val imm = getSystemService((Context.INPUT_METHOD_SERVICE)) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
+        }
     }
 }

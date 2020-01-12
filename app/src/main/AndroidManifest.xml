@@ -31,6 +31,7 @@
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".ui.gift.CreateGiftActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name=".ui.team.details.TeamDetailsActivity" />
