@@ -16,6 +16,11 @@ import hu.bme.aut.android.gifthing.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.*
 import retrofit2.HttpException
+import android.app.Activity
+
+
+
+
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -47,6 +52,13 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         checkUser = getUser(email)
                         if (checkUser.password.toString() == password) {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
+
+                                val view = this@LoginActivity.currentFocus
+                                view?.let { v ->
+                                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                                    imm?.hideSoftInputFromWindow(v.windowToken, 0)
+                                }
+
                                 putExtra("USER_ID", checkUser.id)
                             }
                             startActivity(intent)
@@ -77,6 +89,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val imm = getSystemService((Context.INPUT_METHOD_SERVICE)) as InputMethodManager
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
         }
+    }
+
+    fun hideKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private suspend fun getUser(email: String) : User {
