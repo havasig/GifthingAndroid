@@ -6,8 +6,8 @@ import android.os.Bundle
 import hu.bme.aut.android.gifthing.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
-import hu.bme.aut.android.gifthing.Services.UserService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.*

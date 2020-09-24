@@ -1,14 +1,12 @@
-package hu.bme.aut.android.gifthing.Services
+package hu.bme.aut.android.gifthing.services
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
 
 
 object ServiceBuilder {
-    private const val URL = "http://192.168.0.104:8080/"
+    private const val URL = "http://192.168.0.106:8080/"
 
     private val okHttpClient = OkHttpClient.Builder()
 
