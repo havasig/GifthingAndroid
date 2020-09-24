@@ -3,8 +3,8 @@ package hu.bme.aut.android.gifthing.ui.gift
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import hu.bme.aut.android.gifthing.Services.GiftService
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.GiftService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope

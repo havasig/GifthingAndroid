@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.Services.GiftService
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.GiftService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
 import kotlinx.android.synthetic.main.activity_my_gift_details.*
 import kotlinx.coroutines.CoroutineScope
