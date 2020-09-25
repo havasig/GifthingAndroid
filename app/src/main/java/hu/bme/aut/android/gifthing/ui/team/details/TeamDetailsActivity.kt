@@ -11,6 +11,7 @@ import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.TeamService
 import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.gift.my.MyGiftsActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.ui.user.UserGiftListActivity
@@ -43,7 +44,7 @@ class TeamDetailsActivity : AppCompatActivity(),
         membersContainer.layoutManager = LinearLayoutManager(this)
         mAdapter = UserListAdapter(this, mutableListOf())
 
-        val currentUserID = HomeActivity.CURRENT_USER_ID
+        val currentUserID = AppPreferences.currentId
 
         launch {
             try{

@@ -13,6 +13,7 @@ import hu.bme.aut.android.gifthing.services.TeamService
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.ui.user.UserListAdapter
 import kotlinx.android.synthetic.main.dialog_create_team.*
@@ -45,7 +46,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
         launch {
             try {
-                mAdapter.addUser(getUser(HomeActivity.CURRENT_USER_ID))
+                mAdapter.addUser(getUser(AppPreferences.currentId!!))
             } catch (e: HttpException) {
                 val intent = Intent(this@CreateTeamActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "User is not logged in")
@@ -85,7 +86,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         }
         val newTeam = Team()
 
-        newTeam.adminId = HomeActivity.CURRENT_USER_ID
+        newTeam.adminId = AppPreferences.currentId
         newTeam.name = etTeamName.text.toString()
         newTeam.members = mAdapter.getUsers()
 
@@ -132,12 +133,12 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
     private suspend fun getUser(email: String): User{
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getByEmail(email)
+        return userService.findByEmail(email)
     }
 
     private suspend fun getUser(id: Long): User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        val tmp = userService.getById(id)
+        val tmp = userService.findById(id)
         currentUserEmail = tmp.email
         return tmp
     }

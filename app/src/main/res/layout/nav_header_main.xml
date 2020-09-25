@@ -27,21 +27,21 @@
     android:id="@+id/nameContainer">
 
     <TextView
-        android:id="@+id/tvUserName"
+        android:id="@+id/tvUserUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/user_name"
+        android:text="@string/username"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/tvUserNickname"
+        android:id="@+id/tvUserFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:paddingLeft="@dimen/nav_header_vertical_spacing"
-        android:text="@string/user_nickname"
+        android:text="@string/user_name"
         android:textSize="12sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 </LinearLayout>

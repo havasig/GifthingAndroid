@@ -58,6 +58,6 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
 
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        return userService.findById(id)
     }
 }

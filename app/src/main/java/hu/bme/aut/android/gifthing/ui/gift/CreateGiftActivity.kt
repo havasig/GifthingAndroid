@@ -6,13 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import hu.bme.aut.android.gifthing.Services.GiftService
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.GiftService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             launch {
                 try {
-                    val currentUserId = HomeActivity.CURRENT_USER_ID
+                    val currentUserId = AppPreferences.currentId
                     if(currentUserId == 0L) {
                         throw Exception("User not logged in")
                     }

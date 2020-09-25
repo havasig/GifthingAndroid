@@ -15,6 +15,7 @@ import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.Gift
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
@@ -51,7 +52,7 @@ class MyGiftsFragment : Fragment(),
         launch {
             val currentUser: User?
             try {
-                currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+                currentUser = getUser(AppPreferences.currentId!!)
                 mAdapter = GiftsAdapter(
                     this@MyGiftsFragment,
                     currentUser.gifts
@@ -88,7 +89,7 @@ class MyGiftsFragment : Fragment(),
 
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        return userService.findById(id)
     }
 
     private fun saveGift(data: Intent?) {

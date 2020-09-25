@@ -1,17 +1,25 @@
 package hu.bme.aut.android.gifthing.security
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.SignupRequest
+import hu.bme.aut.android.gifthing.services.SignupResponse
+import hu.bme.aut.android.gifthing.services.UserService
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -23,58 +31,63 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         okBtn.setOnClickListener {
             //TODO: if not correct pwd or email is exists
-             if( etEmail.text.toString() == "" ||
-                 etPassword.text.toString()== "" ||
-                 etPasswordAgain.text.toString()== "" ||
-                 etFirstName.text.toString()== "" ||
-                 etLastName.text.toString()== "") {
-                val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra( "ERROR_MESSAGE","Fill every required field")
-                }
-                startActivity(intent)
-            } else if (etPassword.text.toString() != etPasswordAgain.text.toString()) {
-            val intent = Intent(this, ErrorActivity::class.java).apply {
-                putExtra( "ERROR_MESSAGE","The passwords are not matching")
-            }
-            startActivity(intent)
-        } else if(!etEmail.text.toString().trim().matches(emailPattern.toRegex())) {
-                 val intent = Intent(this, ErrorActivity::class.java).apply {
-                 putExtra( "ERROR_MESSAGE","Enter a valid email address")
-             }
-                 startActivity(intent)
-        } else {
-                val newUser = User(etEmail.text.toString(), etFirstName.text.toString(), etLastName.text.toString())
-                 if(etNickname.text.toString() == "") {
-                     newUser.nickName = null
-                 } else {
-                     newUser.nickName = etNickname.text.toString()
-                 }
-                newUser.password = etPassword.text.toString()
+            try {
+                if (etEmail.text.toString() == "" ||
+                    etPassword.text.toString() == "" ||
+                    etPasswordAgain.text.toString() == "" ||
+                    etUsername.text.toString() == ""
+                ) {
+                    throw Exception("Fill every required field")
+                } else if (etPassword.text.toString() != etPasswordAgain.text.toString()) {
+                    throw Exception("The passwords are not matching")
+                } else if (!etEmail.text.toString().trim().matches(emailPattern.toRegex())) {
+                    throw Exception("Enter a valid email address")
+                } else {
+                    val newUser = User(etUsername.text.toString(), etEmail.text.toString())
+                    newUser.password = etPassword.text.toString()
+                    if (etFirstName != null) {
+                        newUser.firstName = etFirstName.text.toString()
+                    }
+                    if (etLastName != null) {
+                        newUser.lastName = etLastName.text.toString()
+                    }
 
-                 //save
-                 launch {
-                     val createdUser: User?
-                     try {
-                         createdUser = saveUser(newUser)
-                         val intent = Intent(this@RegisterActivity, HomeActivity::class.java).apply {
-                             //TODO: flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                             putExtra("USER_ID", createdUser.id)
-                         }
-                         startActivity(intent)
-                     } catch (e: HttpException) {
-                         if(e.code() == 409) {
-                             val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
-                                 putExtra( "ERROR_MESSAGE","Email is in use")
-                             }
-                             startActivity(intent)
-                         } else {
-                             val intent = Intent(this@RegisterActivity, ErrorActivity::class.java).apply {
-                                 putExtra( "ERROR_MESSAGE","Something went wrong")
-                             }
-                             startActivity(intent)
-                         }
-                     }
-                 }
+                    try {
+                        val call: Call<SignupResponse> = signup(
+                            etUsername.text.toString(),
+                            etEmail.text.toString(),
+                            etPassword.text.toString()
+                        )
+                        call.enqueue(object : Callback<SignupResponse> {
+                            override fun onResponse(
+                                call: Call<SignupResponse?>,
+                                response: Response<SignupResponse?>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    try {
+                                        val jObjError = JSONObject(response.errorBody()!!.string())
+                                        Toast.makeText(applicationContext,jObjError.getString("message"),Toast.LENGTH_SHORT).show()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }
+                            }
+                            override fun onFailure(
+                                call: Call<SignupResponse?>,
+                                t: Throwable
+                            ) {
+                                Toast.makeText(applicationContext,"Something went wrong, try again.",Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } catch (e: Exception) {
+                        Toast.makeText(applicationContext,e.message,Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(applicationContext,e.message,Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -88,8 +101,8 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private suspend fun saveUser(user: User) : User {
+    private fun signup(username: String, email: String, password: String) : Call<SignupResponse> {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.create(user)
+        return userService.signup(SignupRequest(username, email, password))
     }
 }

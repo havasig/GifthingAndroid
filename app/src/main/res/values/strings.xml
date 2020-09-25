@@ -58,5 +58,6 @@
     <string name="firstName">First Name</string>
     <string name="allowed_characters">0123456789qwertzuiopasdfghjklyxcvbnm</string>
     <string name="name_of_the_group">Name of the group</string>
+    <string name="username">Username</string>
 
 </resources>

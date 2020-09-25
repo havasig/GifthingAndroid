@@ -1,6 +1,5 @@
 package hu.bme.aut.android.gifthing.ui.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -13,9 +12,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import hu.bme.aut.android.gifthing.R
 import android.widget.TextView
-import hu.bme.aut.android.gifthing.Services.ServiceBuilder
-import hu.bme.aut.android.gifthing.Services.UserService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -25,32 +25,31 @@ class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    companion object {
-        var CURRENT_USER_ID: Long = -1
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ui)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        CURRENT_USER_ID = intent.getLongExtra("USER_ID", -1)
+
+        val currentUserId = AppPreferences.currentId!!
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
 
         val headerView = navView.getHeaderView(0)
-        val navUserName = headerView.findViewById(R.id.tvUserName) as TextView
-        val navUserNickname = headerView.findViewById(R.id.tvUserNickname) as TextView
+        val navUserFullName = headerView.findViewById(R.id.tvUserFullName) as TextView
+        val navUserUsername = headerView.findViewById(R.id.tvUserUsername) as TextView
         val tvUserEmail = headerView.findViewById(R.id.tvUserEmail) as TextView
 
         launch {
-            val currentUser = getUser(CURRENT_USER_ID)
+            val currentUser = getUser(currentUserId)
 
-            navUserName.text = currentUser.firstName + " " + currentUser.lastName
-            navUserNickname.text = " (" + currentUser.nickName + ")"
+            if(currentUser.firstName != "" || currentUser.lastName != "") {
+                val tmp = "(${currentUser.firstName} ${currentUser.lastName})"
+                navUserFullName.text = tmp
+            }
+            navUserUsername.text = currentUser.username
             tvUserEmail.text = currentUser.email
         }
 
@@ -81,6 +80,6 @@ class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
 
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        return userService.findById(id)
     }
 }

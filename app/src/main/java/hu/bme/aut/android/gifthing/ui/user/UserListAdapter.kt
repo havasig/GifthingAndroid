@@ -30,10 +30,7 @@ class UserListAdapter
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
         val item = users[position]
-        if(item.nickName != null)
-            holder.userName.text = item.nickName
-        else
-            holder.userName.text = item.firstName + " " + item.lastName
+        holder.userName.text = item.username
 
         holder.item = item
 

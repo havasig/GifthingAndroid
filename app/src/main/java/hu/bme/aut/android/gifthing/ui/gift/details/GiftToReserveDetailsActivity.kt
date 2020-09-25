@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import retrofit2.HttpException
 
@@ -83,8 +84,8 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         var reservedGift: Gift? = null
         launch {
             try {
-                reservedGift = reserveGift(giftId, HomeActivity.CURRENT_USER_ID)
-                if(reservedGift!!.reservedBy == HomeActivity.CURRENT_USER_ID) {
+                reservedGift = reserveGift(giftId, AppPreferences.currentId!!)
+                if(reservedGift!!.reservedBy == AppPreferences.currentId) {
                     Toast.makeText(baseContext, "Reserved successfully", Toast.LENGTH_SHORT).show()
                     //Snackbar.make(gift_constraint_layout, "Reserved successfully", Snackbar.LENGTH_LONG).show()
                     btnReserve.text = resources.getString(R.string.reserve)
@@ -112,7 +113,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
     }
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        return userService.findById(id)
     }
 
     private suspend fun reserveGift(giftId: Long, userId: Long) : Gift {

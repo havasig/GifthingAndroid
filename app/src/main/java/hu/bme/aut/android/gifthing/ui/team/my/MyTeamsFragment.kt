@@ -16,6 +16,7 @@ import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.services.AppPreferences
 import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.ui.team.details.TeamDetailsActivity
@@ -52,7 +53,7 @@ class MyTeamsFragment : Fragment(),
         launch {
             val currentUser: User
             try{
-                currentUser = getUser(HomeActivity.CURRENT_USER_ID)
+                currentUser = getUser(AppPreferences.currentId!!)
                 mAdapter = MyTeamsAdapter(this@MyTeamsFragment, currentUser.myTeams)
                 recyclerView.adapter = mAdapter
             } catch (e: HttpException) {
@@ -91,7 +92,7 @@ class MyTeamsFragment : Fragment(),
     }
     private suspend fun getUser(id: Long) : User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        return userService.findById(id)
     }
 
     private fun saveTeam(data: Intent?) {

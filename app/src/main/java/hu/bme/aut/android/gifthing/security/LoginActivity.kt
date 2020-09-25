@@ -1,74 +1,74 @@
 package hu.bme.aut.android.gifthing.security
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.R
+import hu.bme.aut.android.gifthing.services.AppPreferences
+import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import android.app.Activity
-
-
-
 
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_login)
 
-        showSoftKeyboard(loginEmail)
+        showSoftKeyboard(loginUsername)
 
         forgotBtn.setOnClickListener {
             //TODO: forgotBtn
-            Toast.makeText(applicationContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "This method is not implemented", Toast.LENGTH_SHORT)
+                .show()
         }
 
         loginBtn.setOnClickListener {
-            if(loginEmail.text.toString() == "" ||
-                loginPassword.text.toString() == "") {
+            if (loginUsername.text.toString() == "" ||
+                loginPassword.text.toString() == ""
+            ) {
                 val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra( "ERROR_MESSAGE","Fill every required field")
+                    putExtra("ERROR_MESSAGE", "Fill every required field")
                 }
                 startActivity(intent)
             } else {
-                val email = loginEmail.text.toString()
+                val username = loginUsername.text.toString()
                 val password = loginPassword.text.toString()
 
                 launch {
-                    val checkUser : User?
+                    val response: LoginResponse?
                     try {
-                        checkUser = getUser(email)
-                        if (checkUser.password.toString() == password) {
-                            val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
+                        response = login(username, password)
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
 
-                                val view = this@LoginActivity.currentFocus
-                                view?.let { v ->
-                                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                                    imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                                }
-
-                                putExtra("USER_ID", checkUser.id)
+                            val view = this@LoginActivity.currentFocus
+                            view?.let { v ->
+                                val imm =
+                                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                                imm?.hideSoftInputFromWindow(v.windowToken, 0)
                             }
-                            startActivity(intent)
-                        } else {
-                            val intent = Intent(this@LoginActivity, ErrorActivity::class.java).apply {
-                                putExtra("ERROR_MESSAGE", "Not matching password and email")
-                            }
-                            startActivity(intent)
+                            AppPreferences.currentId = response.id
+                            AppPreferences.token = response.accessToken
+                            AppPreferences.roles = response.roles
                         }
-                    } catch (e : HttpException){
+                        startActivity(intent)
+
+                    } catch (e: HttpException) {
                         val intent = Intent(this@LoginActivity, ErrorActivity::class.java).apply {
                             putExtra("ERROR_MESSAGE", "User not found")
                         }
@@ -84,10 +84,10 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private fun showSoftKeyboard(view: View){
-        if(view.requestFocus()){
+    private fun showSoftKeyboard(view: View) {
+        if (view.requestFocus()) {
             val imm = getSystemService((Context.INPUT_METHOD_SERVICE)) as InputMethodManager
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }
     }
 
@@ -96,8 +96,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private suspend fun getUser(email: String) : User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getByEmail(email)
+    private suspend fun login(username: String, password: String): LoginResponse {
+        val authService = ServiceBuilder.buildService(AuthService::class.java)
+        return authService.login(LoginRequest(username, password))
     }
 }
