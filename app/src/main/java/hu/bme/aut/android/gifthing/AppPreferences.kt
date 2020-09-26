@@ -16,6 +16,14 @@ object AppPreferences {
         get() = Key.TOKEN.getString()
         set(value) = Key.TOKEN.setString(value)
 
+    var username: String?
+        get() = Key.USERNAME.getString()
+        set(value) = Key.USERNAME.setString(value)
+
+    var email: String?
+        get() = Key.EMAIL.getString()
+        set(value) = Key.EMAIL.setString(value)
+
     var currentId: Long?
         get() = Key.CURRENT_ID.getLong()
         set(value) = Key.CURRENT_ID.setLong(value)
@@ -25,7 +33,7 @@ object AppPreferences {
         set(value) = Key.ROLES.setStringSet(value)
 
     private enum class Key {
-        TOKEN, CURRENT_ID, ROLES;
+        TOKEN, CURRENT_ID, ROLES, USERNAME, EMAIL;
 
         fun getBoolean(): Boolean? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getBoolean(name, false) else null
         fun getFloat(): Float? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getFloat(name, 0f) else null

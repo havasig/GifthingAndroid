@@ -44,23 +44,22 @@
         app:layout_constraintTop_toBottomOf="@+id/nameLL">
 
         <TextView
-            android:id="@+id/tvMemberEmail"
+            android:id="@+id/tvMemberUsername"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="1"
-            android:text="@string/email"
+            android:text="@string/username"
             android:textSize="18sp" />
 
-        <EditText
-            android:id="@+id/etEmail"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteUsername"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="2"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:textSize="18sp" />
+            android:hint="@string/username"
+            android:textSize="18sp"/>
 
 
     </LinearLayout>
@@ -81,10 +80,31 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:id="@+id/btnAdd"
-            android:text="@string/add" />
+            android:text="@string/addMember" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/membersLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addButtonLL">
+
+
+        <TextView
+            android:id="@+id/tvMembers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:text="@string/members"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
     <ScrollView
         android:id="@+id/emailSV"
         android:layout_width="match_parent"
@@ -93,11 +113,11 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonsLL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addButtonLL"
+        app:layout_constraintTop_toBottomOf="@+id/membersLL"
         android:layout_height="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/emailContainer"
+            android:id="@+id/usernameContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

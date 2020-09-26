@@ -16,6 +16,15 @@ interface UserService {
     @Throws(Exception::class)
     suspend fun findByEmail(@Path("email") email: String): User
 
+    @GET("user/username/{username}")
+    @Throws(Exception::class)
+    suspend fun findByUsername(@Path("username") username: String): User
+
+    @GET("user/usernames")
+    @Throws(Exception::class)
+    suspend fun getUsernames(): ArrayList<String>
+
+
 
 
     //TODO: @PUT("user/update") suspend fun update(@Body user: User): User, {update, all, delete}
