@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.security
+package hu.bme.aut.android.gifthing.authentication.dto
 
 class LoginResponse {
     val accessToken: String = ""
