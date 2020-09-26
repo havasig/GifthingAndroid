@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.services
+package hu.bme.aut.android.gifthing
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

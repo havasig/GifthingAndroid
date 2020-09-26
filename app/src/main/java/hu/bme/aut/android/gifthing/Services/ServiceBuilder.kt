@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.services
 
+import hu.bme.aut.android.gifthing.AppPreferences
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response

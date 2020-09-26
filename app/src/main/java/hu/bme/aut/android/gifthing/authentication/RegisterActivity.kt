@@ -1,15 +1,15 @@
-package hu.bme.aut.android.gifthing.security
+package hu.bme.aut.android.gifthing.authentication
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import hu.bme.aut.android.gifthing.ErrorActivity
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.models.User
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.SignupRequest
-import hu.bme.aut.android.gifthing.services.SignupResponse
+import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
+import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
+import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.UserService
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.CoroutineScope
@@ -102,7 +102,13 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun signup(username: String, email: String, password: String) : Call<SignupResponse> {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.signup(SignupRequest(username, email, password))
+        val authService = ServiceBuilder.buildService(AuthService::class.java)
+        return authService.signup(
+            SignupRequest(
+                username,
+                email,
+                password
+            )
+        )
     }
 }

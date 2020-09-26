@@ -12,9 +12,8 @@ import hu.bme.aut.android.gifthing.models.Gift
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import androidx.appcompat.app.AppCompatActivity
-import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.services.AppPreferences
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
+import hu.bme.aut.android.gifthing.AppPreferences
 import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.launch
 import retrofit2.HttpException

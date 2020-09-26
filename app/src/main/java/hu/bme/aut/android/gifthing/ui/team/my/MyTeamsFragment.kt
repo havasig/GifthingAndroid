@@ -10,15 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.Team
 import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.services.AppPreferences
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import hu.bme.aut.android.gifthing.ui.team.details.TeamDetailsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope

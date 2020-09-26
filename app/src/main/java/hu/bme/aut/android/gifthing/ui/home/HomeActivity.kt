@@ -15,7 +15,7 @@ import android.widget.TextView
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.services.AppPreferences
+import hu.bme.aut.android.gifthing.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -48,6 +48,8 @@ class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
             if(currentUser.firstName != "" || currentUser.lastName != "") {
                 val tmp = "(${currentUser.firstName} ${currentUser.lastName})"
                 navUserFullName.text = tmp
+            } else {
+                navUserFullName.text = ""
             }
             navUserUsername.text = currentUser.username
             tvUserEmail.text = currentUser.email

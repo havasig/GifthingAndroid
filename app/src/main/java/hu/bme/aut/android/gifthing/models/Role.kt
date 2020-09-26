@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.security
+package hu.bme.aut.android.gifthing.models
 
 enum class ERole {
     ROLE_USER,

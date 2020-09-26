@@ -16,9 +16,9 @@
         tools:targetApi="n">
         <activity android:name=".ui.gift.reserved.ReservedGiftDetailsActivity"/>
         <activity android:name=".ui.gift.details.GiftToReserveDetailsActivity" />
-        <activity android:name=".security.RegisterActivity" />
-        <activity android:name=".security.LoginActivity" />
-        <activity android:name=".WelcomeActivity">
+        <activity android:name=".authentication.RegisterActivity" />
+        <activity android:name=".authentication.LoginActivity" />
+        <activity android:name=".ui.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ErrorActivity"
+            android:name=".ui.ErrorActivity"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity

@@ -1,8 +1,8 @@
-package hu.bme.aut.android.gifthing
+package hu.bme.aut.android.gifthing.ui
 
 import android.os.Bundle
-import android.provider.AlarmClock.EXTRA_MESSAGE
 import androidx.appcompat.app.AppCompatActivity
+import hu.bme.aut.android.gifthing.R
 import kotlinx.android.synthetic.main.activity_error.*
 
 class ErrorActivity : AppCompatActivity() {

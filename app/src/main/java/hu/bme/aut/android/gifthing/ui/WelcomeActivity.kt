@@ -1,11 +1,12 @@
-package hu.bme.aut.android.gifthing
+package hu.bme.aut.android.gifthing.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import hu.bme.aut.android.gifthing.security.LoginActivity
-import hu.bme.aut.android.gifthing.security.RegisterActivity
-import hu.bme.aut.android.gifthing.services.AppPreferences
+import hu.bme.aut.android.gifthing.R
+import hu.bme.aut.android.gifthing.authentication.LoginActivity
+import hu.bme.aut.android.gifthing.authentication.RegisterActivity
+import hu.bme.aut.android.gifthing.AppPreferences
 import kotlinx.android.synthetic.main.activity_welcome.*
 
 class WelcomeActivity : AppCompatActivity() {

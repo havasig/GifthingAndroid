@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.models.Gift
@@ -18,8 +18,7 @@ import kotlinx.coroutines.launch
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.services.AppPreferences
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
+import hu.bme.aut.android.gifthing.AppPreferences
 import retrofit2.HttpException
 
 

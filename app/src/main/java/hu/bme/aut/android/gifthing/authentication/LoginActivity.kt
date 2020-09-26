@@ -1,17 +1,18 @@
-package hu.bme.aut.android.gifthing.security
+package hu.bme.aut.android.gifthing.authentication
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.AppPreferences
+import hu.bme.aut.android.gifthing.authentication.dto.LoginRequest
+import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
@@ -98,6 +99,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private suspend fun login(username: String, password: String): LoginResponse {
         val authService = ServiceBuilder.buildService(AuthService::class.java)
-        return authService.login(LoginRequest(username, password))
+        return authService.login(
+            LoginRequest(
+                username,
+                password
+            )
+        )
     }
 }
