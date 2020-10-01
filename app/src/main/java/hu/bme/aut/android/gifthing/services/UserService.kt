@@ -24,8 +24,5 @@ interface UserService {
     @Throws(Exception::class)
     suspend fun getUsernames(): ArrayList<String>
 
-
-
-
     //TODO: @PUT("user/update") suspend fun update(@Body user: User): User, {update, all, delete}
 }

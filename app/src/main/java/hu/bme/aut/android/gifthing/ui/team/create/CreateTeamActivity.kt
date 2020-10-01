@@ -17,7 +17,6 @@ import hu.bme.aut.android.gifthing.services.TeamService
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.user.UserListAdapter
-import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.dialog_create_team.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -25,23 +24,22 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 
-class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener, CoroutineScope by MainScope() {
+class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener,
+    CoroutineScope by MainScope() {
 
     override fun onUserSelected(user: User) {
         //TODO: érintésre kitörli a listából
     }
 
-
     private lateinit var mAdapter: UserListAdapter
     private lateinit var usernameAdapter: ArrayAdapter<String>
     private lateinit var autoTextView: AppCompatAutoCompleteTextView
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_create_team)
 
-        var usernames: List<String> = ArrayList<String>()
+        var usernames: List<String> = ArrayList()
 
         autoTextView = autoCompleteUsername as AppCompatAutoCompleteTextView
 
@@ -51,12 +49,13 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         autoTextView.setAdapter(usernameAdapter)
         launch {
             try {
-                usernames = getUsernames()
+                usernames = getUsername()
                 usernames.forEach {
-                    usernameAdapter.add(it)
+                        usernameAdapter.add(it)
                 }
             } catch (e: Exception) {
                 Toast.makeText(applicationContext,"Something went wrong, try again later.",Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
             }
         }
 
@@ -78,15 +77,18 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         }
 
         btnAdd.setOnClickListener {
-            when(val username = autoCompleteUsername.text.toString()) {
+            when (val username = autoCompleteUsername.text.toString()) {
                 "" -> Toast.makeText(baseContext, "Username is empty", Toast.LENGTH_SHORT).show()
                 AppPreferences.username!! -> {
-                    Toast.makeText(baseContext, "You are already member of the group", Toast.LENGTH_SHORT).show()
+                    Toast.makeText( baseContext,"You are already member of the group",Toast.LENGTH_SHORT).show()
                     autoCompleteUsername.setText("")
                 }
                 else -> {
-                    if(usernames.contains(username))
-                    onAdd(username)
+                    if (usernames.contains(username))
+                        onAdd(username)
+                    else
+                        Toast.makeText( baseContext,"No user found",Toast.LENGTH_SHORT).show()
+
                 }
             }
         }
@@ -98,10 +100,7 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
     private fun onTeamCreate() {
         if (etTeamName.text.toString() == "") {
-            val intent = Intent(this, ErrorActivity::class.java).apply {
-                putExtra("ERROR_MESSAGE", "Name is required")
-            }
-            startActivity(intent)
+            Toast.makeText( baseContext,"Name is required",Toast.LENGTH_SHORT).show()
             return
         }
         val newTeam = Team()
@@ -118,16 +117,20 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
 
         newTeam.members = userList
 
-
         launch {
-            val savedTeam = createTeam(newTeam)
-            Toast.makeText(baseContext, "created successfully", Toast.LENGTH_SHORT).show()
+            try {
+                val savedTeam = createTeam(newTeam)
+                Toast.makeText(baseContext, "created successfully", Toast.LENGTH_SHORT).show()
 
-            val result = Intent().apply {
-                putExtra("TEAM", savedTeam)
+                val result = Intent().apply {
+                    putExtra("TEAM", savedTeam)
+                }
+                setResult(Activity.RESULT_OK, result)
+                onBackPressed()
+            } catch (e: Exception) {
+                Toast.makeText(baseContext, "Something went wrong, try again later.", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
             }
-            setResult(Activity.RESULT_OK, result)
-            onBackPressed()
         }
     }
 
@@ -138,11 +141,14 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
                 insertedUser = findByUsername(username)
                 var member = false
                 mAdapter.getUsers().forEach {
-                    if(it.username == insertedUser.username)
+                    if (it.username == insertedUser.username)
                         member = true
                 }
-                if(!member)
+                if (!member) {
                     mAdapter.addUser(insertedUser)
+                    usernameAdapter.remove(insertedUser.username)
+                    autoTextView.setAdapter(usernameAdapter)
+                }
                 else
                     Toast.makeText(baseContext, "Already member", Toast.LENGTH_SHORT).show()
             } catch (e: HttpException) {
@@ -152,21 +158,22 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         autoCompleteUsername.setText("")
     }
 
-    private suspend fun createTeam(newTeam: Team): Team{
+    private suspend fun createTeam(newTeam: Team): Team {
         val teamService = ServiceBuilder.buildService(TeamService::class.java)
         return teamService.create(newTeam)
+    }
+
+    private suspend fun findByUsername(username: String): User {
+        val userService = ServiceBuilder.buildService(UserService::class.java)
+        return userService.findByUsername(username)
     }
 
     private suspend fun getUser(id: Long): User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.findById(id)
     }
-    private suspend fun findByUsername(username: String): User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.findByUsername(username)
-    }
 
-    private suspend fun getUsernames(): ArrayList<String> {
+    private suspend fun getUsername(): ArrayList<String> {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.getUsernames()
     }

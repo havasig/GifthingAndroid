@@ -7,6 +7,9 @@ interface TeamService {
     @GET("team/{id}")
     suspend fun getById(@Path("id") id: Long): Team
 
+    @GET("team/my-teams")
+    suspend fun getMyTeams(): MutableList<Team>
+
     @DELETE("team/delete/{id}")
     suspend fun deleteById(@Path("id") id: Long): Boolean
 

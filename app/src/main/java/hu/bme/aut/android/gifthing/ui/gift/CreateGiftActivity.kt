@@ -81,7 +81,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     setResult(Activity.RESULT_OK, result)
                 } catch (e: HttpException) {
                     val intent = Intent(this@CreateGiftActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Something went wrong")
+                        putExtra("ERROR_MESSAGE", "Something went wrong, try again later.")
                     }
                     startActivity(intent)
                 } catch (e: Exception) {

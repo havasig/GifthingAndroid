@@ -10,7 +10,6 @@ import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
 import hu.bme.aut.android.gifthing.services.AuthService
-import hu.bme.aut.android.gifthing.services.UserService
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -43,15 +42,6 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 } else if (!etEmail.text.toString().trim().matches(emailPattern.toRegex())) {
                     throw Exception("Enter a valid email address")
                 } else {
-                    val newUser = User(etUsername.text.toString(), etEmail.text.toString())
-                    newUser.password = etPassword.text.toString()
-                    if (etFirstName != null) {
-                        newUser.firstName = etFirstName.text.toString()
-                    }
-                    if (etLastName != null) {
-                        newUser.lastName = etLastName.text.toString()
-                    }
-
                     try {
                         val call: Call<SignupResponse> = signup(
                             etUsername.text.toString(),
@@ -79,7 +69,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                 call: Call<SignupResponse?>,
                                 t: Throwable
                             ) {
-                                Toast.makeText(applicationContext,"Something went wrong, try again.",Toast.LENGTH_SHORT).show()
+                                Toast.makeText(applicationContext,"Something went wrong, try again later.",Toast.LENGTH_SHORT).show()
                             }
                         })
                     } catch (e: Exception) {

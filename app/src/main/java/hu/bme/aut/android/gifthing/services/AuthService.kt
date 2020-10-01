@@ -15,4 +15,6 @@ interface AuthService {
     @POST("auth/signup")
     @Throws(Exception::class)
     fun signup(@Body createUser: SignupRequest): Call<SignupResponse>
+
+    //TODO: logout
 }

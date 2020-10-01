@@ -16,9 +16,6 @@ class User(
     @SerializedName("lastName")
     var lastName: String? = null
 
-    @SerializedName("password")
-    var password: String? = null
-
     @SerializedName("gifts")
     var gifts = mutableListOf<Gift>()
 
