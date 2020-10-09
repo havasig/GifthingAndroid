@@ -29,7 +29,6 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.+[a-z]+"
 
         okBtn.setOnClickListener {
-            //TODO: if not correct pwd or email is exists
             try {
                 if (etEmail.text.toString() == "" ||
                     etPassword.text.toString() == "" ||
@@ -43,11 +42,14 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     throw Exception("Enter a valid email address")
                 } else {
                     try {
-                        val call: Call<SignupResponse> = signup(
+                        val signupRequest = SignupRequest(
                             etUsername.text.toString(),
                             etEmail.text.toString(),
-                            etPassword.text.toString()
+                            etPassword.text.toString(),
+                            etFirstName.text.toString(),
+                            etLastName.text.toString()
                         )
+                        val call: Call<SignupResponse> = signup(signupRequest)
                         call.enqueue(object : Callback<SignupResponse> {
                             override fun onResponse(
                                 call: Call<SignupResponse?>,
@@ -91,14 +93,8 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private fun signup(username: String, email: String, password: String) : Call<SignupResponse> {
+    private fun signup(signupRequest: SignupRequest) : Call<SignupResponse> {
         val authService = ServiceBuilder.buildService(AuthService::class.java)
-        return authService.signup(
-            SignupRequest(
-                username,
-                email,
-                password
-            )
-        )
+        return authService.signup(signupRequest)
     }
 }
