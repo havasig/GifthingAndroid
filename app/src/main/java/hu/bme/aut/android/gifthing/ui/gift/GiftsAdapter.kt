@@ -3,16 +3,14 @@ package hu.bme.aut.android.gifthing.ui.gift
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.models.Gift
 import android.widget.TextView
-
-
+import androidx.recyclerview.widget.RecyclerView
+import hu.bme.aut.android.gifthing.database.entities.Gift
 
 class GiftsAdapter
     (private var listener: OnGiftSelectedListener,
      private var gifts : MutableList<Gift>
-     ) :
+) :
     RecyclerView.Adapter<GiftsAdapter.GiftsViewHolder>() {
 
     interface OnGiftSelectedListener {
@@ -30,10 +28,9 @@ class GiftsAdapter
 
     override fun onBindViewHolder(holder: GiftsViewHolder, position: Int) {
         val item = gifts[position]
-        holder.giftName.text = item.name.toString()
-        holder.giftPrice.text = item.price.toString()
+        holder.giftName.text = item.name
+        item.price?.let { holder.giftPrice.text = it.toString() }
         holder.item = item
-
     }
 
     fun addGift(newGift: Gift) {
@@ -47,6 +44,11 @@ class GiftsAdapter
         if (position < gifts.size) {
             notifyItemRangeChanged(position, gifts.size - position)
         }
+    }
+
+    fun setGifts(gifts: List<Gift>) {
+        this.gifts = gifts.toMutableList()
+        notifyDataSetChanged()
     }
 
     inner class GiftsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

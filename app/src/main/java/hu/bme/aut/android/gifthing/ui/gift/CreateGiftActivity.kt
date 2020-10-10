@@ -8,7 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.models.Gift
+import hu.bme.aut.android.gifthing.database.models.Gift
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import androidx.appcompat.app.AppCompatActivity

@@ -1,15 +1,20 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
 import android.os.Bundle
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 
 
 class MyGiftsActivity : AppCompatActivity() {

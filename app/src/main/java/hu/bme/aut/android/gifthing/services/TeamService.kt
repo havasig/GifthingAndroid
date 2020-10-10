@@ -1,6 +1,6 @@
 package hu.bme.aut.android.gifthing.services
 
-import hu.bme.aut.android.gifthing.models.Team
+import hu.bme.aut.android.gifthing.database.models.Team
 import retrofit2.http.*
 
 interface TeamService {

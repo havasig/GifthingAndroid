@@ -1,18 +1,17 @@
 package hu.bme.aut.android.gifthing.ui.user
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.database.entities.User
 
-class UserListAdapter
-    (private var listener: OnUserSelectedListener,
-     private var users : MutableList<User>
-) :
-    RecyclerView.Adapter<UserListAdapter.UsersViewHolder>() {
+class UserAdapter
+    (
+    private var listener: OnUserSelectedListener,
+    private var users: MutableList<User>
+) : RecyclerView.Adapter<UserAdapter.UsersViewHolder>() {
 
     interface OnUserSelectedListener {
         fun onUserSelected(user: User)
@@ -23,22 +22,25 @@ class UserListAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(hu.bme.aut.android.gifthing.R.layout.item_user, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(hu.bme.aut.android.gifthing.R.layout.item_user, parent, false)
         return UsersViewHolder(view)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
         val item = users[position]
         holder.userName.text = item.username
-
         holder.item = item
-
     }
 
     fun addUser(newUser: User) {
         users.add(newUser)
         notifyItemInserted(users.size - 1)
+    }
+
+    fun setUsers(users: List<User>) {
+        this.users = users.toMutableList()
+        notifyDataSetChanged()
     }
 
     fun getUsers(): MutableList<User> {
@@ -54,9 +56,7 @@ class UserListAdapter
     }
 
     inner class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         var userName: TextView = itemView.findViewById(hu.bme.aut.android.gifthing.R.id.userName)
-
         lateinit var item: User
 
         init {

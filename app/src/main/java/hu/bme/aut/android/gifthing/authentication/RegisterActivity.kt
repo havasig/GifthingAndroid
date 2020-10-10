@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.models.User
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse

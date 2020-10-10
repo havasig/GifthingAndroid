@@ -14,7 +14,7 @@ import hu.bme.aut.android.gifthing.R
 import android.widget.TextView
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.database.models.User
 import hu.bme.aut.android.gifthing.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope

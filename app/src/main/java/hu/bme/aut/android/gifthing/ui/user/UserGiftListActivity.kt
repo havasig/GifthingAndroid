@@ -1,23 +1,22 @@
 package hu.bme.aut.android.gifthing.ui.user
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.Gift
-import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.gift.details.GiftToReserveDetailsActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import kotlinx.android.synthetic.main.activity_user_gift_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
+import java.lang.Exception
 
 class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedListener, CoroutineScope by MainScope() {
 
@@ -25,12 +24,11 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
 
     override fun onGiftSelected(gift: Gift) {
         val intent = Intent(baseContext, GiftToReserveDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", gift.id)
+            putExtra("GIFT_ID", gift.giftId)
         }
         startActivity(intent)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_gift_list)
@@ -40,24 +38,20 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         giftsContainer.layoutManager = LinearLayoutManager(this)
         mAdapter = GiftsAdapter(this, mutableListOf())
 
-        launch {
-            val currentUser: User
-            try {
-                currentUser = getUser(userId)
-                nameTv.text = currentUser.firstName + " " + currentUser.lastName
-                mAdapter = GiftsAdapter(this@UserGiftListActivity, currentUser.gifts)
-                giftsContainer.adapter = mAdapter
-            } catch (e: HttpException) {
-                val intent = Intent(this@UserGiftListActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Current user is null")
+        val mUserViewModel: UserViewModel by viewModels()
+        mUserViewModel.allUsersWithOwnedGifts.observe(
+            this,
+            Observer<List<UserWithOwnedGifts>> { users ->
+                val userIndex = (userId-1).toInt() //TODO: elcsúszhatnak az indexek
+                try {
+                    mAdapter.setGifts(users[userIndex].ownedGifts)
+                    nameTv.text = users[0].user.username
+                    giftsContainer.adapter = mAdapter
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "User or user's gift list not found.", Toast.LENGTH_SHORT).show()
                 }
-                startActivity(intent)
             }
-        }
-    }
-
-    private suspend fun getUser(id: Long) : User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.findById(id)
+        )
     }
 }

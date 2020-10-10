@@ -9,8 +9,8 @@ import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.Gift
-import hu.bme.aut.android.gifthing.models.User
+import hu.bme.aut.android.gifthing.database.models.Gift
+import hu.bme.aut.android.gifthing.database.models.User
 import kotlinx.android.synthetic.main.activity_reserved_gift_details.*
 import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope

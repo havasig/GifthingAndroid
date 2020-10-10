@@ -1,9 +1,6 @@
 package hu.bme.aut.android.gifthing.services
 
-import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
-import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
-import hu.bme.aut.android.gifthing.models.User
-import retrofit2.Call
+import hu.bme.aut.android.gifthing.database.models.User
 import retrofit2.http.*
 import java.lang.Exception
 

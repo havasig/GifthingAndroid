@@ -7,7 +7,7 @@ import android.widget.Toast
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.models.Gift
+import hu.bme.aut.android.gifthing.database.models.Gift
 import kotlinx.android.synthetic.main.activity_my_gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
