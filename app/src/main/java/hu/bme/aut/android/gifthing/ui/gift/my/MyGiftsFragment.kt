@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import hu.bme.aut.android.gifthing.database.models.User
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
@@ -26,7 +27,6 @@ class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
     CoroutineScope by MainScope() {
 
-    private val GIFT_CREATE_REQUEST = 1
     private lateinit var mAdapter: GiftsAdapter
 
     override fun onGiftSelected(gift: hu.bme.aut.android.gifthing.database.entities.Gift) {
@@ -52,16 +52,15 @@ class MyGiftsFragment : Fragment(),
 
         mAdapter = GiftsAdapter(this, mutableListOf())
 
-        val mGiftViewModel: GiftViewModel by viewModels()
+        val mUserViewModel: UserViewModel by viewModels()
 
-        mGiftViewModel.allGifts.observe(
+        mUserViewModel.meWithOwnedGifts().observe(
             viewLifecycleOwner,
-            Observer<List<hu.bme.aut.android.gifthing.database.entities.Gift>> { gifts ->
-                mAdapter.setGifts(
-                    gifts
-                )
+            Observer<hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts> { user ->
+                mAdapter.setGifts(user.ownedGifts)
             }
         )
+
         recyclerView.adapter = mAdapter
 
         val fab: FloatingActionButton =

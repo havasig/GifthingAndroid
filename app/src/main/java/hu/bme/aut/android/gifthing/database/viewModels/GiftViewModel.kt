@@ -16,6 +16,10 @@ class GiftViewModel(application: Application) : AndroidViewModel(application) {
         mRepository.insert(gift)
     }
 
+    fun getById(giftId: Long) : LiveData<Gift> {
+        return mRepository.getById(giftId.toInt())
+    }
+
     init {
         mAllGifts = mRepository.getAllGifts()
     }

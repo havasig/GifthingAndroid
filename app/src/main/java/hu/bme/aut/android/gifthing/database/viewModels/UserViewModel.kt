@@ -26,6 +26,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         mRepository.insert(user)
     }
 
+    fun meWithOwnedGifts(): LiveData<UserWithOwnedGifts> {
+        return mRepository.meWithOwnedGifts()
+    }
+
     init {
         mAllUsers = mRepository.getAllUsers()
         mAllUsersWithOwnedGifts = mRepository.getUserWithOwnedGifts()

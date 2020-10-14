@@ -34,6 +34,9 @@ interface UserDao {
     @Transaction
     @Query("SELECT * FROM user_table")
     fun getUserWithOwnedGifts(): LiveData<List<UserWithOwnedGifts>>
+    @Transaction
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getMeWithOwnedGifts(userId: Long): LiveData<UserWithOwnedGifts>
 
     @Transaction
     @Query("SELECT * FROM user_table")

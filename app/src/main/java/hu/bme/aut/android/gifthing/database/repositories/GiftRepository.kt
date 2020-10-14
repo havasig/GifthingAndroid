@@ -21,6 +21,10 @@ class GiftRepository(application: Application) {
         return mAllGifts
     }
 
+    fun getById(id: Int): LiveData<Gift> {
+        return mGiftDao.getById(id)
+    }
+
     fun insert(gift: Gift) {
         AppDatabase.databaseWriteExecutor.execute { mGiftDao.insert(gift) }
     }

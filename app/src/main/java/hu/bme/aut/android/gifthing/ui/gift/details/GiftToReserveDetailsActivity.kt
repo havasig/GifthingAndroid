@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.models.Gift
 import hu.bme.aut.android.gifthing.database.models.User
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
@@ -41,8 +45,20 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun loadGiftDetails() {
+
+        val mGiftViewModel: GiftViewModel by viewModels()
+
+        mGiftViewModel.getById(giftId).observe(
+            this,
+            Observer<hu.bme.aut.android.gifthing.database.entities.Gift> { gift ->
+                tvGiftName.text = gift.name
+                tvGiftPrice.text = gift.price.toString()
+                tvGiftLink.text = gift.link
+                tvGiftDescription.text = gift.description
+            }
+        )
+        /*
         launch {
             try {
                 val currentGift = getGift(giftId)
@@ -77,6 +93,7 @@ class GiftToReserveDetailsActivity : AppCompatActivity(), CoroutineScope by Main
                 startActivity(intent)
             }
         }
+        */
     }
 
     //TODO: fun onReserve(giftId: Long): Gift?

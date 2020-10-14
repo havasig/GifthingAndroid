@@ -11,7 +11,10 @@ interface GiftDao {
     fun getAll(): LiveData<List<Gift>>
 
     @Query("SELECT * FROM gift_table WHERE giftId IN (:giftIds)")
-    fun loadAllByIds(giftIds: IntArray): LiveData<List<Gift>>
+    fun getAllByIds(giftIds: IntArray): LiveData<List<Gift>>
+
+    @Query("SELECT * FROM gift_table WHERE giftId IN (:giftId)")
+    fun getById(giftId: Int): LiveData<Gift>
 
     @Insert
     fun insertAll(vararg gifts: Gift)

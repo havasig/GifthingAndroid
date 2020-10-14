@@ -2,6 +2,7 @@ package hu.bme.aut.android.gifthing.database.repositories
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.UserDao
 import hu.bme.aut.android.gifthing.database.entities.User
@@ -41,5 +42,9 @@ class UserRepository(application: Application) {
 
     fun insert(user: User) {
         AppDatabase.databaseWriteExecutor.execute { mUserDao.insert(user) }
+    }
+
+    fun meWithOwnedGifts() : LiveData<UserWithOwnedGifts> {
+        return mUserDao.getMeWithOwnedGifts(AppPreferences.currentId!!)
     }
 }
