@@ -56,7 +56,11 @@ class MyGiftsFragment : Fragment(),
 
         mGiftViewModel.allGifts.observe(
             viewLifecycleOwner,
-            Observer<List<hu.bme.aut.android.gifthing.database.entities.Gift>> { gifts -> mAdapter.setGifts(gifts) }
+            Observer<List<hu.bme.aut.android.gifthing.database.entities.Gift>> { gifts ->
+                mAdapter.setGifts(
+                    gifts
+                )
+            }
         )
         recyclerView.adapter = mAdapter
 

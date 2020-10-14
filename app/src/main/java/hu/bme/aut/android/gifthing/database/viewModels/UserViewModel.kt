@@ -3,11 +3,9 @@ package hu.bme.aut.android.gifthing.database.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.User
 import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
 import hu.bme.aut.android.gifthing.database.entities.UserWithReservedGifts
-import hu.bme.aut.android.gifthing.database.repositories.GiftRepository
 import hu.bme.aut.android.gifthing.database.repositories.UserRepository
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {

@@ -1,19 +1,19 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
+import androidx.appcompat.app.AppCompatActivity
+import hu.bme.aut.android.gifthing.R
+import hu.bme.aut.android.gifthing.database.models.Gift
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.database.models.Gift
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import kotlinx.android.synthetic.main.activity_my_gift_details.*
+import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import hu.bme.aut.android.gifthing.R
-import kotlinx.android.synthetic.main.gift_details.*
 import retrofit2.HttpException
 
 class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -31,7 +31,7 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
                 tvGiftPrice.text = currentGift.price.toString()
                 tvGiftLink.text = currentGift.link
                 tvGiftDescription.text = currentGift.description
-            } catch (e: HttpException){
+            } catch (e: HttpException) {
                 val intent = Intent(this@MyGiftDetailsActivity, ErrorActivity::class.java).apply {
                     putExtra("ERROR_MESSAGE", "Current gift id is null")
                 }
@@ -39,11 +39,11 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
             }
         }
 
-        btnDelete.setOnClickListener{
+        btnDelete.setOnClickListener {
             onDelete(giftId)
         }
 
-        btnEdit.setOnClickListener{
+        btnEdit.setOnClickListener {
             Toast.makeText(baseContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
         }
     }
@@ -52,8 +52,13 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
         launch {
             val success = deleteGift(giftId)
             if (success) {
-                val intent = Intent(this@MyGiftDetailsActivity, MyGiftsActivity::class.java).apply {}
-                Toast.makeText(this@MyGiftDetailsActivity, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                val intent =
+                    Intent(this@MyGiftDetailsActivity, MyGiftsActivity::class.java).apply {}
+                Toast.makeText(
+                    this@MyGiftDetailsActivity,
+                    "Deleted successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
                 startActivity(intent)
                 finish()
             } else {
@@ -65,12 +70,12 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
         }
     }
 
-    private suspend fun getGift(id: Long) : Gift {
+    private suspend fun getGift(id: Long): Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.getById(id)
     }
 
-    private suspend fun deleteGift(id: Long) : Boolean {
+    private suspend fun deleteGift(id: Long): Boolean {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.deleteById(id)
     }

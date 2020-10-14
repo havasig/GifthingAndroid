@@ -11,14 +11,14 @@ import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
-import hu.bme.aut.android.gifthing.ui.gift.details.GiftToReserveDetailsActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
+import hu.bme.aut.android.gifthing.ui.gift.details.GiftToReserveDetailsActivity
 import kotlinx.android.synthetic.main.activity_user_gift_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import java.lang.Exception
 
-class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedListener, CoroutineScope by MainScope() {
+class UserGiftListActivity : AppCompatActivity(), GiftsAdapter.OnGiftSelectedListener,
+    CoroutineScope by MainScope() {
 
     private lateinit var mAdapter: GiftsAdapter
 
@@ -42,14 +42,15 @@ class UserGiftListActivity: AppCompatActivity(), GiftsAdapter.OnGiftSelectedList
         mUserViewModel.allUsersWithOwnedGifts.observe(
             this,
             Observer<List<UserWithOwnedGifts>> { users ->
-                val userIndex = (userId-1).toInt() //TODO: elcsúszhatnak az indexek
+                val userIndex = (userId - 1).toInt() //TODO: elcsúszhatnak az indexek
                 try {
                     mAdapter.setGifts(users[userIndex].ownedGifts)
                     nameTv.text = users[0].user.username
                     giftsContainer.adapter = mAdapter
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "User or user's gift list not found.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "User or user's gift list not found.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         )

@@ -5,12 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.Team
 
 class TeamEntityAdapter
-    (private var listener: OnTeamSelectedListener,
-     private var teams : MutableList<Team>
+    (
+    private var listener: OnTeamSelectedListener,
+    private var teams: MutableList<Team>
 ) :
     RecyclerView.Adapter<TeamEntityAdapter.TeamsViewHolder>() {
 
@@ -23,7 +23,8 @@ class TeamEntityAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(hu.bme.aut.android.gifthing.R.layout.item_team, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(hu.bme.aut.android.gifthing.R.layout.item_team, parent, false)
         return TeamsViewHolder(view)
     }
 

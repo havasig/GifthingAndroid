@@ -8,13 +8,19 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.dao.TeamDao
 import hu.bme.aut.android.gifthing.database.dao.UserDao
-import hu.bme.aut.android.gifthing.database.entities.*
-import kotlinx.android.synthetic.main.activity_user_gift_list.*
+import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.entities.Team
+import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.entities.UserTeamCrossRef
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-@Database(entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class], version = 3, exportSchema = false)
+@Database(
+    entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
+    version = 3,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun giftDao(): GiftDao
     abstract fun teamDao(): TeamDao

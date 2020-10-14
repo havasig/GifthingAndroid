@@ -1,10 +1,11 @@
 package hu.bme.aut.android.gifthing.database.repositories
+
 import android.app.Application
 import androidx.lifecycle.LiveData
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.TeamDao
-import hu.bme.aut.android.gifthing.database.dao.UserDao
-import hu.bme.aut.android.gifthing.database.entities.*
+import hu.bme.aut.android.gifthing.database.entities.Team
+import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
 
 class TeamRepository(application: Application) {
     private val mTeamDao: TeamDao

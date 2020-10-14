@@ -5,8 +5,8 @@ import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
 import retrofit2.Call
-import retrofit2.http.*
-import java.lang.Exception
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface AuthService {
     @POST("auth/login")

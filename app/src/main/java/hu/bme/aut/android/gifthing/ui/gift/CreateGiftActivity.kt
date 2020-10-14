@@ -6,18 +6,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import hu.bme.aut.android.gifthing.AppPreferences
+import hu.bme.aut.android.gifthing.database.models.Gift
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.database.models.Gift
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
+import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import androidx.appcompat.app.AppCompatActivity
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
-import hu.bme.aut.android.gifthing.AppPreferences
-import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.lang.Exception
 
 
 class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -69,7 +68,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             launch {
                 try {
                     val currentUserId = AppPreferences.currentId
-                    if(currentUserId == 0L) {
+                    if (currentUserId == 0L) {
                         throw Exception("User not logged in")
                     }
                     newGift.owner = currentUserId
@@ -96,21 +95,21 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
         }
 
-        btnCancel.setOnClickListener{
+        btnCancel.setOnClickListener {
             setResult(Activity.RESULT_CANCELED) //TODO: ezt Ok-nak veszi át a mygiftfragment
             finish()
         }
     }
 
-    private suspend fun createGift(newGift: Gift) : Gift {
+    private suspend fun createGift(newGift: Gift): Gift {
         val giftService = ServiceBuilder.buildService(GiftService::class.java)
         return giftService.create(newGift)
     }
 
-    private fun showSoftKeyboard(view: View){
-        if(view.requestFocus()){
+    private fun showSoftKeyboard(view: View) {
+        if (view.requestFocus()) {
             val imm = getSystemService((Context.INPUT_METHOD_SERVICE)) as InputMethodManager
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }
     }
 }

@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.android.gifthing.database.entities.Gift
 
 class GiftsAdapter
-    (private var listener: OnGiftSelectedListener,
-     private var gifts : MutableList<Gift>
+    (
+    private var listener: OnGiftSelectedListener,
+    private var gifts: MutableList<Gift>
 ) :
     RecyclerView.Adapter<GiftsAdapter.GiftsViewHolder>() {
 
@@ -22,7 +23,8 @@ class GiftsAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GiftsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(hu.bme.aut.android.gifthing.R.layout.item_gift, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(hu.bme.aut.android.gifthing.R.layout.item_gift, parent, false)
         return GiftsViewHolder(view)
     }
 

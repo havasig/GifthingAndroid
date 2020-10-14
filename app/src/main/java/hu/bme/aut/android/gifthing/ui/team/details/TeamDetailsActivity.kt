@@ -7,23 +7,22 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
-import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.TeamService
-import hu.bme.aut.android.gifthing.database.models.Team
 import hu.bme.aut.android.gifthing.AppPreferences
+import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
 import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.models.Team
 import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.TeamService
+import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.gift.my.MyGiftsActivity
-import hu.bme.aut.android.gifthing.ui.user.UserGiftListActivity
 import hu.bme.aut.android.gifthing.ui.user.UserAdapter
+import hu.bme.aut.android.gifthing.ui.user.UserGiftListActivity
 import kotlinx.android.synthetic.main.activity_team_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class TeamDetailsActivity : AppCompatActivity(),
     UserAdapter.OnUserSelectedListener,
@@ -54,7 +53,7 @@ class TeamDetailsActivity : AppCompatActivity(),
             this,
             Observer<List<TeamWithMembers>> { teams ->
                 try {
-                    val teamIndex = (teamId-1).toInt() //TODO: elcsúszhatnak az indexek
+                    val teamIndex = (teamId - 1).toInt() //TODO: elcsúszhatnak az indexek
                     val memberList = teams[teamIndex].members.filter { it.userId != currentUserId }
                     mAdapter.setUsers(memberList)
                     membersContainer.adapter = mAdapter
@@ -72,7 +71,8 @@ class TeamDetailsActivity : AppCompatActivity(),
             val success = deleteTeam(teamId)
             if (success) {
                 val intent = Intent(this@TeamDetailsActivity, MyGiftsActivity::class.java).apply {}
-                Toast.makeText(this@TeamDetailsActivity, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@TeamDetailsActivity, "Deleted successfully", Toast.LENGTH_SHORT)
+                    .show()
                 startActivity(intent)
                 finish()
             } else {
@@ -84,12 +84,12 @@ class TeamDetailsActivity : AppCompatActivity(),
         }
     }
 
-    private suspend fun getTeam(id: Long) : Team {
+    private suspend fun getTeam(id: Long): Team {
         val teamService = ServiceBuilder.buildService(TeamService::class.java)
         return teamService.getById(id)
     }
 
-    private suspend fun deleteTeam(id: Long) : Boolean {
+    private suspend fun deleteTeam(id: Long): Boolean {
         val teamService = ServiceBuilder.buildService(TeamService::class.java)
         return teamService.deleteById(id)
     }

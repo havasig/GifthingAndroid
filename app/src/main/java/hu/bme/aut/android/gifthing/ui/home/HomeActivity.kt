@@ -1,6 +1,7 @@
 package hu.bme.aut.android.gifthing.ui.home
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -10,18 +11,17 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import android.widget.TextView
+import hu.bme.aut.android.gifthing.database.models.User
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.database.models.User
-import hu.bme.aut.android.gifthing.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 
-class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
+class HomeActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
         launch {
             val currentUser = getUser(currentUserId)
 
-            if(currentUser.firstName != "" || currentUser.lastName != "") {
+            if (currentUser.firstName != "" || currentUser.lastName != "") {
                 val tmp = "(${currentUser.firstName} ${currentUser.lastName})"
                 navUserFullName.text = tmp
             } else {
@@ -80,7 +80,7 @@ class HomeActivity : AppCompatActivity(),   CoroutineScope by MainScope() {
     }
 
 
-    private suspend fun getUser(id: Long) : User {
+    private suspend fun getUser(id: Long): User {
         val userService = ServiceBuilder.buildService(UserService::class.java)
         return userService.findById(id)
     }

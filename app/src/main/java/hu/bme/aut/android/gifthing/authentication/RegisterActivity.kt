@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
 import hu.bme.aut.android.gifthing.services.AuthService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -55,34 +55,44 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                 response: Response<SignupResponse?>
                             ) {
                                 if (response.isSuccessful) {
-                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                                    val intent =
+                                        Intent(this@RegisterActivity, LoginActivity::class.java)
                                     startActivity(intent)
                                 } else {
                                     try {
                                         val jObjError = JSONObject(response.errorBody()!!.string())
-                                        Toast.makeText(applicationContext,jObjError.getString("message"),Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            applicationContext,
+                                            jObjError.getString("message"),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
                                 }
                             }
+
                             override fun onFailure(
                                 call: Call<SignupResponse?>,
                                 t: Throwable
                             ) {
-                                Toast.makeText(applicationContext,"Something went wrong, try again later.",Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Something went wrong, try again later.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         })
                     } catch (e: Exception) {
-                        Toast.makeText(applicationContext,e.message,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(applicationContext,e.message,Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
             }
         }
 
-        cancelBtn.setOnClickListener{
+        cancelBtn.setOnClickListener {
             super.onBackPressed()
         }
     }
@@ -92,7 +102,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private fun signup(signupRequest: SignupRequest) : Call<SignupResponse> {
+    private fun signup(signupRequest: SignupRequest): Call<SignupResponse> {
         val authService = ServiceBuilder.buildService(AuthService::class.java)
         return authService.signup(signupRequest)
     }

@@ -14,5 +14,6 @@ data class Gift(
     val reservedBy: Long? = null,
     val price: Int? = null
 ) {
-    @PrimaryKey(autoGenerate = true) var giftId: Long = 0L
+    @PrimaryKey(autoGenerate = true)
+    var giftId: Long = 0L
 }

@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bme.aut.android.gifthing.database.models.Team
 
 class TeamAdapter
-    (private var listener: OnTeamSelectedListener,
-     private var teams : MutableList<Team>
+    (
+    private var listener: OnTeamSelectedListener,
+    private var teams: MutableList<Team>
 ) :
     RecyclerView.Adapter<TeamAdapter.TeamsViewHolder>() {
 
@@ -22,7 +23,8 @@ class TeamAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(hu.bme.aut.android.gifthing.R.layout.item_team, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(hu.bme.aut.android.gifthing.R.layout.item_team, parent, false)
         return TeamsViewHolder(view)
     }
 

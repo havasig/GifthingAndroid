@@ -3,7 +3,7 @@ package hu.bme.aut.android.gifthing.database.models
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Gift: Serializable {
+class Gift : Serializable {
     @SerializedName("id")
     var id: Long = 0
 

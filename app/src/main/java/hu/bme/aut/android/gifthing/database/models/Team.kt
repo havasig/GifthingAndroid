@@ -3,7 +3,7 @@ package hu.bme.aut.android.gifthing.database.models
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Team: Serializable {
+class Team : Serializable {
     @SerializedName("name")
     var name: String? = null
 

@@ -1,8 +1,8 @@
 package hu.bme.aut.android.gifthing.services
 
 import hu.bme.aut.android.gifthing.database.models.User
-import retrofit2.http.*
-import java.lang.Exception
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface UserService {
     @GET("user/{id}")

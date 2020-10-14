@@ -1,20 +1,15 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
 import android.os.Bundle
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 
 
 class MyGiftsActivity : AppCompatActivity() {
@@ -28,7 +23,8 @@ class MyGiftsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val navView: NavigationView = findViewById(hu.bme.aut.android.gifthing.R.id.nav_view)
-        val drawerLayout: DrawerLayout = findViewById(hu.bme.aut.android.gifthing.R.id.drawer_layout)
+        val drawerLayout: DrawerLayout =
+            findViewById(hu.bme.aut.android.gifthing.R.id.drawer_layout)
 
         val navController = findNavController(hu.bme.aut.android.gifthing.R.id.nav_host_fragment)
         // Passing each main ID as a set of Ids because each

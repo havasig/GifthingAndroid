@@ -14,8 +14,7 @@ object ServiceBuilder {
     private val okHttpClient = OkHttpClient.Builder()
 
 
-
-    fun <T> buildService(serviceType: Class<T>) : T {
+    fun <T> buildService(serviceType: Class<T>): T {
         val headerInterceptor = HeaderInterceptor()
         okHttpClient.addInterceptor(headerInterceptor)
 
@@ -30,7 +29,7 @@ object ServiceBuilder {
 class HeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response = chain.run {
         val token = AppPreferences.token
-        if(token != null) {
+        if (token != null) {
             proceed(
                 request()
                     .newBuilder()
