@@ -68,36 +68,8 @@ class MyGiftsFragment : Fragment(),
             rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
         fab.setOnClickListener {
             val intent = Intent(activity, CreateGiftActivity::class.java).apply {}
-            startActivityForResult(intent, GIFT_CREATE_REQUEST)
+            startActivity(intent)
         }
         return rootView
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            GIFT_CREATE_REQUEST -> {
-                saveGift(data)
-            }
-            else -> {
-                Toast.makeText(context, "Create dialog result fail", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private suspend fun getUser(id: Long): User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.findById(id)
-    }
-
-    private fun saveGift(data: Intent?) {
-        launch {
-            if (data != null) {
-                mAdapter.addGift(data.getSerializableExtra("GIFT") as hu.bme.aut.android.gifthing.database.entities.Gift)
-                Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
-            } else
-                Toast.makeText(context, "cancelled", Toast.LENGTH_SHORT).show()
-        }
     }
 }

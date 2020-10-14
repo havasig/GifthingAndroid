@@ -6,13 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.database.models.Gift
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*
+import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -50,21 +55,29 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 }*/
             }
 
-            val newGift = Gift()
+            val price = if (etGiftPrice.text.toString() != "") {
+                Integer.parseInt(etGiftPrice.text.toString())
+            } else null
 
-            newGift.name = etGiftName.text.toString()
-            if (etGiftPrice.text.toString() != "") {
-                newGift.price = Integer.parseInt(etGiftPrice.text.toString())
-            }
+            val description = if (etGiftDescription.text.toString() != "") {
+                etGiftDescription.text.toString()
+            } else null
 
-            if (etGiftDescription.text.toString() != "") {
-                newGift.description = etGiftDescription.text.toString()
-            }
+            val newGift = hu.bme.aut.android.gifthing.database.entities.Gift(
+                name = etGiftName.text.toString(),
+                price = price,
+                description = description,
+                link = link,
+                reservedBy = null,
+                owner = AppPreferences.currentId!!
+            )
 
-            if (link != null) {
-                newGift.link = link
-            }
+            val mGiftViewModel: GiftViewModel by viewModels()
+            mGiftViewModel.insert(newGift)
+            Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
+            finish()
 
+/*
             launch {
                 try {
                     val currentUserId = AppPreferences.currentId
@@ -93,17 +106,13 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                 finish()
             }
+ */
         }
 
         btnCancel.setOnClickListener {
-            setResult(Activity.RESULT_CANCELED) //TODO: ezt Ok-nak veszi át a mygiftfragment
+            Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
             finish()
         }
-    }
-
-    private suspend fun createGift(newGift: Gift): Gift {
-        val giftService = ServiceBuilder.buildService(GiftService::class.java)
-        return giftService.create(newGift)
     }
 
     private fun showSoftKeyboard(view: View) {
