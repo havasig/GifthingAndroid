@@ -67,7 +67,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             AppPreferences.token = response.accessToken
                             AppPreferences.roles = response.roles
                             AppPreferences.email = response.email
-                            AppPreferences.username = "Hello User" //TODO: set back to response.username
+                            AppPreferences.username =
+                                "Hello User" //TODO: set back to response.username
                         }
                         startActivity(intent)
 

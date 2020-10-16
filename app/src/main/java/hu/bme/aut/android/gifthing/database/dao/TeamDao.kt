@@ -2,7 +2,10 @@ package hu.bme.aut.android.gifthing.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import hu.bme.aut.android.gifthing.database.entities.*
+import hu.bme.aut.android.gifthing.database.entities.Team
+import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
+import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.entities.UserTeamCrossRef
 
 
 @Dao

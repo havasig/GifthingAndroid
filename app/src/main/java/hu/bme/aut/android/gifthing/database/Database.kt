@@ -88,11 +88,11 @@ abstract class AppDatabase : RoomDatabase() {
                     val team1 = Team(2L, "World Team")
                     teamDao.insert(team1)
 
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(1,1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(2,2))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(3,1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(4,1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(5,2))
+                    teamDao.insertUserTeamCross(UserTeamCrossRef(1, 1))
+                    teamDao.insertUserTeamCross(UserTeamCrossRef(2, 2))
+                    teamDao.insertUserTeamCross(UserTeamCrossRef(3, 1))
+                    teamDao.insertUserTeamCross(UserTeamCrossRef(4, 1))
+                    teamDao.insertUserTeamCross(UserTeamCrossRef(5, 2))
                 }
             }
         }

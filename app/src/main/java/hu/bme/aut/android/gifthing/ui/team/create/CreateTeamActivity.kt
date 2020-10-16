@@ -82,7 +82,11 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
             when (val username = autoCompleteUsername.text.toString()) {
                 "" -> Toast.makeText(baseContext, "Username is empty", Toast.LENGTH_SHORT).show()
                 AppPreferences.username!! -> {
-                    Toast.makeText(baseContext,"You are already member of the group",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext,
+                        "You are already member of the group",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     autoCompleteUsername.setText("")
                 }
                 else -> {
@@ -124,7 +128,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
             Observer<List<User>> { users ->
                 try {
                     val user = users.find { it.username == username }!!
-                    if(!mAdapter.contains(user)) {
+                    if (!mAdapter.contains(user)) {
                         mAdapter.addUser(user)
                         usernameAdapter.remove(user.username)
                         autoTextView.setAdapter(usernameAdapter)

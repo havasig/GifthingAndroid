@@ -15,10 +15,7 @@ import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.UserWithReservedGifts
-import hu.bme.aut.android.gifthing.database.models.User
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -57,7 +54,8 @@ class ReservedGiftsFragment : Fragment(),
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(
-                        context, "User or user's reserved gift list not found.", Toast.LENGTH_SHORT).show()
+                        context, "User or user's reserved gift list not found.", Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )

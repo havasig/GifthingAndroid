@@ -18,7 +18,6 @@ import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import java.lang.Exception
 
 class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
@@ -38,8 +37,13 @@ class MyGiftsFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,container,false)
-        val recyclerView: RecyclerView = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
+        val rootView = inflater.inflate(
+            hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,
+            container,
+            false
+        )
+        val recyclerView: RecyclerView =
+            rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         mAdapter = GiftsAdapter(this, mutableListOf())

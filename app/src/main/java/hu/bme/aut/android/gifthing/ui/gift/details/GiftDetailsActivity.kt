@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.database.entities.User
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
@@ -57,17 +58,25 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun loadGiftDetails(giftId: Long) {
-        mGiftViewModel.getById(giftId).observe(
+        mGiftViewModel.getByIdWithOwner(giftId).observe(
             this,
-            Observer<Gift> { gift ->
-                currentGift = gift
-                tvGiftName.text = gift.name
-                tvGiftPrice.text = gift.price?.toString() ?: ""
-                tvGiftLink.text = gift.link ?: ""
-                tvGiftDescription.text = gift.description ?: ""
+            Observer<GiftWithOwner> { giftWithOwner ->
+                currentGift = giftWithOwner.gift
 
-                gift.reservedBy?.let {
-                    if(it == AppPreferences.currentId!!) {
+                if (giftWithOwner.owner.firstName != null && giftWithOwner.owner.lastName != null) {
+                    val tempName = "${giftWithOwner.owner.firstName} ${giftWithOwner.owner.lastName}"
+                    tvOwnerName.text = tempName
+                } else {
+                    tvOwnerName.text = giftWithOwner.owner.username
+                }
+
+                tvGiftName.text = giftWithOwner.gift.name
+                tvGiftPrice.text = giftWithOwner.gift.price?.toString() ?: ""
+                tvGiftLink.text = giftWithOwner.gift.link ?: ""
+                tvGiftDescription.text = giftWithOwner.gift.description ?: ""
+
+                giftWithOwner.gift.reservedBy?.let {
+                    if (it == AppPreferences.currentId!!) {
                         btnReserve.text = resources.getString(R.string.free)
                         tvReservedBy.text = getString(R.string.you)
                     } else {
@@ -87,14 +96,15 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             this,
             Observer<User> { user ->
                 try {
-                    if (user.firstName != "" || user.lastName != "") {
-                        val tempName = "(${user.firstName} ${user.lastName})"
+                    if (user.firstName != null && user.lastName != null) {
+                        val tempName = "${user.firstName} ${user.lastName}"
                         tvReservedBy.text = tempName
                     } else {
                         tvReservedBy.text = user.username
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(baseContext, "Reserved user not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Reserved user not found", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         )
@@ -102,7 +112,7 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun onReserveOrFree() {
         currentGift.reservedBy?.let {
-            if(it == AppPreferences.currentId!!) {
+            if (it == AppPreferences.currentId!!) {
                 currentGift.reservedBy = null
                 mGiftViewModel.reserve(currentGift)
                 Toast.makeText(baseContext, "Freed successfully", Toast.LENGTH_SHORT).show()

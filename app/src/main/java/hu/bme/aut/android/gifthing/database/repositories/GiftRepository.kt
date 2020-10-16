@@ -6,7 +6,6 @@ import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
-import kotlinx.android.synthetic.main.gift_details.*
 
 
 class GiftRepository(application: Application) {

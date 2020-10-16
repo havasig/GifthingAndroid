@@ -22,7 +22,7 @@ class GiftViewModel(application: Application) : AndroidViewModel(application) {
         mRepository.delete(gift)
     }
 
-    fun getById(giftId: Long) : LiveData<Gift> {
+    fun getById(giftId: Long): LiveData<Gift> {
         return mRepository.getById(giftId.toInt())
     }
 
@@ -30,7 +30,7 @@ class GiftViewModel(application: Application) : AndroidViewModel(application) {
         return mRepository.reserve(gift)
     }
 
-    fun getByIdWithOwner(giftId: Long) : LiveData<GiftWithOwner> {
+    fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner> {
         return mRepository.getByIdWithOwner(giftId.toInt())
     }
 

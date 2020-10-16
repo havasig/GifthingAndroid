@@ -15,7 +15,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Team
 import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
-import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.team.TeamEntityAdapter
 import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity

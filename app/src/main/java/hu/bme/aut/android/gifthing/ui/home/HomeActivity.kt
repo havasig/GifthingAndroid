@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         launch {
             val currentUser = getUser(currentUserId)
 
-            if (currentUser.firstName != "" || currentUser.lastName != "") {
+            if (currentUser.firstName != null || currentUser.lastName != null) {
                 val tempName = "(${currentUser.firstName} ${currentUser.lastName})"
                 navUserFullName.text = tempName
             } else {
