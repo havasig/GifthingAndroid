@@ -48,29 +48,19 @@ class ReservedGiftsFragment : Fragment(),
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         val mUserViewModel: UserViewModel by viewModels()
-        mUserViewModel.allUsersWithReservedGifts.observe(
+        mUserViewModel.getUserWithReservedGifts(AppPreferences.currentId!!).observe(
             viewLifecycleOwner,
-            Observer<List<UserWithReservedGifts>> { users ->
-                val userIndex =
-                    (AppPreferences.currentId!! - 1).toInt() //TODO: elcsúszhatnak az indexek
+            Observer<UserWithReservedGifts> { user ->
                 try {
-                    mAdapter.setGifts(users[userIndex].reservedGifts)
+                    mAdapter.setGifts(user.reservedGifts)
                     recyclerView.adapter = mAdapter
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(
-                        context,
-                        "User or user's reserved gift list not found.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        context, "User or user's reserved gift list not found.", Toast.LENGTH_SHORT).show()
                 }
             }
         )
         return rootView
-    }
-
-    private suspend fun getUser(id: Long): User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.findById(id)
     }
 }

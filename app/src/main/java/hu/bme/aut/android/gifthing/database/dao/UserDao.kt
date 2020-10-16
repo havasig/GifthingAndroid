@@ -9,6 +9,12 @@ interface UserDao {
     @Query("SELECT * FROM user_table")
     fun getAll(): LiveData<List<User>>
 
+    @Query("SELECT username FROM user_table")
+    fun getAllUsername(): LiveData<List<String>>
+
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getCurrentUser(userId: Long): LiveData<User>
+
     @Query("SELECT * FROM user_table WHERE userId IN (:userIds)")
     fun getAllByIds(userIds: LongArray): LiveData<List<User>>
 
@@ -28,21 +34,22 @@ interface UserDao {
     fun insert(user: User)
 
     @Transaction
-    @Query("SELECT * FROM user_table")
-    fun getUserWithReservedGifts(): LiveData<List<UserWithReservedGifts>>
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getUserWithReservedGifts(userId: Long): LiveData<UserWithReservedGifts>
 
     @Transaction
-    @Query("SELECT * FROM user_table")
-    fun getUserWithOwnedGifts(): LiveData<List<UserWithOwnedGifts>>
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getUserWithOwnedGifts(userId: Long): LiveData<UserWithOwnedGifts>
+
     @Transaction
     @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
     fun getMeWithOwnedGifts(userId: Long): LiveData<UserWithOwnedGifts>
 
     @Transaction
-    @Query("SELECT * FROM user_table")
-    fun getUserWithOwnedTeams(): List<UserWithOwnedTeams>
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getUserWithOwnedTeams(userId: Long): LiveData<UserWithOwnedTeams>
 
     @Transaction
-    @Query("SELECT * FROM user_table")
-    fun getUserWithTeams(): LiveData<List<UserWithTeams>>
+    @Query("SELECT * FROM user_table WHERE userId IN (:userId)")
+    fun getUserWithTeams(userId: Long): LiveData<UserWithTeams>
 }

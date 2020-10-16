@@ -17,6 +17,8 @@ import kotlinx.coroutines.MainScope
 
 class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
+    private val mGiftViewModel: GiftViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(hu.bme.aut.android.gifthing.R.layout.dialog_create_gift)
@@ -63,7 +65,6 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 owner = AppPreferences.currentId!!
             )
 
-            val mGiftViewModel: GiftViewModel by viewModels()
             mGiftViewModel.insert(newGift)
             Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
             finish()

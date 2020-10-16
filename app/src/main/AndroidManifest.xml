@@ -15,7 +15,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity android:name=".ui.gift.reserved.ReservedGiftDetailsActivity"/>
-        <activity android:name=".ui.gift.details.GiftToReserveDetailsActivity" />
+        <activity android:name=".ui.gift.details.GiftDetailsActivity" />
         <activity android:name=".authentication.RegisterActivity" />
         <activity android:name=".authentication.LoginActivity" />
         <activity android:name=".ui.WelcomeActivity">

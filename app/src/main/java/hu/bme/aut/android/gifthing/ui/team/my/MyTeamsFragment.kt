@@ -12,24 +12,23 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Team
 import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
 import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.team.TeamEntityAdapter
 import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity
 import hu.bme.aut.android.gifthing.ui.team.details.TeamDetailsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 class MyTeamsFragment : Fragment(),
     TeamEntityAdapter.OnTeamSelectedListener,
     CoroutineScope by MainScope() {
 
-    private val TEAM_CREATE_REQUEST = 2
     private lateinit var mAdapter: TeamEntityAdapter
+    private val mUserViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,18 +43,15 @@ class MyTeamsFragment : Fragment(),
 
         val fab: FloatingActionButton = root.findViewById(R.id.fabAddTeam)
         fab.setOnClickListener {
-            val intent = Intent(activity, CreateTeamActivity::class.java).apply {}
-            startActivityForResult(intent, TEAM_CREATE_REQUEST)
+            val intent = Intent(activity, CreateTeamActivity::class.java)
+            startActivity(intent)
         }
 
-        val mTeamViewModel: TeamViewModel by viewModels()
-        mTeamViewModel.allUserWithTeams.observe(
+        mUserViewModel.myTeams.observe(
             viewLifecycleOwner,
-            Observer<List<UserWithTeams>> { users ->
+            Observer<UserWithTeams> { user ->
                 try {
-                    val userId = AppPreferences.currentId!!
-                    val userIndex = (userId - 1).toInt() //TODO: elcsúszhatnak az indexek
-                    mAdapter.setTeams(users[userIndex].teams)
+                    mAdapter.setTeams(user.teams)
                     recyclerView.adapter = mAdapter
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -63,16 +59,7 @@ class MyTeamsFragment : Fragment(),
                 }
             }
         )
-
         return root
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            TEAM_CREATE_REQUEST -> saveTeam(data)
-            else -> Toast.makeText(context, "Create dialog result fail", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun onTeamSelected(team: Team) {
@@ -80,16 +67,5 @@ class MyTeamsFragment : Fragment(),
             putExtra("TEAM_ID", team.teamId)
         }
         activity?.startActivity(intent)
-    }
-
-    private fun saveTeam(data: Intent?) {
-        launch {
-            if (data != null) {
-                mAdapter.addTeam(data.getSerializableExtra("TEAM") as Team)
-                Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Cancelled", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }

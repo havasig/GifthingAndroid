@@ -12,16 +12,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import hu.bme.aut.android.gifthing.database.models.User
-import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
@@ -41,25 +38,24 @@ class MyGiftsFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(
-            hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,
-            container,
-            false
-        )
-        val recyclerView: RecyclerView =
-            rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
+        val rootView = inflater.inflate(hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,container,false)
+        val recyclerView: RecyclerView = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         val mUserViewModel: UserViewModel by viewModels()
 
-        mUserViewModel.meWithOwnedGifts().observe(
-            viewLifecycleOwner,
-            Observer<hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts> { user ->
-                mAdapter.setGifts(user.ownedGifts)
-            }
-        )
+        try {
+            mUserViewModel.getUserWithOwnedGifts(AppPreferences.currentId!!).observe(
+                viewLifecycleOwner,
+                Observer<hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts> { user ->
+                    mAdapter.setGifts(user.ownedGifts)
+                }
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "lol", Toast.LENGTH_SHORT).show()
+        }
 
         recyclerView.adapter = mAdapter
 

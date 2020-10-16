@@ -12,7 +12,7 @@ import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
-import hu.bme.aut.android.gifthing.ui.gift.details.GiftToReserveDetailsActivity
+import hu.bme.aut.android.gifthing.ui.gift.details.GiftDetailsActivity
 import kotlinx.android.synthetic.main.activity_user_gift_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -23,7 +23,7 @@ class UserGiftListActivity : AppCompatActivity(), GiftsAdapter.OnGiftSelectedLis
     private lateinit var mAdapter: GiftsAdapter
 
     override fun onGiftSelected(gift: Gift) {
-        val intent = Intent(baseContext, GiftToReserveDetailsActivity::class.java).apply {
+        val intent = Intent(baseContext, GiftDetailsActivity::class.java).apply {
             putExtra("GIFT_ID", gift.giftId)
         }
         startActivity(intent)
@@ -39,13 +39,12 @@ class UserGiftListActivity : AppCompatActivity(), GiftsAdapter.OnGiftSelectedLis
         mAdapter = GiftsAdapter(this, mutableListOf())
 
         val mUserViewModel: UserViewModel by viewModels()
-        mUserViewModel.allUsersWithOwnedGifts.observe(
+        mUserViewModel.getUserWithOwnedGifts(userId).observe(
             this,
-            Observer<List<UserWithOwnedGifts>> { users ->
-                val userIndex = (userId - 1).toInt() //TODO: elcsúszhatnak az indexek
+            Observer<UserWithOwnedGifts> { user ->
                 try {
-                    mAdapter.setGifts(users[userIndex].ownedGifts)
-                    nameTv.text = users[0].user.username
+                    mAdapter.setGifts(user.ownedGifts)
+                    nameTv.text = user.user.username
                     giftsContainer.adapter = mAdapter
                 } catch (e: Exception) {
                     e.printStackTrace()

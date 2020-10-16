@@ -1,82 +1,72 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
-import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.models.Gift
-import hu.bme.aut.android.gifthing.services.GiftService
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
+import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import kotlinx.android.synthetic.main.activity_my_gift_details.*
 import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
+
 
 class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+
+    private val mGiftViewModel: GiftViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_gift_details)
 
         val giftId = intent.getLongExtra("GIFT_ID", 0)
-
-        launch {
-            try {
-                val currentGift = getGift(giftId)
-                tvGiftName.text = currentGift.name
-                tvGiftPrice.text = currentGift.price.toString()
-                tvGiftLink.text = currentGift.link
-                tvGiftDescription.text = currentGift.description
-            } catch (e: HttpException) {
-                val intent = Intent(this@MyGiftDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Current gift id is null")
+        var deleted = false
+        lateinit var currentGift: Gift
+        mGiftViewModel.getById(giftId).observe(
+            this,
+            Observer<Gift> { gift ->
+                if (!deleted) {
+                    try {
+                        tvGiftName.text = gift.name
+                        tvGiftDescription.text = gift.description ?: ""
+                        tvGiftPrice.text = gift.price?.toString() ?: ""
+                        tvGiftLink.text = gift.link ?: ""
+                        currentGift = gift
+                    } catch (e: Exception) {
+                        Toast.makeText(this, "Gift not found.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                startActivity(intent)
             }
-        }
+        )
 
         btnDelete.setOnClickListener {
-            onDelete(giftId)
+            val dialogClickListener =
+                DialogInterface.OnClickListener { _, which ->
+                    when (which) {
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            mGiftViewModel.delete(currentGift)
+                            deleted = true
+                            finish()
+                        }
+                        DialogInterface.BUTTON_NEGATIVE -> {
+                        }
+                    }
+                }
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setMessage("Are you sure?")
+                .setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener)
+                .show()
         }
 
         btnEdit.setOnClickListener {
             Toast.makeText(baseContext, "This method is not implemented", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun onDelete(giftId: Long) {
-        launch {
-            val success = deleteGift(giftId)
-            if (success) {
-                val intent =
-                    Intent(this@MyGiftDetailsActivity, MyGiftsActivity::class.java).apply {}
-                Toast.makeText(
-                    this@MyGiftDetailsActivity,
-                    "Deleted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
-                startActivity(intent)
-                finish()
-            } else {
-                val intent = Intent(this@MyGiftDetailsActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "We could not delete this gift (wtf ??? )")
-                }
-                startActivity(intent)
-            }
-        }
-    }
-
-    private suspend fun getGift(id: Long): Gift {
-        val giftService = ServiceBuilder.buildService(GiftService::class.java)
-        return giftService.getById(id)
-    }
-
-    private suspend fun deleteGift(id: Long): Boolean {
-        val giftService = ServiceBuilder.buildService(GiftService::class.java)
-        return giftService.deleteById(id)
     }
 }

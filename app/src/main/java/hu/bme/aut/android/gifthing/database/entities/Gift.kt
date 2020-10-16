@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "gift_table")
 data class Gift(
     @ColumnInfo(name = "owner") val owner: Long,
-    val name: String,
-    val description: String? = null,
-    val link: String? = null,
-    val reservedBy: Long? = null,
-    val price: Int? = null
+    var name: String,
+    var description: String? = null,
+    var link: String? = null,
+    var reservedBy: Long? = null,
+    var price: Int? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var giftId: Long = 0L

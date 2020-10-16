@@ -1,68 +1,47 @@
 package hu.bme.aut.android.gifthing.ui.gift.reserved
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.models.Gift
-import hu.bme.aut.android.gifthing.database.models.User
-import hu.bme.aut.android.gifthing.services.GiftService
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
+import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import kotlinx.android.synthetic.main.activity_reserved_gift_details.*
 import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
-    @SuppressLint("SetTextI18n")
+    private val mGiftViewModel: GiftViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserved_gift_details)
 
         val giftId = intent.getLongExtra("GIFT_ID", 0)
 
-        launch {
-            try {
-                val currentGift = getGift(giftId)
-                tvGiftName.text = currentGift.name
-                tvGiftPrice.text = currentGift.price.toString()
-                tvGiftLink.text = currentGift.link
-                tvGiftDescription.text = currentGift.description
-
+        mGiftViewModel.getByIdWithOwner(giftId).observe(
+            this,
+            Observer<GiftWithOwner> { giftWithOwner ->
                 try {
-                    val owner = getUser(currentGift.owner!!)
-                    tvOwnerName.text = owner.firstName + " " + owner.lastName
-                } catch (e: HttpException) {
-                    val intent =
-                        Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
-                            putExtra("ERROR_MESSAGE", "Gift owner not found")
-                        }
-                    startActivity(intent)
-                }
-
-            } catch (e: HttpException) {
-                val intent =
-                    Intent(this@ReservedGiftDetailsActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Current gift id is null")
+                    val ownerName = if(giftWithOwner.owner.firstName != null && giftWithOwner.owner.lastName != null) {
+                         "${giftWithOwner.owner.firstName} ${giftWithOwner.owner.lastName}"
+                    } else {
+                        giftWithOwner.owner.username
                     }
-                startActivity(intent)
+                    tvOwnerName.text = ownerName
+                    tvGiftName.text = giftWithOwner.gift.name
+                    tvGiftDescription.text = giftWithOwner.gift.description ?: ""
+                    tvGiftPrice.text = giftWithOwner.gift.price?.toString() ?: ""
+                    tvGiftLink.text = giftWithOwner.gift.link ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Gift with owner not found.", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-    }
-
-    private suspend fun getGift(id: Long): Gift {
-        val giftService = ServiceBuilder.buildService(GiftService::class.java)
-        return giftService.getById(id)
-    }
-
-    private suspend fun getUser(id: Long): User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.findById(id)
+        )
     }
 }

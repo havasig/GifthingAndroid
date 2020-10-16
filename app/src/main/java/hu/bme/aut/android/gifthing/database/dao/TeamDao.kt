@@ -2,8 +2,7 @@ package hu.bme.aut.android.gifthing.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import hu.bme.aut.android.gifthing.database.entities.Team
-import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
+import hu.bme.aut.android.gifthing.database.entities.*
 
 
 @Dao
@@ -24,9 +23,15 @@ interface TeamDao {
     fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(team: Team)
+    fun insert(team: Team): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertWithMembers(team: Team, members: List<User>) //TODO: ??? ez így jó?
 
     @Transaction
-    @Query("SELECT * FROM team_table")
-    fun getTeamWithMembers(): LiveData<List<TeamWithMembers>>
+    @Query("SELECT * FROM team_table WHERE teamId IN (:teamId)")
+    fun getTeamWithMembers(teamId: Long): LiveData<TeamWithMembers>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertUserTeamCross(userTeamCrossRef: UserTeamCrossRef)
 }

@@ -47,6 +47,10 @@ class UserAdapter
         return users
     }
 
+    fun contains(user: User): Boolean {
+        return users.contains(user)
+    }
+
     fun removeUser(position: Int) {
         users.removeAt(position)
         notifyItemRemoved(position)

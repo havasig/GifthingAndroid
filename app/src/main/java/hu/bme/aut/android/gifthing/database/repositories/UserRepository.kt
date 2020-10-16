@@ -13,38 +13,46 @@ import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
 class UserRepository(application: Application) {
     private val mUserDao: UserDao
     private val mAllUsers: LiveData<List<User>>
+    private val mUsername: LiveData<List<String>>
+    private val mCurrentUser: LiveData<User>
 
     init {
         val db: AppDatabase = AppDatabase.getDatabase(application)
         mUserDao = db.userDao()
         mAllUsers = mUserDao.getAll()
+        mUsername = mUserDao.getAllUsername()
+        mCurrentUser = mUserDao.getCurrentUser(AppPreferences.currentId!!)
     }
 
     fun getAllUsers(): LiveData<List<User>> {
         return mAllUsers
     }
 
-    fun getUserById(id: Long): LiveData<User> {
+    fun getUsername(): LiveData<List<String>> {
+        return mUsername
+    }
+
+    fun getCurrentUser(): LiveData<User> {
+        return mCurrentUser
+    }
+
+    fun getById(id: Long): LiveData<User> {
         return mUserDao.getById(id)
     }
 
-    fun getUserWithOwnedGifts(): LiveData<List<UserWithOwnedGifts>> {
-        return mUserDao.getUserWithOwnedGifts()
+    fun getUserWithOwnedGifts(id: Long): LiveData<UserWithOwnedGifts> {
+        return mUserDao.getUserWithOwnedGifts(id)
     }
 
-    fun getUserWithReservedGifts(): LiveData<List<UserWithReservedGifts>> {
-        return mUserDao.getUserWithReservedGifts()
+    fun getUserWithReservedGifts(id: Long): LiveData<UserWithReservedGifts> {
+        return mUserDao.getUserWithReservedGifts(id)
     }
 
-    fun getUserWithTeams(): LiveData<List<UserWithTeams>> {
-        return mUserDao.getUserWithTeams()
+    fun getUserWithTeams(id: Long): LiveData<UserWithTeams> {
+        return mUserDao.getUserWithTeams(id)
     }
 
     fun insert(user: User) {
         AppDatabase.databaseWriteExecutor.execute { mUserDao.insert(user) }
-    }
-
-    fun meWithOwnedGifts() : LiveData<UserWithOwnedGifts> {
-        return mUserDao.getMeWithOwnedGifts(AppPreferences.currentId!!)
     }
 }

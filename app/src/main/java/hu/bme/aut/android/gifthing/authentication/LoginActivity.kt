@@ -63,11 +63,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                     getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                                 imm?.hideSoftInputFromWindow(v.windowToken, 0)
                             }
-                            AppPreferences.currentId = response.id
+                            AppPreferences.currentId = 1L //TODO: set back to response.id
                             AppPreferences.token = response.accessToken
                             AppPreferences.roles = response.roles
                             AppPreferences.email = response.email
-                            AppPreferences.username = response.username
+                            AppPreferences.username = "Hello User" //TODO: set back to response.username
                         }
                         startActivity(intent)
 

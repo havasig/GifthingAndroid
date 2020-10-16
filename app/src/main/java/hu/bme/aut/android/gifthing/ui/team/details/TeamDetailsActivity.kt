@@ -29,6 +29,7 @@ class TeamDetailsActivity : AppCompatActivity(),
     CoroutineScope by MainScope() {
 
     private lateinit var mAdapter: UserAdapter
+    private val mTeamViewModel: TeamViewModel by viewModels()
 
     override fun onUserSelected(user: User) {
         val intent = Intent(baseContext, UserGiftListActivity::class.java).apply {
@@ -48,13 +49,11 @@ class TeamDetailsActivity : AppCompatActivity(),
         val currentUserId = AppPreferences.currentId
         val teamId = intent.getLongExtra("TEAM_ID", 0)
 
-        val mTeamViewModel: TeamViewModel by viewModels()
-        mTeamViewModel.allTeamWithMembers.observe(
+        mTeamViewModel.getTeamWithMembers(teamId).observe(
             this,
-            Observer<List<TeamWithMembers>> { teams ->
+            Observer<TeamWithMembers> { team ->
                 try {
-                    val teamIndex = (teamId - 1).toInt() //TODO: elcsúszhatnak az indexek
-                    val memberList = teams[teamIndex].members.filter { it.userId != currentUserId }
+                    val memberList = team.members.filter { it.userId != currentUserId }
                     mAdapter.setUsers(memberList)
                     membersContainer.adapter = mAdapter
                 } catch (e: Exception) {
