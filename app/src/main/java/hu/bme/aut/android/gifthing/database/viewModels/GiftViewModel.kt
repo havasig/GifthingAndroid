@@ -1,40 +1,44 @@
 package hu.bme.aut.android.gifthing.database.viewModels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import dagger.Provides
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.database.repositories.GiftRepository
 
-class GiftViewModel(application: Application) : AndroidViewModel(application) {
-    private val mRepository: GiftRepository = GiftRepository(application)
-    private val mAllGifts: LiveData<List<Gift>>
+class GiftViewModel @ViewModelInject constructor(
+    @Assisted savedStateHandle: SavedStateHandle,
+    private val giftRepository: GiftRepository
+): ViewModel() {
 
-    val allGifts: LiveData<List<Gift>>
-        get() = mAllGifts
+    /*
+    val giftId : Long = savedStateHandle["gid"] ?:
+    throw IllegalArgumentException("missing gift id")
+    val gift : LiveData<Gift> = giftRepository.getById(giftId)
+     */
 
     fun insert(gift: Gift) {
-        mRepository.insert(gift)
+        giftRepository.insert(gift)
     }
 
     fun delete(gift: Gift) {
-        mRepository.delete(gift)
+        giftRepository.delete(gift)
     }
 
     fun getById(giftId: Long): LiveData<Gift> {
-        return mRepository.getById(giftId.toInt())
+        return giftRepository.getById(giftId)
     }
 
     fun reserve(gift: Gift) {
-        return mRepository.reserve(gift)
+        return giftRepository.reserve(gift)
     }
 
     fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner> {
-        return mRepository.getByIdWithOwner(giftId.toInt())
-    }
-
-    init {
-        mAllGifts = mRepository.getAllGifts()
+        return giftRepository.getByIdWithOwner(giftId)
     }
 }

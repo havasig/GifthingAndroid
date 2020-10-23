@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import hu.bme.aut.android.gifthing.Application
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.dao.TeamDao
 import hu.bme.aut.android.gifthing.database.dao.UserDao
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -37,10 +38,10 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(AppDatabase::class.java) {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
-                            context.applicationContext,
+                            context.applicationContext as Application,
                             AppDatabase::class.java, "app_database"
                         )
-                            //.addCallback(sRoomDatabaseCallback)
+                            .addCallback(sRoomDatabaseCallback)
                             .build()
                     }
                 }
@@ -60,7 +61,7 @@ abstract class AppDatabase : RoomDatabase() {
                     // If you want to start with more words, just add them.
 
                     val userDao: UserDao = INSTANCE!!.userDao()
-                    userDao.deleteAll()
+                    //userDao.deleteAll()
                     val user0 = User("Hello User", "Hello User", "Hello User")
                     userDao.insert(user0)
                     val user1 = User("World User", "World User", "World User")
@@ -73,7 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
                     userDao.insert(user4)
 
                     val giftDao: GiftDao = INSTANCE!!.giftDao()
-                    giftDao.deleteAll()
+                    //giftDao.deleteAll()
                     val gift0 = Gift(1L, "Hello Gift", "Hello Gift")
                     giftDao.insert(gift0)
                     val gift1 = Gift(2L, "World Gift", "World Gift", "World Gift", 1L)
@@ -82,7 +83,7 @@ abstract class AppDatabase : RoomDatabase() {
                     giftDao.insert(gift2)
 
                     val teamDao: TeamDao = INSTANCE!!.teamDao()
-                    teamDao.deleteAll()
+                    //teamDao.deleteAll()
                     val team0 = Team(1L, "Hello Team")
                     teamDao.insert(team0)
                     val team1 = Team(2L, "World Team")

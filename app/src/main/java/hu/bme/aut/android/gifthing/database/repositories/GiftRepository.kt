@@ -2,32 +2,37 @@ package hu.bme.aut.android.gifthing.database.repositories
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
+import hu.bme.aut.android.gifthing.services.GiftService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.services.TeamService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
 
-class GiftRepository(application: Application) {
-    private val mGiftDao: GiftDao
-    private val mAllGifts: LiveData<List<Gift>>
+class GiftRepository @Inject constructor(
+    application: Application
+    //TODO: private val giftCache: GiftCache
+) {
+    private val giftService = ServiceBuilder.buildService(GiftService::class.java)
+    private val mGiftDao: GiftDao = AppDatabase.getDatabase(application).giftDao()
 
-    init {
-        val db: AppDatabase = AppDatabase.getDatabase(application)
-        mGiftDao = db.giftDao()
-        mAllGifts = mGiftDao.getAll()
+    /*
+    fun getById(id: Long): LiveData<Gift> {
+        return mGiftDao.getById(id.toInt())
     }
+     */
 
-    fun getAllGifts(): LiveData<List<Gift>> {
-        return mAllGifts
-    }
-
-    fun getById(id: Int): LiveData<Gift> {
-        return mGiftDao.getById(id)
-    }
-
-    fun getByIdWithOwner(id: Int): LiveData<GiftWithOwner> {
-        return mGiftDao.getByIdWithOwner(id)
+    fun getByIdWithOwner(id: Long): LiveData<GiftWithOwner> {
+        return mGiftDao.getByIdWithOwner(id.toInt())
     }
 
     fun insert(gift: Gift) {
@@ -40,5 +45,30 @@ class GiftRepository(application: Application) {
 
     fun reserve(gift: Gift) {
         AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(gift) }
+    }
+
+    fun getById(giftId: Long): LiveData<Gift> {
+        /*
+        val cached : LiveData<Gift> = giftCache.get(giftId)
+        if (cached != null) {
+            return cached
+        }
+         */
+        val data = MutableLiveData<Gift>()
+
+
+        //giftCache.put(giftId, data)
+
+        giftService.getById(giftId).enqueue(object : Callback<Gift> {
+            override fun onResponse(call: Call<Gift>, response: Response<Gift>) {
+                data.value = response.body()
+            }
+
+            // Error case is left out for brevity.
+            override fun onFailure(call: Call<Gift>, t: Throwable) {
+                TODO()
+            }
+        })
+        return data
     }
 }

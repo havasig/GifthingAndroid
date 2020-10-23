@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
@@ -19,6 +20,7 @@ import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
+@AndroidEntryPoint
 class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
     CoroutineScope by MainScope() {
@@ -27,7 +29,7 @@ class MyGiftsFragment : Fragment(),
 
     override fun onGiftSelected(gift: hu.bme.aut.android.gifthing.database.entities.Gift) {
         val intent = Intent(activity, MyGiftDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", gift.giftId)
+            putExtra("GIFT_ID", gift.giftClientId)
         }
         activity?.startActivity(intent)
     }

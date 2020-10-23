@@ -8,10 +8,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.authentication.dto.LoginRequest
 import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.ui.ErrorActivity

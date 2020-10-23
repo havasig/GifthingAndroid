@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import hu.bme.aut.android.gifthing.Application
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
@@ -62,7 +63,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                     try {
                                         val jObjError = JSONObject(response.errorBody()!!.string())
                                         Toast.makeText(
-                                            applicationContext,
+                                            applicationContext as Application,
                                             jObjError.getString("message"),
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -77,18 +78,18 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                 t: Throwable
                             ) {
                                 Toast.makeText(
-                                    applicationContext,
+                                    applicationContext as Application,
                                     "Something went wrong, try again later.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                         })
                     } catch (e: Exception) {
-                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext as Application, e.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext as Application, e.message, Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -11,6 +11,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.models.User
@@ -20,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration

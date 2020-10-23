@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Toast
@@ -7,6 +8,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
@@ -15,7 +19,7 @@ import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
-
+@AndroidEntryPoint
 class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private val mGiftViewModel: GiftViewModel by viewModels()

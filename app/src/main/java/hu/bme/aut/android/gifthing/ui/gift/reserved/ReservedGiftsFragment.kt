@@ -28,7 +28,7 @@ class ReservedGiftsFragment : Fragment(),
 
     override fun onGiftSelected(gift: Gift) {
         val intent = Intent(activity, ReservedGiftDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", gift.giftId)
+            putExtra("GIFT_ID", gift.giftClientId)
         }
         activity?.startActivity(intent)
     }

@@ -24,7 +24,7 @@ class UserGiftListActivity : AppCompatActivity(), GiftsAdapter.OnGiftSelectedLis
 
     override fun onGiftSelected(gift: Gift) {
         val intent = Intent(baseContext, GiftDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", gift.giftId)
+            putExtra("GIFT_ID", gift.giftClientId)
         }
         startActivity(intent)
     }

@@ -8,16 +8,13 @@ import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
 
 @Dao
 interface GiftDao {
-    @Query("SELECT * FROM gift_table")
-    fun getAll(): LiveData<List<Gift>>
-
-    @Query("SELECT * FROM gift_table WHERE giftId IN (:giftIds)")
+    @Query("SELECT * FROM gift_table WHERE giftClientId IN (:giftIds)")
     fun getAllByIds(giftIds: IntArray): LiveData<List<Gift>>
 
-    @Query("SELECT * FROM gift_table WHERE giftId IN (:giftId)")
+    @Query("SELECT * FROM gift_table WHERE giftClientId IN (:giftId)")
     fun getById(giftId: Int): LiveData<Gift>
 
-    @Query("SELECT * FROM gift_table WHERE giftId IN (:giftId)")
+    @Query("SELECT * FROM gift_table WHERE giftClientId IN (:giftId)")
     fun getByIdWithOwner(giftId: Int): LiveData<GiftWithOwner>
 
     @Insert

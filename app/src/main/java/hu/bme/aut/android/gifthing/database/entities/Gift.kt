@@ -12,8 +12,9 @@ data class Gift(
     var description: String? = null,
     var link: String? = null,
     var reservedBy: Long? = null,
-    var price: Int? = null
+    var price: Int? = null,
+    var giftServerId: Long? = null
 ) {
     @PrimaryKey(autoGenerate = true)
-    var giftId: Long = 0L
+    var giftClientId: Long = 0L
 }
