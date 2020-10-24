@@ -5,7 +5,7 @@ import java.io.Serializable
 
 class Gift : Serializable {
     @SerializedName("id")
-    var id: Long = 0
+    var id: Long? = null
 
     @SerializedName("name")
     var name: String? = null

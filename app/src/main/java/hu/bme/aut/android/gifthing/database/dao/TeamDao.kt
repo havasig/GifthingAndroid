@@ -16,7 +16,7 @@ interface TeamDao {
     @Query("SELECT * FROM team_table")
     fun getAllForInsert(): List<Team>
 
-    @Query("SELECT * FROM team_table WHERE teamId IN (:teamIds)")
+    @Query("SELECT * FROM team_table WHERE team_id IN (:teamIds)")
     fun loadAllByIds(teamIds: IntArray): LiveData<List<Team>>
 
     @Insert
@@ -35,7 +35,7 @@ interface TeamDao {
     fun insertWithMembers(team: Team, members: List<User>) //TODO: ??? ez így jó?
 
     @Transaction
-    @Query("SELECT * FROM team_table WHERE teamId IN (:teamId)")
+    @Query("SELECT * FROM team_table WHERE team_id IN (:teamId)")
     fun getTeamWithMembers(teamId: Long): LiveData<TeamWithMembers>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

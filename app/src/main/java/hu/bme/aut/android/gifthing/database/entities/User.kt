@@ -15,7 +15,7 @@ data class User(
     @ColumnInfo(name = "last_name") val lastName: String? = null
 ) {
     @PrimaryKey(autoGenerate = true)
-    var userId: Long = 0L
+    @ColumnInfo(name = "user_id") var userId: Long = 0L
 
     fun toServerUser(): User {
         val user = User(

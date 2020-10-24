@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class UserWithOwnedTeams(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "adminId"
+        parentColumn = "user_id",
+        entityColumn = "admin_id"
     )
     val ownedTeams: List<Team>
 )
