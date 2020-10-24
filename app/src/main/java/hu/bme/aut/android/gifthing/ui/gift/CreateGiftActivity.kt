@@ -8,13 +8,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
+import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
+@AndroidEntryPoint
 class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private val mGiftViewModel: GiftViewModel by viewModels()
@@ -56,7 +59,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 etGiftDescription.text.toString()
             } else null
 
-            val newGift = hu.bme.aut.android.gifthing.database.entities.Gift(
+            val newGift = Gift(
                 name = etGiftName.text.toString(),
                 price = price,
                 description = description,
@@ -67,7 +70,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 lastFetch = System.currentTimeMillis()
             )
 
-            mGiftViewModel.insert(newGift)
+            mGiftViewModel.create(newGift)
             Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
             finish()
         }

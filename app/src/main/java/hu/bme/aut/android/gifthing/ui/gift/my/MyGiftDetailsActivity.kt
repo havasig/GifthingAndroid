@@ -36,6 +36,7 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
             Observer<Gift> { gift ->
                 if (!deleted) {
                     try {
+                        tvOwnerName.text = getString(R.string.you)
                         tvGiftName.text = gift.name
                         tvGiftDescription.text = gift.description ?: ""
                         tvGiftPrice.text = gift.price?.toString() ?: ""

@@ -2,24 +2,18 @@ package hu.bme.aut.android.gifthing.database.repositories
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 
 class GiftRepository @Inject constructor(
@@ -37,7 +31,38 @@ class GiftRepository @Inject constructor(
         return mGiftDao.getByIdWithOwner(id.toInt())
     }
 
-    fun insert(gift: Gift) {
+    fun create(gift: Gift) {
+        giftService.create(gift.toServerGift())
+            .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+                override fun onResponse(
+                    call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                    response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                ) {
+                    val result = Gift(
+                        giftServerId = response.body()!!.id,
+                        owner = response.body()!!.owner!!,
+                        name = response.body()!!.name!!,
+                        description = response.body()!!.description,
+                        link = response.body()!!.link,
+                        reservedBy = response.body()!!.reservedBy,
+                        price = response.body()!!.price,
+                        lastUpdate = response.body()!!.lastUpdate!!,
+                        lastFetch = System.currentTimeMillis()
+                    )
+                    AppDatabase.databaseWriteExecutor.execute {
+                        mGiftDao.insert(result)
+                    }
+                }
+
+                // Error case is left out for brevity.
+                override fun onFailure(
+                    call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                    t: Throwable
+                ) {
+                    //TODO() do nothing? return from old data
+                }
+            })
+
         AppDatabase.databaseWriteExecutor.execute { mGiftDao.insert(gift) }
     }
 
@@ -49,41 +74,52 @@ class GiftRepository @Inject constructor(
         AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(gift) }
     }
 
-
     fun getById(giftId: Long): LiveData<Gift> {
         refreshGift(giftId)
         return mGiftDao.getById(giftId.toInt())
     }
 
     private fun refreshGift(giftId: Long) {
-        val lastFetch = true//TODO: mGiftDao.getLastFetch(giftId.toInt())
-        if (lastFetch) {
-            // Refreshes the data.
-            //TODO: add real giftid
-            giftService.getById(1).enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
-                override fun onResponse(call: Call<hu.bme.aut.android.gifthing.database.models.Gift>, response: Response<hu.bme.aut.android.gifthing.database.models.Gift>) {
-                    val serverGift = Gift(
-                        giftServerId = response.body()!!.id,
-                        owner = response.body()!!.owner!!,
-                        name = response.body()!!.name!!,
-                        description= response.body()!!.description,
-                        link = response.body()!!.link,
-                        reservedBy = response.body()!!.reservedBy,
-                        price = response.body()!!.price,
-                        lastUpdate = response.body()!!.lastUpdate!!,
-                        lastFetch = System.currentTimeMillis()
-                    )
-                    serverGift.giftClientId = 1 //TODO: set clientID
-                    AppDatabase.databaseWriteExecutor.execute {
-                        mGiftDao.update(serverGift)
-                    }
-                }
+        thread {
+            val lastFetch = mGiftDao.getLastFetch(giftId.toInt())
+            if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
+                val serverGiftId = mGiftDao.getServerId(giftId.toInt()).toLong()
+                giftService.getById(serverGiftId)
+                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+                        override fun onResponse(
+                            call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                            response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                        ) {
+                            if (response.isSuccessful) {
+                                val serverGift = Gift(
+                                    giftServerId = response.body()!!.id,
+                                    owner = response.body()!!.owner!!,
+                                    name = response.body()!!.name!!,
+                                    description = response.body()!!.description,
+                                    link = response.body()!!.link,
+                                    reservedBy = response.body()!!.reservedBy,
+                                    price = response.body()!!.price,
+                                    lastUpdate = response.body()!!.lastUpdate!!,
+                                    lastFetch = System.currentTimeMillis()
+                                )
+                                serverGift.giftClientId = giftId
+                                AppDatabase.databaseWriteExecutor.execute {
+                                    mGiftDao.update(serverGift)
+                                }
+                            } else {
+                                //TODO: not found gift (do nothing?)
+                            }
+                        }
 
-                // Error case is left out for brevity.
-                override fun onFailure(call: Call<hu.bme.aut.android.gifthing.database.models.Gift>, t: Throwable) {
-                    //TODO() do nothing? return from old data
-                }
-            })
+                        // Error case is left out for brevity.
+                        override fun onFailure(
+                            call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                            t: Throwable
+                        ) {
+                            //TODO() do nothing? return from old data
+                        }
+                    })
+            }
         }
     }
 }

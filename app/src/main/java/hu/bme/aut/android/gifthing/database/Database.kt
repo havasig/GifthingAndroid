@@ -19,7 +19,7 @@ import java.util.concurrent.Executors
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -98,11 +98,11 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun insertGifts(giftDao: GiftDao) {
-            val gift0 = Gift(1L, "Hello Gift", "Hello Gift", lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            val gift0 = Gift(1L, "Hello Gift", "Hello Gift", lastUpdate = System.currentTimeMillis(), lastFetch = null, giftServerId = 1L)
             giftDao.insert(gift0)
-            val gift1 = Gift(2L, "World Gift", "World Gift", "World Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            val gift1 = Gift(2L, "World Gift", "World Gift", "World Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null, giftServerId = 7L)
             giftDao.insert(gift1)
-            val gift2 = Gift(3L, "Jeez Gift", "Jeez Gift", "Jeez Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            val gift2 = Gift(3L, "Jeez Gift", "Jeez Gift", "Jeez Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null, giftServerId = 8L)
             giftDao.insert(gift2)
         }
     }

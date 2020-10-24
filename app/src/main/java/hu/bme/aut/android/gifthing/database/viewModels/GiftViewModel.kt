@@ -20,8 +20,8 @@ class GiftViewModel @ViewModelInject constructor(
     val gift : LiveData<Gift> = giftRepository.getById(giftId)
      */
 
-    fun insert(gift: Gift) {
-        giftRepository.insert(gift)
+    fun create(gift: Gift) {
+        giftRepository.create(gift)
     }
 
     fun delete(gift: Gift) {

@@ -54,13 +54,13 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
             Observer<GiftWithOwner> { giftWithOwner ->
                 try {
                     currentGift = giftWithOwner.gift
-                    val ownerName =
+                    tvOwnerName.text =
                         if (giftWithOwner.owner.firstName != null && giftWithOwner.owner.lastName != null) {
                             "${giftWithOwner.owner.firstName} ${giftWithOwner.owner.lastName}"
                         } else {
                             giftWithOwner.owner.username
                         }
-                    tvOwnerName.text = ownerName
+
                     tvGiftName.text = giftWithOwner.gift.name
                     tvGiftDescription.text = giftWithOwner.gift.description ?: ""
                     tvGiftPrice.text = giftWithOwner.gift.price?.toString() ?: ""
