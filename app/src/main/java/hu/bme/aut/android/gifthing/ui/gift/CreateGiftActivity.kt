@@ -62,7 +62,9 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 description = description,
                 link = link,
                 reservedBy = null,
-                owner = AppPreferences.currentId!!
+                owner = AppPreferences.currentId!!,
+                lastUpdate = System.currentTimeMillis(),
+                lastFetch = System.currentTimeMillis()
             )
 
             mGiftViewModel.insert(newGift)

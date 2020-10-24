@@ -13,6 +13,9 @@ interface TeamDao {
     @Query("SELECT * FROM team_table")
     fun getAll(): LiveData<List<Team>>
 
+    @Query("SELECT * FROM team_table")
+    fun getAllForInsert(): List<Team>
+
     @Query("SELECT * FROM team_table WHERE teamId IN (:teamIds)")
     fun loadAllByIds(teamIds: IntArray): LiveData<List<Team>>
 

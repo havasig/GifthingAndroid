@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface GiftService {
     @GET("gift/{id}")
-    fun getById(@Path("id") id: Long): Call<Gift>
+    fun getById(@Path("id") id: Long): Call<hu.bme.aut.android.gifthing.database.models.Gift>
 
     @DELETE("gift/delete/{id}")
     suspend fun deleteById(@Path("id") id: Long): Boolean

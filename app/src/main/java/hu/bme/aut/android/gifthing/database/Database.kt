@@ -19,7 +19,7 @@ import java.util.concurrent.Executors
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 4,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -52,50 +52,58 @@ abstract class AppDatabase : RoomDatabase() {
         private val sRoomDatabaseCallback: Callback = object : Callback() {
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
-
-                // If you want to keep data through app restarts,
-                // comment out the following block
                 databaseWriteExecutor.execute {
-
-                    // Populate the database in the background.
-                    // If you want to start with more words, just add them.
-
                     val userDao: UserDao = INSTANCE!!.userDao()
-                    //userDao.deleteAll()
-                    val user0 = User("Hello User", "Hello User", "Hello User")
-                    userDao.insert(user0)
-                    val user1 = User("World User", "World User", "World User")
-                    userDao.insert(user1)
-                    val user2 = User("Hali User", "Hali User", "Hali User")
-                    userDao.insert(user2)
-                    val user3 = User("Gali User", "Gali User", "Gali User")
-                    userDao.insert(user3)
-                    val user4 = User("Yo User", "Yo User", "Yo User")
-                    userDao.insert(user4)
+                    val users = userDao.getAllForInsert()
+                    if(users.isEmpty())
+                        insertUsers(userDao)
 
                     val giftDao: GiftDao = INSTANCE!!.giftDao()
-                    //giftDao.deleteAll()
-                    val gift0 = Gift(1L, "Hello Gift", "Hello Gift")
-                    giftDao.insert(gift0)
-                    val gift1 = Gift(2L, "World Gift", "World Gift", "World Gift", 1L)
-                    giftDao.insert(gift1)
-                    val gift2 = Gift(3L, "Jeez Gift", "Jeez Gift", "Jeez Gift", 1L)
-                    giftDao.insert(gift2)
+                    val gifts = giftDao.getAllForInsert()
+                    if(gifts.isEmpty())
+                        insertGifts(giftDao)
 
                     val teamDao: TeamDao = INSTANCE!!.teamDao()
-                    //teamDao.deleteAll()
-                    val team0 = Team(1L, "Hello Team")
-                    teamDao.insert(team0)
-                    val team1 = Team(2L, "World Team")
-                    teamDao.insert(team1)
-
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(1, 1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(2, 2))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(3, 1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(4, 1))
-                    teamDao.insertUserTeamCross(UserTeamCrossRef(5, 2))
+                    val teams = teamDao.getAllForInsert()
+                    if(teams.isEmpty())
+                        insertTeams(teamDao)
                 }
             }
+        }
+
+        private fun insertTeams(teamDao: TeamDao) {
+            val team0 = Team(1L, "Hello Team")
+            teamDao.insert(team0)
+            val team1 = Team(2L, "World Team")
+            teamDao.insert(team1)
+
+            teamDao.insertUserTeamCross(UserTeamCrossRef(1, 1))
+            teamDao.insertUserTeamCross(UserTeamCrossRef(2, 2))
+            teamDao.insertUserTeamCross(UserTeamCrossRef(3, 1))
+            teamDao.insertUserTeamCross(UserTeamCrossRef(4, 1))
+            teamDao.insertUserTeamCross(UserTeamCrossRef(5, 2))
+        }
+
+        private fun insertUsers(userDao: UserDao) {
+            val user0 = User("Hello User", "Hello User", "Hello User")
+            userDao.insert(user0)
+            val user1 = User("World User", "World User", "World User")
+            userDao.insert(user1)
+            val user2 = User("Hali User", "Hali User", "Hali User")
+            userDao.insert(user2)
+            val user3 = User("Gali User", "Gali User", "Gali User")
+            userDao.insert(user3)
+            val user4 = User("Yo User", "Yo User", "Yo User")
+            userDao.insert(user4)
+        }
+
+        private fun insertGifts(giftDao: GiftDao) {
+            val gift0 = Gift(1L, "Hello Gift", "Hello Gift", lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            giftDao.insert(gift0)
+            val gift1 = Gift(2L, "World Gift", "World Gift", "World Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            giftDao.insert(gift1)
+            val gift2 = Gift(3L, "Jeez Gift", "Jeez Gift", "Jeez Gift", 1L, lastUpdate = System.currentTimeMillis(), lastFetch = null)
+            giftDao.insert(gift2)
         }
     }
 }

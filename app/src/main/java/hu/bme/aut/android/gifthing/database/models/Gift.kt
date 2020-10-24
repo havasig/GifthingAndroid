@@ -24,4 +24,7 @@ class Gift : Serializable {
 
     @SerializedName("reservedBy")
     var reservedBy: Long? = null
+
+    @SerializedName("lastUpdate")
+    var lastUpdate: Long? = null
 }

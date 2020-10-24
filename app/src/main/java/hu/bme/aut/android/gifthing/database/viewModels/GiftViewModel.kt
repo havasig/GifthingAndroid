@@ -1,12 +1,10 @@
 package hu.bme.aut.android.gifthing.database.viewModels
 
-import android.app.Application
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import dagger.Provides
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.database.repositories.GiftRepository
