@@ -12,23 +12,11 @@ data class User(
     val email: String,
     val username: String,
     @ColumnInfo(name = "first_name") val firstName: String? = null,
-    @ColumnInfo(name = "last_name") val lastName: String? = null
+    @ColumnInfo(name = "last_name") val lastName: String? = null,
+    @ColumnInfo(name = "user_server_id") var userServerId: Long? = null,
+    @ColumnInfo(name = "last_update") var lastUpdate: Long,
+    @ColumnInfo(name = "last_fetch") var lastFetch: Long?
 ) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "user_id") var userId: Long = 0L
-
-    fun toServerUser(): User {
-        val user = User(
-            email = this.email,
-            username = this.username
-        )
-        user.firstName = this.firstName
-        user.lastName = this.lastName
-        user.gifts = mutableListOf()
-        user.reservedGifts = mutableListOf()
-        user.myOwnedTeams = mutableListOf()
-        user.myTeams = mutableListOf()
-
-        return user
-    }
+    @ColumnInfo(name = "user_client_id") var userClientId: Long = 0L
 }

@@ -9,13 +9,19 @@ interface GiftService {
     fun getById(@Path("id") id: Long): Call<Gift>
 
     @DELETE("gift/delete/{id}")
-    suspend fun deleteById(@Path("id") id: Long): Boolean
+    fun deleteById(@Path("id") id: Long): Call<Boolean>
 
     @POST("gift/create")
      fun create(@Body newGift: Gift): Call<Gift>
 
-    @PUT("gift/reserve/{giftId}/{userId}")
-    suspend fun reserveGift(@Path("giftId") giftId: Long, @Path("userId") userId: Long): Gift
+    @PUT("gift/reserve/{id}")
+    fun reserve(@Path("id") id: Long): Call<Gift>
+
+    @PUT("gift/release/{id}")
+    fun release(@Path("id") id: Long): Call<Gift>
+
+    @GET("gift/{id}/with-owner")
+    fun findByIdWithOwner(@Path("id") id: Long): Call<Gift>
 
     //TODO: update
 }

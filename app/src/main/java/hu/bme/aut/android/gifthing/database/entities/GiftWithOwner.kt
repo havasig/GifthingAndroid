@@ -7,7 +7,7 @@ data class GiftWithOwner(
     @Embedded val gift: Gift,
     @Relation(
         parentColumn = "owner",
-        entityColumn = "user_id"
+        entityColumn = "user_client_id"
     )
     val owner: User
 )

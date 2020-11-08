@@ -13,13 +13,15 @@ import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.Team
 import hu.bme.aut.android.gifthing.database.entities.User
 import hu.bme.aut.android.gifthing.database.entities.UserTeamCrossRef
+import hu.bme.aut.android.gifthing.services.GiftService
+import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -85,15 +87,15 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun insertUsers(userDao: UserDao) {
-            val user0 = User("Hello User", "Hello User", "Hello User")
+            val user0 = User("Hello User", "Hello User", "Hello User", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             userDao.insert(user0)
-            val user1 = User("World User", "World User", "World User")
+            val user1 = User("World User", "World User", "World User", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             userDao.insert(user1)
-            val user2 = User("Hali User", "Hali User", "Hali User")
+            val user2 = User("Hali User", "Hali User", "Hali User", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             userDao.insert(user2)
-            val user3 = User("Gali User", "Gali User", "Gali User")
+            val user3 = User("Gali User", "Gali User", "Gali User", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             userDao.insert(user3)
-            val user4 = User("Yo User", "Yo User", "Yo User")
+            val user4 = User("Yo User", "Yo User", "Yo User", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             userDao.insert(user4)
         }
 

@@ -72,6 +72,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             mGiftViewModel.create(newGift)
             Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
+
             finish()
         }
 

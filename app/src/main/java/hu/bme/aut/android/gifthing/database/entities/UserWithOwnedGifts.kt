@@ -6,7 +6,7 @@ import androidx.room.Relation
 data class UserWithOwnedGifts(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "user_id",
+        parentColumn = "user_client_id",
         entityColumn = "owner"
     )
     val ownedGifts: List<Gift>

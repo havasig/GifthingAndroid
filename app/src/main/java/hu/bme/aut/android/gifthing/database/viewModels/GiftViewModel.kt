@@ -24,8 +24,8 @@ class GiftViewModel @ViewModelInject constructor(
         giftRepository.create(gift)
     }
 
-    fun delete(gift: Gift) {
-        giftRepository.delete(gift)
+    fun delete(giftId: Long) {
+        giftRepository.delete(giftId)
     }
 
     fun getById(giftId: Long): LiveData<Gift> {
@@ -34,6 +34,10 @@ class GiftViewModel @ViewModelInject constructor(
 
     fun reserve(gift: Gift) {
         return giftRepository.reserve(gift)
+    }
+
+    fun release(gift: Gift) {
+        return giftRepository.release(gift)
     }
 
     fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner> {

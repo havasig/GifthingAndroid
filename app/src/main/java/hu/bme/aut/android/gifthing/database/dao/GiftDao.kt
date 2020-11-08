@@ -10,28 +10,28 @@ import java.time.LocalDateTime
 @Dao
 interface GiftDao {
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftIds)")
-    fun getAllByIds(giftIds: IntArray): LiveData<List<Gift>>
+    fun getAllByIds(giftIds: LongArray): LiveData<List<Gift>>
 
     @Query("SELECT * FROM gift_table")
     fun getAllForInsert(): List<Gift>
 
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftId)")
-    fun getById(giftId: Int): LiveData<Gift>
+    fun getById(giftId: Long): LiveData<Gift>
 
     @Query("SELECT gift_table.gift_server_id FROM gift_table WHERE gift_client_id IN (:giftId)")
-    fun getServerId(giftId: Int): Int
+    fun getServerId(giftId: Long): Long
 
     @Query("SELECT gift_table.gift_client_id FROM gift_table WHERE gift_server_id IN (:giftId)")
-    fun getClientId(giftId: Int): Int
+    fun getClientId(giftId: Long): Long
 
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftId)")
-    fun getByIdWithOwner(giftId: Int): LiveData<GiftWithOwner>
+    fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner>
 
     @Insert
     fun insertAll(vararg gifts: Gift)
 
-    @Delete
-    fun delete(gift: Gift)
+    @Query("DELETE FROM gift_table WHERE gift_client_id = :giftId")
+    fun delete(giftId: Long)
 
     @Update
     fun update(gift: Gift)
@@ -43,5 +43,5 @@ interface GiftDao {
     fun insert(gift: Gift)
 
     @Query("SELECT gift_table.last_fetch FROM gift_table WHERE gift_client_id == :giftId")
-    fun getLastFetch(giftId: Int): Long
+    fun getLastFetch(giftId: Long): Long
 }

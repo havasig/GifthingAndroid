@@ -1,6 +1,7 @@
 package hu.bme.aut.android.gifthing.database.models
 
 import com.google.gson.annotations.SerializedName
+import hu.bme.aut.android.gifthing.database.entities.Gift
 import java.io.Serializable
 
 class Gift : Serializable {
@@ -27,4 +28,19 @@ class Gift : Serializable {
 
     @SerializedName("lastUpdate")
     var lastUpdate: Long? = null
+
+
+    fun toClientGift(): Gift {
+        return Gift(
+            giftServerId = this.id,
+            owner = this.owner!!,
+            name = this.name!!,
+            description = this.description,
+            link = this.link,
+            reservedBy = this.reservedBy,
+            price = this.price,
+            lastUpdate = System.currentTimeMillis(),
+            lastFetch = System.currentTimeMillis()
+        )
+    }
 }

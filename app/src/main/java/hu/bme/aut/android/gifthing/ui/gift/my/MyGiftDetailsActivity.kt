@@ -54,7 +54,7 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
                 DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_POSITIVE -> {
-                            mGiftViewModel.delete(currentGift)
+                            mGiftViewModel.delete(currentGift.giftClientId)
                             deleted = true
                             finish()
                         }

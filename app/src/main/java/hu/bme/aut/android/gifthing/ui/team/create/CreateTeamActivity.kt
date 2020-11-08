@@ -42,7 +42,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         autoTextView.threshold = 1
         autoTextView.setAdapter(usernameAdapter)
 
-        mUserViewModel.username.observe(
+        mUserViewModel.getAllUsername().observe(
             this,
             Observer<List<String>> { username ->
                 try {
@@ -61,7 +61,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         mAdapter = UserAdapter(this, mutableListOf())
         recyclerView.adapter = mAdapter
 
-        mUserViewModel.currentUser.observe(
+        mUserViewModel.getById(AppPreferences.currentId!!).observe(
             this,
             Observer<User> { currentUser ->
                 try {
@@ -116,14 +116,14 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
 
         val memberIdList = mutableListOf<Long>()
         mAdapter.getUsers().forEach {
-            memberIdList.add(it.userId)
+            memberIdList.add(it.userClientId)
         }
         mTeamViewModel.insert(newTeam, memberIdList)
         onBackPressed()
     }
 
     private fun onAdd(username: String) {
-        mUserViewModel.allUsers.observe(
+        mUserViewModel.getAll().observe(
             this,
             Observer<List<User>> { users ->
                 try {

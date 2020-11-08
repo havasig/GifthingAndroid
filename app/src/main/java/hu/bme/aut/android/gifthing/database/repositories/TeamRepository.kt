@@ -34,4 +34,12 @@ class TeamRepository(application: Application) {
             }
         }
     }
+
+    fun refreshOwnedTeamList(ownedTeamList: MutableList<hu.bme.aut.android.gifthing.database.models.Team>) {
+        //TODO: implement
+    }
+
+    fun refreshMyTeamList(myTeamList: MutableList<hu.bme.aut.android.gifthing.database.models.Team>) {
+        //TODO: implement
+    }
 }

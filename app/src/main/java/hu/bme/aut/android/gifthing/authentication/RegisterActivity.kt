@@ -3,14 +3,22 @@ package hu.bme.aut.android.gifthing.authentication
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import hu.bme.aut.android.gifthing.Application
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.authentication.dto.SignupRequest
 import hu.bme.aut.android.gifthing.authentication.dto.SignupResponse
+import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.activity_user_gift_list.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -21,6 +29,8 @@ import retrofit2.Response
 
 
 class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+
+    private val mUserViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,39 +59,37 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             etFirstName.text.toString(),
                             etLastName.text.toString()
                         )
-                        val call: Call<SignupResponse> = signup(signupRequest)
-                        call.enqueue(object : Callback<SignupResponse> {
+                        signup(signupRequest)
+                        .enqueue(object : Callback<SignupResponse> {
                             override fun onResponse(
                                 call: Call<SignupResponse?>,
                                 response: Response<SignupResponse?>
                             ) {
                                 if (response.isSuccessful) {
-                                    val intent =
-                                        Intent(this@RegisterActivity, LoginActivity::class.java)
+                                    val newUser = User(
+                                        userServerId = response.body()!!.user!!.id,
+                                        email = response.body()!!.user!!.email,
+                                        username = response.body()!!.user!!.username,
+                                        firstName = response.body()!!.user!!.firstName,
+                                        lastName = response.body()!!.user!!.lastName,
+                                        lastUpdate = response.body()!!.user!!.lastUpdate!!,
+                                        lastFetch = System.currentTimeMillis()
+                                    )
+                                    mUserViewModel.create(newUser)
+                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                                     startActivity(intent)
                                 } else {
                                     try {
                                         val jObjError = JSONObject(response.errorBody()!!.string())
-                                        Toast.makeText(
-                                            applicationContext as Application,
-                                            jObjError.getString("message"),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast.makeText(applicationContext as Application,jObjError.getString("message"),Toast.LENGTH_SHORT).show()
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
                                 }
                             }
 
-                            override fun onFailure(
-                                call: Call<SignupResponse?>,
-                                t: Throwable
-                            ) {
-                                Toast.makeText(
-                                    applicationContext as Application,
-                                    "Something went wrong, try again later.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            override fun onFailure(call: Call<SignupResponse?>,t: Throwable) {
+                                Toast.makeText(applicationContext as Application,"Something went wrong, try again later.",Toast.LENGTH_SHORT).show()
                             }
                         })
                     } catch (e: Exception) {

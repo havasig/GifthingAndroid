@@ -27,4 +27,7 @@ class User(
 
     @SerializedName("myTeams")
     var myTeams = mutableListOf<Team>()
+
+    @SerializedName("lastUpdate")
+    var lastUpdate: Long? = null
 }

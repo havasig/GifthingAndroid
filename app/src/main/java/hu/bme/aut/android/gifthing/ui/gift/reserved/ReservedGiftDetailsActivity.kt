@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Gift
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.gift_details.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
+@AndroidEntryPoint
 class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private val mGiftViewModel: GiftViewModel by viewModels()
@@ -90,7 +92,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
         currentGift.reservedBy?.let {
             if (it == AppPreferences.currentId!!) {
                 currentGift.reservedBy = null
-                mGiftViewModel.reserve(currentGift)
+                mGiftViewModel.release(currentGift)
                 Toast.makeText(baseContext, "Freed successfully", Toast.LENGTH_SHORT).show()
             }
         } ?: run {

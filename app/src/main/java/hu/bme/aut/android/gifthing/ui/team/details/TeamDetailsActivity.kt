@@ -33,7 +33,7 @@ class TeamDetailsActivity : AppCompatActivity(),
 
     override fun onUserSelected(user: User) {
         val intent = Intent(baseContext, UserGiftListActivity::class.java).apply {
-            putExtra("USER_ID", user.userId)
+            putExtra("USER_ID", user.userClientId)
         }
         startActivity(intent)
     }
@@ -53,7 +53,7 @@ class TeamDetailsActivity : AppCompatActivity(),
             this,
             Observer<TeamWithMembers> { team ->
                 try {
-                    val memberList = team.members.filter { it.userId != currentUserId }
+                    val memberList = team.members.filter { it.userClientId != currentUserId }
                     mAdapter.setUsers(memberList)
                     membersContainer.adapter = mAdapter
                 } catch (e: Exception) {

@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Team
 import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
@@ -46,7 +47,7 @@ class MyTeamsFragment : Fragment(),
             startActivity(intent)
         }
 
-        mUserViewModel.myTeams.observe(
+        mUserViewModel.getUserWithTeams(AppPreferences.currentId!!).observe(
             viewLifecycleOwner,
             Observer<UserWithTeams> { user ->
                 try {
