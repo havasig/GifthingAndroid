@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.snakydesign.livedataextensions.emptyLiveData
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.authentication.dto.LoginRequest
 import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
 import hu.bme.aut.android.gifthing.database.AppDatabase
@@ -107,9 +108,6 @@ class UserRepository(val application: Application) : CoroutineScope by MainScope
                                 AppDatabase.databaseWriteExecutor.execute {
                                     mUserDao.insert(result)
                                 }
-                                //TODO: lehet később tér vissza az execute mint ez lefut
-                                resultUser.postValue(mUserDao.getByServerId(result.userServerId!!).value)
-
                             }
                         }
 
@@ -187,6 +185,7 @@ class UserRepository(val application: Application) : CoroutineScope by MainScope
                     ) {
                         if (response.isSuccessful) {
                             result.value = response.body()
+                            AppPreferences.token = response.body()!!.accessToken
                             //TODO: check if exists
                         }
                     }

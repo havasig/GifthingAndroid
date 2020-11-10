@@ -78,9 +78,10 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                         getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                                     imm?.hideSoftInputFromWindow(v.windowToken, 0)
                                 }
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             }
                             startActivity(intent)
-
+                            this.finish()
                         } else {
                             val intent =
                                 Intent(this@LoginActivity, ErrorActivity::class.java).apply {

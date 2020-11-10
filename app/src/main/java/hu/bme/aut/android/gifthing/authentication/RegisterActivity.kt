@@ -76,8 +76,11 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                         lastFetch = System.currentTimeMillis()
                                     )
                                     mUserViewModel.create(newUser)
-                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java).apply{
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                    }
                                     startActivity(intent)
+                                    this@RegisterActivity.finish()
                                 } else {
                                     try {
                                         val jObjError = JSONObject(response.errorBody()!!.string())

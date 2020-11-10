@@ -61,5 +61,6 @@
     <string name="username">Username</string>
     <string name="addMember">Add Member</string>
     <string name="you">You</string>
+    <string name="logout">Logout</string>
 
 </resources>
