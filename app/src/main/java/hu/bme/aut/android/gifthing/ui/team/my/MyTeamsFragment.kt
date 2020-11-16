@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.entities.Team
+import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedTeams
 import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.team.TeamEntityAdapter
@@ -47,6 +48,7 @@ class MyTeamsFragment : Fragment(),
             startActivity(intent)
         }
 
+        //Load member teams
         mUserViewModel.getUserWithTeams(AppPreferences.currentId!!).observe(
             viewLifecycleOwner,
             Observer<UserWithTeams> { user ->
@@ -59,12 +61,26 @@ class MyTeamsFragment : Fragment(),
                 }
             }
         )
+
+        //Load owned teams
+        mUserViewModel.getUserWithOwnedTeams(AppPreferences.currentId!!).observe(
+            viewLifecycleOwner,
+            Observer<UserWithOwnedTeams> { user ->
+                try {
+                    for(team in user.ownedTeams)
+                        mAdapter.addTeam(team)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(context, "Teams not found.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
         return root
     }
 
     override fun onTeamSelected(team: Team) {
         val intent = Intent(activity, TeamDetailsActivity::class.java).apply {
-            putExtra("TEAM_ID", team.teamId)
+            putExtra("TEAM_ID", team.teamClientId)
         }
         activity?.startActivity(intent)
     }

@@ -3,41 +3,45 @@ package hu.bme.aut.android.gifthing.database.repositories
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.snakydesign.livedataextensions.emptyLiveData
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.authentication.dto.LoginRequest
 import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
 import hu.bme.aut.android.gifthing.database.AppDatabase
+import hu.bme.aut.android.gifthing.database.dao.GiftDao
+import hu.bme.aut.android.gifthing.database.dao.TeamDao
 import hu.bme.aut.android.gifthing.database.dao.UserDao
-import hu.bme.aut.android.gifthing.database.entities.User
-import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
-import hu.bme.aut.android.gifthing.database.entities.UserWithReservedGifts
-import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
+import hu.bme.aut.android.gifthing.database.entities.*
 import hu.bme.aut.android.gifthing.services.AuthService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import hu.bme.aut.android.gifthing.services.UserService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
-class UserRepository(val application: Application) : CoroutineScope by MainScope() {
+class UserRepository(
+    val application: Application
+    //val giftRepository: GiftRepository
+//val teamRepository
+) {
     private val mUserDao: UserDao
+    private val mGiftDao: GiftDao
+    private val mTeamDao: TeamDao
     private val mAllUsers: LiveData<List<User>>
     private val mUsername: LiveData<List<String>>
     private val userService = ServiceBuilder.buildService(UserService::class.java)
     private val authService = ServiceBuilder.buildService(AuthService::class.java)
 
     companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
+        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(0) //TODO: set to 10 mins
     }
 
     init {
         val db: AppDatabase = AppDatabase.getDatabase(application)
         mUserDao = db.userDao()
+        mGiftDao = db.giftDao()
+        mTeamDao = db.teamDao()
         mAllUsers = mUserDao.getAll()
         mUsername = mUserDao.getAllUsername()
     }
@@ -57,6 +61,11 @@ class UserRepository(val application: Application) : CoroutineScope by MainScope
         return mUserDao.getById(id)
     }
 
+    fun getByServerId(id: Long): LiveData<User> {
+        refreshUser(id, true)
+        return mUserDao.getByServerId(id)
+    }
+
     fun getUserWithOwnedGifts(id: Long): LiveData<UserWithOwnedGifts> {
         refreshUser(id)
         return mUserDao.getUserWithOwnedGifts(id)
@@ -68,140 +77,97 @@ class UserRepository(val application: Application) : CoroutineScope by MainScope
     }
 
     fun getUserWithTeams(id: Long): LiveData<UserWithTeams> {
-        refreshUser(id)
+        refreshUser(id, false)
         return mUserDao.getUserWithTeams(id)
+    }
+
+    fun getUserWithOwnedTeams(id: Long): LiveData<UserWithOwnedTeams> {
+        refreshUser(id, false)
+        return mUserDao.getUserWithOwnedTeams(id)
     }
 
     fun create(user: User) {
         AppDatabase.databaseWriteExecutor.execute { mUserDao.insert(user) }
     }
 
-    fun getByServerId(serverId: Long): LiveData<User> {
-        val resultUser = emptyLiveData<User>()
-        thread {
-            var exists = false
-            val users = mUserDao.getAllUser()
-            for (user in users) {
-                if (user.userServerId == serverId) {
-                    exists = true
-                    resultUser.postValue(user)
-                }
+    private fun findUserInDb(userServerId: Long): User? {
+        val allUsers = mUserDao.getAllUsers()
+        for (user in allUsers) {
+            if (user.userServerId == userServerId) {
+                return user
             }
-
-            if (!exists)
-                userService.getById(serverId)
-                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.User> {
-                        override fun onResponse(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.User>,
-                            response: Response<hu.bme.aut.android.gifthing.database.models.User>
-                        ) {
-                            if (response.isSuccessful) {
-                                val result = toUser(response)
-                                val giftList = response.body()!!.gifts
-                                val ownedTeamList = response.body()!!.myOwnedTeams
-                                val myTeamList = response.body()!!.myTeams
-                                val giftRepository = GiftRepository(application)
-                                val teamRepository = TeamRepository(application)
-                                giftRepository.refreshGiftList(giftList)
-                                teamRepository.refreshOwnedTeamList(ownedTeamList)
-                                teamRepository.refreshMyTeamList(myTeamList)
-                                AppDatabase.databaseWriteExecutor.execute {
-                                    mUserDao.insert(result)
-                                }
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.User>,
-                            t: Throwable
-                        ) {
-                            //TODO() do nothing? return from old data
-                            println("wait what?")
-                            throw t
-                        }
-                    })
         }
-        return resultUser
+        return null
     }
 
-    fun refreshUser(userId: Long) {
-        Thread(Runnable {
+    private fun saveUserResponse(responseBody: hu.bme.aut.android.gifthing.database.models.User) {
+        val giftList = responseBody.gifts
+        val ownedTeamList = responseBody.myOwnedTeams
+        val myTeamList = responseBody.myTeams
+        val giftRepository = GiftRepository(application)
+        val teamRepository = TeamRepository(application)
+        giftRepository.refreshGiftList(giftList)
+        teamRepository.refreshTeamList(ownedTeamList)
+        teamRepository.refreshTeamList(myTeamList)
+
+        if (findUserInDb(responseBody.id) == null) {
+            mUserDao.insert(responseBody.toClientUser())
+        } else {
+            mUserDao.update(responseBody.toClientUser())
+        }
+    }
+
+    private fun getByIdFromServer(userServerId: Long) {
+        val response = userService.getById(userServerId).execute()
+        if (response.isSuccessful) {
+            saveUserResponse(response.body()!!)
+        } else {
+            throw  Exception("todo")
+        }
+    }
+
+    private fun refreshUser(userId: Long, isServerId: Boolean = false) {
+        thread {
             val lastFetch = mUserDao.getLastFetch(userId)
-            if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
-                val userServerId = mUserDao.getServerId(userId)
-                userService.getById(userServerId)
-                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.User> {
-                        override fun onResponse(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.User>,
-                            response: Response<hu.bme.aut.android.gifthing.database.models.User>
-                        ) {
-                            if (response.isSuccessful) {
-                                val result = toUser(response)
-                                val giftList = response.body()!!.gifts
-                                val ownedTeamList = response.body()!!.myOwnedTeams
-                                val myTeamList = response.body()!!.myTeams
-                                val giftRepository = GiftRepository(application)
-                                val teamRepository = TeamRepository(application)
-                                giftRepository.refreshGiftList(giftList)
-                                teamRepository.refreshOwnedTeamList(ownedTeamList)
-                                teamRepository.refreshMyTeamList(myTeamList)
-                                result.userClientId = userId
-                                AppDatabase.databaseWriteExecutor.execute { mUserDao.update(result) }
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.User>,
-                            t: Throwable
-                        ) {
-                            //TODO() do nothing? return from old data
-                        }
-                    })
-
+            if (lastFetch == null || lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
+                val userServerId: Long = if (isServerId) userId else mUserDao.getServerId(userId)
+                getByIdFromServer(userServerId)
             }
-        }).start()
-    }
-
-    private fun toUser(response: Response<hu.bme.aut.android.gifthing.database.models.User>): User {
-        return User(
-            email = response.body()!!.email,
-            username = response.body()!!.username,
-            firstName = response.body()!!.firstName,
-            lastName = response.body()!!.lastName,
-            userServerId = response.body()!!.id,
-            lastUpdate = response.body()!!.lastUpdate!!,
-            lastFetch = System.currentTimeMillis()
-        )
+        }.join()
     }
 
     fun login(username: String, password: String): LiveData<LoginResponse> {
         val result = MutableLiveData<LoginResponse>()
         thread {
-            authService.login(LoginRequest(username, password))
-                .enqueue(object : Callback<LoginResponse> {
-                    override fun onResponse(
-                        call: Call<LoginResponse>,
-                        response: Response<LoginResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            result.value = response.body()
-                            AppPreferences.token = response.body()!!.accessToken
-                            //TODO: check if exists
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<LoginResponse>,
-                        t: Throwable
-                    ) {
-                        throw t
-                    }
-                })
+            val response =  authService.login(LoginRequest(username, password)).execute()
+            if (response.isSuccessful) {
+                result.postValue(response.body())
+                AppPreferences.token = response.body()!!.accessToken
+            } else {
+                throw  Exception("todo")
+            }
         }
-        return result
-    }
+        /*
+        authService.login(LoginRequest(username, password))
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        result.value = response.body()
+                        AppPreferences.token = response.body()!!.accessToken
+                    }
+                }
 
-    fun getClientId(currentId: Long): LiveData<Long> {
-        return mUserDao.getClientId(currentId)
+                override fun onFailure(
+                    call: Call<LoginResponse>,
+                    t: Throwable
+                ) {
+                    throw t
+                }
+            })
+         */
+        return result
     }
 }

@@ -4,13 +4,10 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
-import hu.bme.aut.android.gifthing.database.dao.UserDao
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
-import hu.bme.aut.android.gifthing.database.entities.User
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,20 +18,20 @@ import kotlin.concurrent.thread
 
 class GiftRepository @Inject constructor(
     val application: Application
+    //private val userRepository: UserRepository
     //TODO: private val giftCache: GiftCache
 ) {
     private val giftService: GiftService = ServiceBuilder.buildService(GiftService::class.java)
     private val mGiftDao: GiftDao = AppDatabase.getDatabase(application).giftDao()
 
     companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
+        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(0) //TODO: set to 10 mins
     }
 
 
     fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner> {
         refreshGift(giftId)
-        val userRepository = UserRepository(application)
-        userRepository.refreshUser(giftId)
+        //userRepository.refreshUser(giftId)
         return mGiftDao.getByIdWithOwner(giftId)
     }
 
@@ -77,7 +74,7 @@ class GiftRepository @Inject constructor(
 
     //TODO: test !!!
     fun reserve(gift: Gift) {
-        Thread(Runnable{
+        Thread(Runnable {
             val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
             giftService.reserve(serverGiftId)
                 .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
@@ -102,7 +99,7 @@ class GiftRepository @Inject constructor(
 
     //TODO: test !!!
     fun release(gift: Gift) {
-        Thread(Runnable{
+        Thread(Runnable {
             val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
             giftService.reserve(serverGiftId)
                 .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
@@ -173,12 +170,24 @@ class GiftRepository @Inject constructor(
         }
     }
 
+    private fun findGiftInDb(giftServerId: Long): Gift? {
+        val allGifts = mGiftDao.getAllGifts()
+        for (gift in allGifts) {
+            if (gift.giftServerId == giftServerId) {
+                return gift
+            }
+        }
+        return null
+    }
+
+
     fun refreshGiftList(giftList: MutableList<hu.bme.aut.android.gifthing.database.models.Gift>) {
-        for(gift in giftList) {
-            val clientId = mGiftDao.getClientId(gift.id!!) //TODO: maybe null then insert gift not update
-            val clientGift = gift.toClientGift()
-            clientGift.giftClientId = clientId
-            AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(clientGift) }
+        for (gift in giftList) {
+            if (findGiftInDb(gift.id!!) == null) {
+                mGiftDao.insert(gift.toClientGift())
+            } else {
+                mGiftDao.update(gift.toClientGift())
+            }
         }
     }
 }

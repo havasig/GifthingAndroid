@@ -6,15 +6,14 @@ import androidx.lifecycle.LiveData
 import com.snakydesign.livedataextensions.map
 import com.snakydesign.livedataextensions.switchMap
 import hu.bme.aut.android.gifthing.authentication.dto.LoginData
-import hu.bme.aut.android.gifthing.database.entities.User
-import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
-import hu.bme.aut.android.gifthing.database.entities.UserWithReservedGifts
-import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
+import hu.bme.aut.android.gifthing.database.entities.*
 import hu.bme.aut.android.gifthing.database.repositories.UserRepository
 
-
-class UserViewModel(application: Application) : AndroidViewModel(application) {
+class UserViewModel(
+    application: Application
+) : AndroidViewModel(application) {
     private val mRepository: UserRepository = UserRepository(application)
+    private var mCurrentUser: LiveData<UserWithTeams>? = null
 
     fun create(user: User) {
         mRepository.create(user)
@@ -37,14 +36,14 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun login(username: String, password: String): LiveData<LoginData> {
-        return mRepository.login(username, password).switchMap { loginResponse ->
-            mRepository.getByServerId(loginResponse.id).map { user ->
+        return mRepository.login(username, password).switchMap {
+            mRepository.getByServerId(it.id).map { user ->
                 LoginData(
-                    loginResponse.accessToken,
+                    it.accessToken,
                     user.userClientId,
-                    loginResponse.username,
-                    loginResponse.email,
-                    loginResponse.roles
+                    it.username,
+                    it.email,
+                    it.roles
                 )
             }
         }
@@ -56,5 +55,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getUserWithTeams(userId: Long): LiveData<UserWithTeams> {
         return mRepository.getUserWithTeams(userId)
+    }
+
+    fun getUserWithOwnedTeams(userId: Long): LiveData<UserWithOwnedTeams> {
+        return mRepository.getUserWithOwnedTeams(userId)
     }
 }

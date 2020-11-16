@@ -51,16 +51,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 val username = loginUsername.text.toString()
                 val password = loginPassword.text.toString()
 
-                //TODO: remove
-                mUserViewModel.getAll().observe(
-                    this,
-                    Observer<List<User>> { users ->
-                        for (user in users) {
-                            println(" " + user.userClientId + " " + user.userServerId + " " + user.username)
-                        }
-                    }
-                )
-
                 mUserViewModel.login(username, password).observe(
                     this,
                     Observer<LoginData> { result ->

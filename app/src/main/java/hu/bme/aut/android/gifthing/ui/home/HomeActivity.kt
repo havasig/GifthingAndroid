@@ -44,7 +44,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         mUserViewModel.getById(AppPreferences.currentId!!).observe(
             this,
             Observer<hu.bme.aut.android.gifthing.database.entities.User> { user ->
-                if (user.firstName != null && user.lastName != null) {
+                if (user.firstName != "" && user.lastName != "") {
                     val tempName = "(${user.firstName} ${user.lastName})"
                     navUserFullName.text = tempName
                 } else {

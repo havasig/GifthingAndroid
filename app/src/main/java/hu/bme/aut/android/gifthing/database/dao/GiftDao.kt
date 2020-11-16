@@ -4,11 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import hu.bme.aut.android.gifthing.database.entities.Gift
 import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
+import hu.bme.aut.android.gifthing.database.entities.User
 import java.time.LocalDateTime
 
 
 @Dao
 interface GiftDao {
+    @Query("SELECT * FROM gift_table")
+    fun getAllGifts(): List<Gift>
+
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftIds)")
     fun getAllByIds(giftIds: LongArray): LiveData<List<Gift>>
 
@@ -22,7 +26,7 @@ interface GiftDao {
     fun getServerId(giftId: Long): Long
 
     @Query("SELECT gift_table.gift_client_id FROM gift_table WHERE gift_server_id IN (:giftId)")
-    fun getClientId(giftId: Long): Long
+    fun getClientId(giftId: Long): LiveData<Long>
 
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftId)")
     fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner>

@@ -10,7 +10,7 @@ interface UserDao {
     fun getAll(): LiveData<List<User>>
 
     @Query("SELECT * FROM user_table")
-    fun getAllUser(): List<User>
+    fun getAllUsers(): List<User>
 
     @Query("SELECT * FROM user_table")
     fun getAllForInsert(): List<User>
@@ -66,7 +66,7 @@ interface UserDao {
     fun getUserWithTeams(userId: Long): LiveData<UserWithTeams>
 
     @Query("SELECT user_table.last_fetch FROM user_table WHERE user_client_id == :userId")
-    fun getLastFetch(userId: Long): Long
+    fun getLastFetch(userId: Long): Long?
 
     @Query("SELECT user_server_id FROM user_table WHERE user_client_id IN (:userId)")
     fun getServerId(userId: Long): Long

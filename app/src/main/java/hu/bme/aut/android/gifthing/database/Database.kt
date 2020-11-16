@@ -21,7 +21,7 @@ import java.util.concurrent.Executors
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

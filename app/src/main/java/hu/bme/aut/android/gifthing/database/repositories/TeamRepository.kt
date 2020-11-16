@@ -35,11 +35,23 @@ class TeamRepository(application: Application) {
         }
     }
 
-    fun refreshOwnedTeamList(ownedTeamList: MutableList<hu.bme.aut.android.gifthing.database.models.Team>) {
-        //TODO: implement
+    private fun findTeamInDb(teamServerId: Long): Team? {
+        val allTeams = mTeamDao.getAllTeams()
+        for (team in allTeams) {
+            if (team.teamServerId == teamServerId) {
+                return team
+            }
+        }
+        return null
     }
 
-    fun refreshMyTeamList(myTeamList: MutableList<hu.bme.aut.android.gifthing.database.models.Team>) {
-        //TODO: implement
+    fun refreshTeamList(teamList: MutableList<hu.bme.aut.android.gifthing.database.models.Team>) {
+        for (team in teamList) {
+            if (findTeamInDb(team.id) == null) {
+                mTeamDao.insert(team.toClientTeam())
+            } else {
+                mTeamDao.update(team.toClientTeam())
+            }
+        }
     }
 }
