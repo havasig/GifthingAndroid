@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.database.entities.Team
+import hu.bme.aut.android.gifthing.database.models.entities.Team
 
 class TeamEntityAdapter
     (
@@ -20,6 +20,10 @@ class TeamEntityAdapter
 
     override fun getItemCount(): Int {
         return teams.size
+    }
+
+    fun getItems(): MutableList<Team> {
+        return teams
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamsViewHolder {

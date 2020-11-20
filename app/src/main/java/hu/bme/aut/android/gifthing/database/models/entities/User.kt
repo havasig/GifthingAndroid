@@ -1,10 +1,9 @@
-package hu.bme.aut.android.gifthing.database.entities
+package hu.bme.aut.android.gifthing.database.models.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import hu.bme.aut.android.gifthing.database.models.User
 
 
 @Entity(tableName = "user_table", indices = [Index(value = ["username"], unique = true)])

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.database.models.Team
+import hu.bme.aut.android.gifthing.database.models.server.Team
 
 class TeamAdapter
     (

@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.UserWithOwnedGifts
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
 import hu.bme.aut.android.gifthing.ui.gift.details.GiftDetailsActivity

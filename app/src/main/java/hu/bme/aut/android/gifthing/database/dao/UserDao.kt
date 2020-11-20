@@ -2,7 +2,7 @@ package hu.bme.aut.android.gifthing.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import hu.bme.aut.android.gifthing.database.entities.*
+import hu.bme.aut.android.gifthing.database.models.entities.*
 
 @Dao
 interface UserDao {
@@ -29,6 +29,9 @@ interface UserDao {
 
     @Query("SELECT * FROM user_table WHERE user_server_id = :userId LIMIT 1")
     fun getByServerId(userId: Long): LiveData<User>
+
+    @Query("SELECT * FROM user_table WHERE user_server_id = :userId LIMIT 1")
+    fun getByServerIdNoLiveData(userId: Long): User?
 
     @Insert
     fun insertAll(vararg users: User)

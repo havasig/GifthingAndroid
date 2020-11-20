@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
 
 class GiftsAdapter
     (

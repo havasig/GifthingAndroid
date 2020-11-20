@@ -2,10 +2,10 @@ package hu.bme.aut.android.gifthing.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import hu.bme.aut.android.gifthing.database.entities.Team
-import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
-import hu.bme.aut.android.gifthing.database.entities.User
-import hu.bme.aut.android.gifthing.database.entities.UserTeamCrossRef
+import hu.bme.aut.android.gifthing.database.models.entities.Team
+import hu.bme.aut.android.gifthing.database.models.entities.TeamWithMembers
+import hu.bme.aut.android.gifthing.database.models.entities.User
+import hu.bme.aut.android.gifthing.database.models.entities.UserTeamCrossRef
 
 
 @Dao
@@ -49,4 +49,11 @@ interface TeamDao {
 
     @Query("SELECT team_client_id FROM team_table WHERE team_server_id IN (:teamId)")
     fun getClientId(teamId: Long): LiveData<Long>
+
+    @Query("SELECT team_table.last_fetch FROM team_table WHERE team_client_id == :teamId")
+    fun getLastFetch(teamId: Long): Long?
+
+    @Query("SELECT team_server_id FROM team_table WHERE team_client_id IN (:teamId)")
+    fun getServerId(teamId: Long): Long
+
 }

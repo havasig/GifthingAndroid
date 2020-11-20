@@ -1,6 +1,6 @@
 package hu.bme.aut.android.gifthing.services
 
-import hu.bme.aut.android.gifthing.database.models.Gift
+import hu.bme.aut.android.gifthing.database.models.server.Gift
 import retrofit2.Call
 import retrofit2.http.*
 

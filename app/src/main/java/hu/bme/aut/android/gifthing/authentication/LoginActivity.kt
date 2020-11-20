@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.authentication.dto.LoginData
-import hu.bme.aut.android.gifthing.database.entities.User
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity

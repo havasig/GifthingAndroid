@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.entities.Team
-import hu.bme.aut.android.gifthing.database.entities.UserWithOwnedTeams
-import hu.bme.aut.android.gifthing.database.entities.UserWithTeams
+import hu.bme.aut.android.gifthing.database.models.entities.Team
+import hu.bme.aut.android.gifthing.database.models.entities.UserWithOwnedTeams
+import hu.bme.aut.android.gifthing.database.models.entities.UserWithTeams
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.team.TeamEntityAdapter
 import hu.bme.aut.android.gifthing.ui.team.create.CreateTeamActivity
@@ -67,8 +67,10 @@ class MyTeamsFragment : Fragment(),
             viewLifecycleOwner,
             Observer<UserWithOwnedTeams> { user ->
                 try {
-                    for(team in user.ownedTeams)
-                        mAdapter.addTeam(team)
+                    val adapterItems = mAdapter.getItems()
+                    for (team in user.ownedTeams)
+                        if (!adapterItems.contains(team))
+                            mAdapter.addTeam(team)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(context, "Teams not found.", Toast.LENGTH_SHORT).show()

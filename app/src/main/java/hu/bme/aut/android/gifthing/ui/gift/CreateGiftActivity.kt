@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
-import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*

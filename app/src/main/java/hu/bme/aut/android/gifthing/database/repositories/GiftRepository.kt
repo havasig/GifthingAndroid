@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.services.GiftService
 import hu.bme.aut.android.gifthing.services.ServiceBuilder
 import retrofit2.Call
@@ -37,17 +37,17 @@ class GiftRepository @Inject constructor(
 
     fun create(gift: Gift) {
         giftService.create(gift.toServerGift())
-            .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+            .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
                 override fun onResponse(
-                    call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
-                    response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                    call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
+                    response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
                 ) {
                     val result = toGift(response)
                     AppDatabase.databaseWriteExecutor.execute { mGiftDao.insert(result) }
                 }
 
                 override fun onFailure(
-                    call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                    call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
                     t: Throwable
                 ) {
                     //TODO: need to save to server
@@ -77,10 +77,10 @@ class GiftRepository @Inject constructor(
         Thread(Runnable {
             val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
             giftService.reserve(serverGiftId)
-                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
                     override fun onResponse(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
-                        response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
+                        response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
                     ) {
                         val result = toGift(response)
                         result.giftClientId = gift.giftClientId
@@ -88,7 +88,7 @@ class GiftRepository @Inject constructor(
                     }
 
                     override fun onFailure(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
                         t: Throwable
                     ) {
                         //TODO: reserve not working without internet. Notify user
@@ -102,10 +102,10 @@ class GiftRepository @Inject constructor(
         Thread(Runnable {
             val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
             giftService.reserve(serverGiftId)
-                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
                     override fun onResponse(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
-                        response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
+                        response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
                     ) {
                         val result = toGift(response)
                         result.giftClientId = gift.giftClientId
@@ -113,7 +113,7 @@ class GiftRepository @Inject constructor(
                     }
 
                     override fun onFailure(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
                         t: Throwable
                     ) {
                         //TODO: release not working without internet. Notify user
@@ -127,7 +127,7 @@ class GiftRepository @Inject constructor(
         return mGiftDao.getById(giftId)
     }
 
-    private fun toGift(response: Response<hu.bme.aut.android.gifthing.database.models.Gift>): Gift {
+    private fun toGift(response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>): Gift {
         return Gift(
             giftServerId = response.body()!!.id,
             owner = response.body()!!.owner!!,
@@ -147,10 +147,10 @@ class GiftRepository @Inject constructor(
             if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
                 val serverGiftId = mGiftDao.getServerId(giftId)
                 giftService.getById(serverGiftId)
-                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.Gift> {
+                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
                         override fun onResponse(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
-                            response: Response<hu.bme.aut.android.gifthing.database.models.Gift>
+                            call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
+                            response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
                         ) {
                             if (response.isSuccessful) {
                                 val result = toGift(response)
@@ -160,7 +160,7 @@ class GiftRepository @Inject constructor(
                         }
 
                         override fun onFailure(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.Gift>,
+                            call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
                             t: Throwable
                         ) {
                             //TODO() do nothing? return from old data
@@ -181,7 +181,7 @@ class GiftRepository @Inject constructor(
     }
 
 
-    fun refreshGiftList(giftList: MutableList<hu.bme.aut.android.gifthing.database.models.Gift>) {
+    fun refreshGiftList(giftList: MutableList<hu.bme.aut.android.gifthing.database.models.server.Gift>) {
         for (gift in giftList) {
             if (findGiftInDb(gift.id!!) == null) {
                 mGiftDao.insert(gift.toClientGift())

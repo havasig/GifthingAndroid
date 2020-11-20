@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.models.entities.User
 
 class UserAdapter
     (

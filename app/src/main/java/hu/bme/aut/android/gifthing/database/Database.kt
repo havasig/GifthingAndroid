@@ -9,19 +9,17 @@ import hu.bme.aut.android.gifthing.Application
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
 import hu.bme.aut.android.gifthing.database.dao.TeamDao
 import hu.bme.aut.android.gifthing.database.dao.UserDao
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.entities.Team
-import hu.bme.aut.android.gifthing.database.entities.User
-import hu.bme.aut.android.gifthing.database.entities.UserTeamCrossRef
-import hu.bme.aut.android.gifthing.services.GiftService
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.Team
+import hu.bme.aut.android.gifthing.database.models.entities.User
+import hu.bme.aut.android.gifthing.database.models.entities.UserTeamCrossRef
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
 @Database(
     entities = [Gift::class, User::class, Team::class, UserTeamCrossRef::class],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -74,9 +72,9 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun insertTeams(teamDao: TeamDao) {
-            val team0 = Team(1L, "Hello Team")
+            val team0 = Team(10L, "Hello Team", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             teamDao.insert(team0)
-            val team1 = Team(2L, "World Team")
+            val team1 = Team(2L, "World Team", lastUpdate = System.currentTimeMillis(), lastFetch = null)
             teamDao.insert(team1)
 
             teamDao.insertUserTeamCross(UserTeamCrossRef(1, 1))

@@ -3,8 +3,8 @@ package hu.bme.aut.android.gifthing.database.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import hu.bme.aut.android.gifthing.database.entities.Team
-import hu.bme.aut.android.gifthing.database.entities.TeamWithMembers
+import hu.bme.aut.android.gifthing.database.models.entities.Team
+import hu.bme.aut.android.gifthing.database.models.entities.TeamWithMembers
 import hu.bme.aut.android.gifthing.database.repositories.TeamRepository
 
 class TeamViewModel(application: Application) : AndroidViewModel(application) {

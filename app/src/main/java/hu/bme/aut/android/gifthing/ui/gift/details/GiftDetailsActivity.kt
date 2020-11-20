@@ -11,9 +11,9 @@ import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
-import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.GiftWithOwner
+import hu.bme.aut.android.gifthing.database.models.entities.User
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import kotlinx.android.synthetic.main.activity_gift_details.*

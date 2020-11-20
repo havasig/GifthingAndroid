@@ -1,4 +1,4 @@
-package hu.bme.aut.android.gifthing.database.entities
+package hu.bme.aut.android.gifthing.database.models.entities
 
 import androidx.room.Embedded
 import androidx.room.Relation

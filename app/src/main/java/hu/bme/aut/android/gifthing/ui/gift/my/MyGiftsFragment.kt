@@ -27,7 +27,7 @@ class MyGiftsFragment : Fragment(),
 
     private lateinit var mAdapter: GiftsAdapter
 
-    override fun onGiftSelected(gift: hu.bme.aut.android.gifthing.database.entities.Gift) {
+    override fun onGiftSelected(gift: hu.bme.aut.android.gifthing.database.models.entities.Gift) {
         val intent = Intent(activity, MyGiftDetailsActivity::class.java).apply {
             putExtra("GIFT_ID", gift.giftClientId)
         }
@@ -55,7 +55,7 @@ class MyGiftsFragment : Fragment(),
         try {
             mUserViewModel.getUserWithOwnedGifts(AppPreferences.currentId!!).observe(
                 viewLifecycleOwner,
-                Observer<hu.bme.aut.android.gifthing.database.entities.UserWithOwnedGifts> { user ->
+                Observer<hu.bme.aut.android.gifthing.database.models.entities.UserWithOwnedGifts> { user ->
                     mAdapter.setGifts(user.ownedGifts)
                 }
             )

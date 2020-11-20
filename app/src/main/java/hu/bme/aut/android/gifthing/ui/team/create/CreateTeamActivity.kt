@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.database.entities.User
+import hu.bme.aut.android.gifthing.database.models.entities.User
 import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.user.UserAdapter
@@ -109,9 +109,11 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
             Toast.makeText(baseContext, "Name is required", Toast.LENGTH_SHORT).show()
             return
         }
-        val newTeam = hu.bme.aut.android.gifthing.database.entities.Team(
+        val newTeam = hu.bme.aut.android.gifthing.database.models.entities.Team(
             name = etTeamName.text.toString(),
-            adminId = AppPreferences.currentId!!
+            adminId = AppPreferences.currentId!!,
+            lastFetch = null,
+            lastUpdate = System.currentTimeMillis()
         )
 
         val memberIdList = mutableListOf<Long>()

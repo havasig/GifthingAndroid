@@ -2,10 +2,8 @@ package hu.bme.aut.android.gifthing.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import hu.bme.aut.android.gifthing.database.entities.Gift
-import hu.bme.aut.android.gifthing.database.entities.GiftWithOwner
-import hu.bme.aut.android.gifthing.database.entities.User
-import java.time.LocalDateTime
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.GiftWithOwner
 
 
 @Dao

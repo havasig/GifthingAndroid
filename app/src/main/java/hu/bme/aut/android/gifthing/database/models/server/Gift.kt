@@ -1,7 +1,7 @@
-package hu.bme.aut.android.gifthing.database.models
+package hu.bme.aut.android.gifthing.database.models.server
 
 import com.google.gson.annotations.SerializedName
-import hu.bme.aut.android.gifthing.database.entities.Gift
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
 import java.io.Serializable
 
 class Gift : Serializable {

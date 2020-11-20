@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import com.snakydesign.livedataextensions.map
 import com.snakydesign.livedataextensions.switchMap
 import hu.bme.aut.android.gifthing.authentication.dto.LoginData
-import hu.bme.aut.android.gifthing.database.entities.*
+import hu.bme.aut.android.gifthing.database.models.entities.*
 import hu.bme.aut.android.gifthing.database.repositories.UserRepository
 
 class UserViewModel(

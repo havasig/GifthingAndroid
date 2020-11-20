@@ -1,12 +1,9 @@
-package hu.bme.aut.android.gifthing.database.entities
+package hu.bme.aut.android.gifthing.database.models.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
-import hu.bme.aut.android.gifthing.database.models.Gift
-import java.time.LocalDateTime
-import java.util.*
+import hu.bme.aut.android.gifthing.database.models.server.Gift
 
 
 @Entity(tableName = "gift_table")
