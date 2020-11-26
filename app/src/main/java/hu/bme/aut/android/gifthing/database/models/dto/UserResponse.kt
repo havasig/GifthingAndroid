@@ -9,8 +9,8 @@ class UserResponse(
     var lastName: String? = null,
     var username: String,
     var lastUpdate: Long,
-    var gifts: MutableList<GiftUserResponse>,
-    var reservedGifts: MutableList<GiftUserResponse>,
+    var gifts: MutableList<GiftResponse>,
+    var reservedGifts: MutableList<GiftResponse>,
     var myOwnedTeams: MutableList<TeamUserResponse>,
     var myTeams: MutableList<TeamUserResponse>
 ) {

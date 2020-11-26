@@ -28,12 +28,16 @@ object AppPreferences {
         get() = Key.CURRENT_ID.getLong()
         set(value) = Key.CURRENT_ID.setLong(value)
 
+    var currentServerId: Long?
+        get() = Key.CURRENT_SERVER_ID.getLong()
+        set(value) = Key.CURRENT_SERVER_ID.setLong(value)
+
     var roles: Set<String>?
         get() = Key.ROLES.getStringSet()
         set(value) = Key.ROLES.setStringSet(value)
 
     private enum class Key {
-        TOKEN, CURRENT_ID, ROLES, USERNAME, EMAIL;
+        TOKEN, CURRENT_ID, CURRENT_SERVER_ID, ROLES, USERNAME, EMAIL;
 
         fun getBoolean(): Boolean? =
             if (sharedPreferences!!.contains(name)) sharedPreferences!!.getBoolean(

@@ -65,7 +65,7 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 currentGift = giftWithOwner.gift
 
                 tvOwnerName.text =
-                    if (giftWithOwner.owner.firstName != null && giftWithOwner.owner.lastName != null) {
+                    if (giftWithOwner.owner.firstName != "" && giftWithOwner.owner.lastName != "") {
                         "${giftWithOwner.owner.firstName} ${giftWithOwner.owner.lastName}"
                     } else {
                         giftWithOwner.owner.username
@@ -93,11 +93,11 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun loadReservedBy(reservedById: Long) {
         btnReserve.visibility = View.GONE
-        mUserViewModel.getById(reservedById).observe(
+        mUserViewModel.getByServerId(reservedById).observe(
             this,
             Observer<User> { user ->
                 try {
-                    if (user.firstName != null && user.lastName != null) {
+                    if (user.firstName != "" && user.lastName != "") {
                         val tempName = "${user.firstName} ${user.lastName}"
                         tvReservedBy.text = tempName
                     } else {
@@ -114,14 +114,29 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun onReserveOrFree() {
         currentGift.reservedBy?.let {
             if (it == AppPreferences.currentId!!) {
-                currentGift.reservedBy = null
-                mGiftViewModel.release(currentGift)
-                Toast.makeText(baseContext, "Freed successfully", Toast.LENGTH_SHORT).show()
+                mGiftViewModel.release(currentGift).observe(
+                    this,
+                    Observer<Boolean> { success ->
+                        if(success) {
+                            Toast.makeText(baseContext, "Freed successfully", Toast.LENGTH_SHORT).show()
+                            currentGift.reservedBy = null
+                        } else
+                            Toast.makeText(baseContext, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
+                    }
+                )
             }
         } ?: run {
-            currentGift.reservedBy = AppPreferences.currentId!!
-            mGiftViewModel.reserve(currentGift)
-            Toast.makeText(baseContext, "Reserved successfully", Toast.LENGTH_SHORT).show()
+            mGiftViewModel.reserve(currentGift).observe(
+                this,
+                Observer<Boolean> { success ->
+                    if(success) {
+                        Toast.makeText(baseContext, "Reserved successfully", Toast.LENGTH_SHORT)
+                            .show()
+                        currentGift.reservedBy = AppPreferences.currentId!!
+                    } else
+                        Toast.makeText(baseContext, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 }

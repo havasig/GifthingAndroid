@@ -51,9 +51,17 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
                 DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_POSITIVE -> {
-                            mGiftViewModel.delete(currentGift.giftClientId)
-                            deleted = true
-                            finish()
+                            mGiftViewModel.delete(currentGift.giftClientId).observe(
+                                this,
+                                Observer<Boolean> { success ->
+                                    if (success) {
+                                        deleted = true
+                                        Toast.makeText(baseContext, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                                        finish()
+                                    } else
+                                        Toast.makeText(baseContext, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         }
                         DialogInterface.BUTTON_NEGATIVE -> {
                         }

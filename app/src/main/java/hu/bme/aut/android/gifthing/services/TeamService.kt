@@ -1,5 +1,6 @@
 package hu.bme.aut.android.gifthing.services
 
+import hu.bme.aut.android.gifthing.database.models.dto.TeamRequest
 import hu.bme.aut.android.gifthing.database.models.dto.TeamResponse
 import hu.bme.aut.android.gifthing.database.models.server.Team
 import retrofit2.Call
@@ -11,11 +12,11 @@ interface TeamService {
     fun getById(@Path("id") id: Long): Call<TeamResponse>
 
     @GET("team/my-teams")
-    suspend fun getMyTeams(): MutableList<Team>
+    fun getMyTeams(): Call<MutableList<TeamResponse>>
 
     @DELETE("team/delete/{id}")
     suspend fun deleteById(@Path("id") id: Long): Boolean
 
     @POST("team/create")
-    suspend fun create(@Body newTeam: Team): Team
+    fun create(@Body newTeam: TeamRequest): Call<TeamResponse>
 }

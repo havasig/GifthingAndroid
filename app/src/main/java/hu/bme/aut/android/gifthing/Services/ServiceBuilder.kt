@@ -6,17 +6,22 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 object ServiceBuilder {
     private const val URL = "http://192.168.1.84:8080/api/"
 
-    private val okHttpClient = OkHttpClient.Builder()
 
 
     fun <T> buildService(serviceType: Class<T>): T {
+        val okHttpClient = OkHttpClient.Builder()
         val headerInterceptor = HeaderInterceptor()
         okHttpClient.addInterceptor(headerInterceptor)
+        okHttpClient.callTimeout(1, TimeUnit.SECONDS)
+        okHttpClient.connectTimeout(1, TimeUnit.SECONDS)
+        okHttpClient.writeTimeout(1, TimeUnit.SECONDS)
+        okHttpClient.readTimeout(1, TimeUnit.SECONDS)
 
         return Retrofit.Builder().baseUrl(URL)
             .addConverterFactory(GsonConverterFactory.create())

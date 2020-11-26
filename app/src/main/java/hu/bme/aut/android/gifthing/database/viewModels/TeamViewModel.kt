@@ -11,8 +11,8 @@ class TeamViewModel(application: Application) : AndroidViewModel(application) {
     private val mTeamRepository: TeamRepository = TeamRepository(application)
     private val mAllTeams: LiveData<List<Team>>
 
-    fun insert(team: Team, idList: List<Long>) {
-        mTeamRepository.insert(team, idList)
+    fun create(team: Team, idList: MutableList<Long>): LiveData<Boolean> {
+        return mTeamRepository.create(team, idList)
     }
 
     fun getTeamWithMembers(id: Long): LiveData<TeamWithMembers> {

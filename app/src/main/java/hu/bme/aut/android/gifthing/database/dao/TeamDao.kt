@@ -16,6 +16,9 @@ interface TeamDao {
     @Query("SELECT * FROM team_table")
     fun getAllTeams(): List<Team>
 
+    @Query("SELECT * FROM team_table WHERE team_server_id IN (:teamId)")
+    fun getByServerId(teamId: Long): Team?
+
     @Query("SELECT * FROM team_table")
     fun getAllForInsert(): List<Team>
 

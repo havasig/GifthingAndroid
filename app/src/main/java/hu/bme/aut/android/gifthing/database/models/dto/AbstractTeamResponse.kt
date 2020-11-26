@@ -2,7 +2,7 @@ package hu.bme.aut.android.gifthing.database.models.dto
 
 import hu.bme.aut.android.gifthing.database.models.entities.Team
 
-open class AbstractTeamResponse(
+abstract class AbstractTeamResponse(
     var name: String,
     var id: Long,
     var adminId: Long,

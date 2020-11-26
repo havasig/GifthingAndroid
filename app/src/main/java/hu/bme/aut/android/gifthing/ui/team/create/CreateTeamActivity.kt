@@ -120,8 +120,16 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         mAdapter.getUsers().forEach {
             memberIdList.add(it.userClientId)
         }
-        mTeamViewModel.insert(newTeam, memberIdList)
-        onBackPressed()
+        mTeamViewModel.create(newTeam, memberIdList).observe(
+            this,
+            Observer<Boolean> { success ->
+                if(success)
+                    Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(this, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
+                onBackPressed()
+            }
+        )
     }
 
     private fun onAdd(username: String) {

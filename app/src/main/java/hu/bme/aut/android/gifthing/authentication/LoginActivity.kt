@@ -38,6 +38,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 .show()
         }
 
+        var wtfCounter = 0
+
         loginBtn.setOnClickListener {
             if (loginUsername.text.toString() == "" ||
                 loginPassword.text.toString() == ""
@@ -53,30 +55,43 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 mUserViewModel.login(username, password).observe(
                     this,
                     Observer<LoginData> { result ->
-                        if (result.id != -1L) {
-                            AppPreferences.currentId = result.id
-                            AppPreferences.email = result.email
-                            AppPreferences.roles = result.roles
-                            AppPreferences.token = result.accessToken
-                            AppPreferences.username = result.username
+                        when {
+                            result.id > 0 -> {
+                                if (wtfCounter == 0) {
+                                    AppPreferences.currentId = result.id
+                                    AppPreferences.email = result.email
+                                    AppPreferences.roles = result.roles
+                                    AppPreferences.token = result.accessToken
+                                    AppPreferences.username = result.username
 
-                            val intent = Intent(this, HomeActivity::class.java).apply {
-                                val view = this@LoginActivity.currentFocus
-                                view?.let { v ->
-                                    val imm =
-                                        getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                                    imm?.hideSoftInputFromWindow(v.windowToken, 0)
+                                    val intent = Intent(this, HomeActivity::class.java).apply {
+                                        val view = this@LoginActivity.currentFocus
+                                        view?.let { v ->
+                                            val imm =
+                                                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                                            imm?.hideSoftInputFromWindow(v.windowToken, 0)
+                                        }
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                    }
+                                    wtfCounter++
+                                    startActivity(intent)
                                 }
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             }
-                            startActivity(intent)
-                            this.finish()
-                        } else {
-                            val intent =
-                                Intent(this@LoginActivity, ErrorActivity::class.java).apply {
-                                    putExtra("ERROR_MESSAGE", "User not found")
-                                }
-                            startActivity(intent)
+                            result.id == -1L -> {
+                                val intent =
+                                    Intent(this@LoginActivity, ErrorActivity::class.java).apply {
+                                        putExtra("ERROR_MESSAGE", "User not found")
+                                    }
+                                startActivity(intent)
+                            }
+
+                            result.id == -2L -> {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Server is unavailable, try again later",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 )

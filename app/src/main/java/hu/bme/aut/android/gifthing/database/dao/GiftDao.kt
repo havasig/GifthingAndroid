@@ -20,6 +20,9 @@ interface GiftDao {
     @Query("SELECT * FROM gift_table WHERE gift_client_id IN (:giftId)")
     fun getById(giftId: Long): LiveData<Gift>
 
+    @Query("SELECT * FROM gift_table WHERE gift_server_id IN (:giftId)")
+    fun getByServerId(giftId: Long): Gift?
+
     @Query("SELECT gift_table.gift_server_id FROM gift_table WHERE gift_client_id IN (:giftId)")
     fun getServerId(giftId: Long): Long
 

@@ -53,8 +53,9 @@ abstract class AppDatabase : RoomDatabase() {
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
                 databaseWriteExecutor.execute {
+                    /*
                     val userDao: UserDao = INSTANCE!!.userDao()
-                    val users = userDao.getAllForInsert()
+                    val users = userDao.getAll()
                     if(users.isEmpty())
                         insertUsers(userDao)
 
@@ -67,6 +68,7 @@ abstract class AppDatabase : RoomDatabase() {
                     val teams = teamDao.getAllForInsert()
                     if(teams.isEmpty())
                         insertTeams(teamDao)
+                     */
                 }
             }
         }

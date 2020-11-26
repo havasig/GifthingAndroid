@@ -3,6 +3,8 @@ package hu.bme.aut.android.gifthing.database.models.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import hu.bme.aut.android.gifthing.database.models.dto.TeamRequest
+import hu.bme.aut.android.gifthing.database.models.dto.TeamResponse
 
 
 @Entity(tableName = "team_table")

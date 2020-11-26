@@ -2,8 +2,10 @@ package hu.bme.aut.android.gifthing.database.repositories
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.snakydesign.livedataextensions.emptyLiveData
 import hu.bme.aut.android.gifthing.database.AppDatabase
 import hu.bme.aut.android.gifthing.database.dao.GiftDao
+import hu.bme.aut.android.gifthing.database.models.dto.GiftResponse
 import hu.bme.aut.android.gifthing.database.models.entities.Gift
 import hu.bme.aut.android.gifthing.database.models.entities.GiftWithOwner
 import hu.bme.aut.android.gifthing.services.GiftService
@@ -25,101 +27,94 @@ class GiftRepository @Inject constructor(
     private val mGiftDao: GiftDao = AppDatabase.getDatabase(application).giftDao()
 
     companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(0) //TODO: set to 10 mins
+        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(1) //TODO: set to 10 mins
     }
 
 
     fun getByIdWithOwner(giftId: Long): LiveData<GiftWithOwner> {
         refreshGift(giftId)
-        //userRepository.refreshUser(giftId)
         return mGiftDao.getByIdWithOwner(giftId)
     }
 
     fun create(gift: Gift) {
-        giftService.create(gift.toServerGift())
-            .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
-                override fun onResponse(
-                    call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                    response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
-                ) {
-                    val result = toGift(response)
-                    AppDatabase.databaseWriteExecutor.execute { mGiftDao.insert(result) }
+        thread {
+            try {
+                val response = giftService.create(gift.toServerGift()).execute()
+                if (response.isSuccessful) {
+                    val createdGift = response.body()!!.toClientGift()
+                    mGiftDao.insert(createdGift)
+                } else {
+                    throw Exception("create " + response.code())
                 }
-
-                override fun onFailure(
-                    call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                    t: Throwable
-                ) {
-                    //TODO: need to save to server
-                    AppDatabase.databaseWriteExecutor.execute { mGiftDao.insert(gift) }
-                }
-            })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
-    fun delete(giftId: Long) {
-        giftService.deleteById(giftId)
-            .enqueue(object : Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                    //be happy, the server deleted/not found/(unauthorized how???) the gift
+    fun delete(giftId: Long): LiveData<Boolean> {
+        val success = emptyLiveData<Boolean>()
+        thread {
+            try {
+                val serverGiftId = mGiftDao.getServerId(giftId)
+                val response = giftService.deleteById(serverGiftId).execute()
+                if (response.isSuccessful) {
+                    mGiftDao.delete(giftId)
+                    success.postValue(true)
+                } else {
+                    success.postValue(false)
+                    throw Exception("delete " + response.code())
                 }
-
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    //TODO: need to delete from server later, connection failed
-                    //scheduler and isDeleted ?
-                }
-            })
-
-        AppDatabase.databaseWriteExecutor.execute { mGiftDao.delete(giftId) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return success
     }
 
-    //TODO: test !!!
-    fun reserve(gift: Gift) {
-        Thread(Runnable {
-            val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
-            giftService.reserve(serverGiftId)
-                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
-                    override fun onResponse(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                        response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
-                    ) {
-                        val result = toGift(response)
+    fun reserve(gift: Gift): LiveData<Boolean> {
+        val success = emptyLiveData<Boolean>()
+        thread {
+            try {
+                val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
+                val response = giftService.reserve(serverGiftId).execute()
+                if (response.isSuccessful) {
+                    val result = response.body()!!.toClientGift()
+                    result.giftClientId = gift.giftClientId
+                    mGiftDao.update(result)
+                    success.postValue(true)
+                } else {
+                    success.postValue(false)
+                    throw Exception("reserve " + response.code())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return success
+    }
+
+    fun release(gift: Gift): LiveData<Boolean> {
+        val success = emptyLiveData<Boolean>()
+        thread {
+            try {
+                val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
+                val response = giftService.release(serverGiftId).execute()
+                if (response.isSuccessful) {
+                        val result = response.body()!!.toClientGift()
                         result.giftClientId = gift.giftClientId
-                        AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(result) }
+                        mGiftDao.update(result)
+                        success.postValue(true)
+                    } else {
+                        success.postValue(false)
+                        throw Exception("release " + response.code())
                     }
-
-                    override fun onFailure(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                        t: Throwable
-                    ) {
-                        //TODO: reserve not working without internet. Notify user
-                    }
-                })
-        }).start()
-    }
-
-    //TODO: test !!!
-    fun release(gift: Gift) {
-        Thread(Runnable {
-            val serverGiftId = mGiftDao.getServerId(gift.giftClientId)
-            giftService.reserve(serverGiftId)
-                .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
-                    override fun onResponse(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                        response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
-                    ) {
-                        val result = toGift(response)
-                        result.giftClientId = gift.giftClientId
-                        AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(result) }
-                    }
-
-                    override fun onFailure(
-                        call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                        t: Throwable
-                    ) {
-                        //TODO: release not working without internet. Notify user
-                    }
-                })
-        }).start()
+                } catch (e: Exception) {
+                success.postValue(false)
+                e.printStackTrace()
+            }
+        }
+        return success
     }
 
     fun getById(giftId: Long): LiveData<Gift> {
@@ -143,50 +138,45 @@ class GiftRepository @Inject constructor(
 
     private fun refreshGift(giftId: Long) {
         thread {
-            val lastFetch = mGiftDao.getLastFetch(giftId)
-            if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
-                val serverGiftId = mGiftDao.getServerId(giftId)
-                giftService.getById(serverGiftId)
-                    .enqueue(object : Callback<hu.bme.aut.android.gifthing.database.models.server.Gift> {
-                        override fun onResponse(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                            response: Response<hu.bme.aut.android.gifthing.database.models.server.Gift>
-                        ) {
-                            if (response.isSuccessful) {
-                                val result = toGift(response)
-                                result.giftClientId = giftId
-                                AppDatabase.databaseWriteExecutor.execute { mGiftDao.update(result) }
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<hu.bme.aut.android.gifthing.database.models.server.Gift>,
-                            t: Throwable
-                        ) {
-                            //TODO() do nothing? return from old data
-                        }
-                    })
+            try {
+                val lastFetch = mGiftDao.getLastFetch(giftId)
+                if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
+                    val serverGiftId = mGiftDao.getServerId(giftId)
+                    val response = giftService.getById(serverGiftId).execute()
+                    if (response.isSuccessful) {
+                        val result = response.body()!!.toClientGift()
+                        result.giftClientId = giftId
+                        mGiftDao.update(result)
+                    } else {
+                        throw Exception("refreshGift " + response.code())
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    private fun findGiftInDb(giftServerId: Long): Gift? {
-        val allGifts = mGiftDao.getAllGifts()
-        for (gift in allGifts) {
-            if (gift.giftServerId == giftServerId) {
-                return gift
-            }
-        }
-        return null
-    }
-
-
-    fun refreshGiftList(giftList: MutableList<hu.bme.aut.android.gifthing.database.models.server.Gift>) {
+    fun refreshGiftList(giftList: MutableList<GiftResponse>) {
         for (gift in giftList) {
-            if (findGiftInDb(gift.id!!) == null) {
+            val current = mGiftDao.getByServerId(gift.id)
+            if (current == null) {
                 mGiftDao.insert(gift.toClientGift())
             } else {
-                mGiftDao.update(gift.toClientGift())
+                val newGift = gift.toClientGift()
+                newGift.giftClientId = current.giftClientId
+                mGiftDao.update(newGift)
+            }
+            gift.reservedBy?.let {
+                val userRepository = UserRepository(application)
+                val currentUser = userRepository.mUserDao.getByServerIdNoLiveData(it.id)
+                if (currentUser == null) {
+                    userRepository.mUserDao.insert(it.toClientUser())
+                } else {
+                    val newUser = it.toClientUser()
+                    newUser.userClientId = currentUser.userClientId
+                    userRepository.mUserDao.update(newUser)
+                }
             }
         }
     }
