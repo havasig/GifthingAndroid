@@ -2,8 +2,6 @@ package hu.bme.aut.android.gifthing.database.repositories
 
 import android.accounts.NetworkErrorException
 import android.app.Application
-import android.net.nsd.NsdManager
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import hu.bme.aut.android.gifthing.AppPreferences
@@ -38,7 +36,7 @@ class UserRepository(
     private val giftRepository = GiftRepository(application)
 
     companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(1) //TODO: set to 10 mins
+        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
     }
 
     init {
@@ -106,7 +104,7 @@ class UserRepository(
         // save/update gifts
         val giftList = mutableListOf<GiftResponse>()
         responseBody.gifts.forEach { giftList.add(it) }
-        responseBody.reservedGifts.forEach { if(!giftList.contains(it)) giftList.add(it) }
+        responseBody.reservedGifts.forEach { if (!giftList.contains(it)) giftList.add(it) }
 
         giftRepository.refreshGiftList(giftList)
 
@@ -121,6 +119,9 @@ class UserRepository(
                 throw  Exception("getByIdFromServer: " + response.code())
             }
         } catch (e: Exception) {
+            val user = mUserDao.getByServerIdNoLiveData(userServerId)!!
+            user.lastFetch = System.currentTimeMillis()
+            mUserDao.update(user)
             e.printStackTrace()
         }
     }
@@ -130,7 +131,7 @@ class UserRepository(
             val teamRepository = TeamRepository(application)
             val userServerId: Long = if (isServerId) userId else mUserDao.getServerId(userId)
             val lastFetch = mUserDao.getLastFetch(userServerId)
-            if (lastFetch == null || lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
+            if (lastFetch == null || (lastFetch + FRESH_TIMEOUT) < System.currentTimeMillis()) {
                 getByIdFromServer(userServerId)
                 if (AppPreferences.currentServerId!! == userServerId) {
                     teamRepository.saveMyTeams()

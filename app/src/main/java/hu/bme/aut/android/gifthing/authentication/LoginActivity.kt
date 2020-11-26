@@ -13,7 +13,6 @@ import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.authentication.dto.LoginData
 import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.CoroutineScope
@@ -44,10 +43,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             if (loginUsername.text.toString() == "" ||
                 loginPassword.text.toString() == ""
             ) {
-                val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Fill every required field")
-                }
-                startActivity(intent)
+                Toast.makeText(
+                    applicationContext,
+                    "Fill every required field",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 val username = loginUsername.text.toString()
                 val password = loginPassword.text.toString()
@@ -78,11 +78,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                                 }
                             }
                             result.id == -1L -> {
-                                val intent =
-                                    Intent(this@LoginActivity, ErrorActivity::class.java).apply {
-                                        putExtra("ERROR_MESSAGE", "User not found")
-                                    }
-                                startActivity(intent)
+                                Toast.makeText(
+                                    applicationContext,
+                                    "User not found",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                             result.id == -2L -> {

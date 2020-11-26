@@ -27,7 +27,7 @@ class GiftRepository @Inject constructor(
     private val mGiftDao: GiftDao = AppDatabase.getDatabase(application).giftDao()
 
     companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(1) //TODO: set to 10 mins
+        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
     }
 
 
@@ -36,20 +36,25 @@ class GiftRepository @Inject constructor(
         return mGiftDao.getByIdWithOwner(giftId)
     }
 
-    fun create(gift: Gift) {
+    fun create(gift: Gift): LiveData<Boolean> {
+        val success = emptyLiveData<Boolean>()
         thread {
             try {
                 val response = giftService.create(gift.toServerGift()).execute()
                 if (response.isSuccessful) {
                     val createdGift = response.body()!!.toClientGift()
                     mGiftDao.insert(createdGift)
+                    success.postValue(true)
                 } else {
+                    success.postValue(false)
                     throw Exception("create " + response.code())
                 }
             } catch (e: Exception) {
+                success.postValue(false)
                 e.printStackTrace()
             }
         }
+        return success
     }
 
     fun delete(giftId: Long): LiveData<Boolean> {
@@ -66,6 +71,7 @@ class GiftRepository @Inject constructor(
                     throw Exception("delete " + response.code())
                 }
             } catch (e: Exception) {
+                success.postValue(false)
                 e.printStackTrace()
             }
         }
@@ -138,10 +144,10 @@ class GiftRepository @Inject constructor(
 
     private fun refreshGift(giftId: Long) {
         thread {
+            val serverGiftId = mGiftDao.getServerId(giftId)
             try {
                 val lastFetch = mGiftDao.getLastFetch(giftId)
                 if (lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
-                    val serverGiftId = mGiftDao.getServerId(giftId)
                     val response = giftService.getById(serverGiftId).execute()
                     if (response.isSuccessful) {
                         val result = response.body()!!.toClientGift()
@@ -152,6 +158,9 @@ class GiftRepository @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                val result = mGiftDao.getByServerId(serverGiftId)!!
+                result.lastFetch = System.currentTimeMillis()
+                mGiftDao.update(result)
                 e.printStackTrace()
             }
         }

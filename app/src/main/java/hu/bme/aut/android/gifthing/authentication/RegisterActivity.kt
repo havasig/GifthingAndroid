@@ -87,7 +87,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             }
 
                             override fun onFailure(call: Call<SignupResponse?>,t: Throwable) {
-                                Toast.makeText(applicationContext as Application,"Something went wrong, try again later.",Toast.LENGTH_SHORT).show()
+                                Toast.makeText(applicationContext as Application,"Server is unavailable",Toast.LENGTH_SHORT).show()
                             }
                         })
                     } catch (e: Exception) {

@@ -12,7 +12,6 @@ import hu.bme.aut.android.gifthing.R
 import hu.bme.aut.android.gifthing.database.models.entities.TeamWithMembers
 import hu.bme.aut.android.gifthing.database.models.entities.User
 import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import hu.bme.aut.android.gifthing.ui.gift.my.MyGiftsActivity
 import hu.bme.aut.android.gifthing.ui.user.UserAdapter
 import hu.bme.aut.android.gifthing.ui.user.UserGiftListActivity
@@ -67,10 +66,7 @@ class TeamDetailsActivity : AppCompatActivity(),
             startActivity(intent)
             finish()
         } else {
-            val intent = Intent(this@TeamDetailsActivity, ErrorActivity::class.java).apply {
-                putExtra("ERROR_MESSAGE", "We could not delete this team (wtf ??? )")
-            }
-            startActivity(intent)
+            Toast.makeText(baseContext, "We could not delete this team (wtf ??? )", Toast.LENGTH_SHORT).show()
         }
     }
 }

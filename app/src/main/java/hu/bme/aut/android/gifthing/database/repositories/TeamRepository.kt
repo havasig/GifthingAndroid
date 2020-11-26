@@ -21,10 +21,6 @@ class TeamRepository(application: Application) {
     private val teamService = ServiceBuilder.buildService(TeamService::class.java)
     private val userRepository = UserRepository(application)
 
-    companion object {
-        val FRESH_TIMEOUT = TimeUnit.MINUTES.toMillis(1) //TODO: set to 10 mins
-    }
-
     init {
         val db: AppDatabase = AppDatabase.getDatabase(application)
         mTeamDao = db.teamDao()
@@ -55,9 +51,10 @@ class TeamRepository(application: Application) {
                 if (response.isSuccessful) {
                     val createdTeam = response.body()!!
                     val currentTeamId = mTeamDao.insert(createdTeam.toClientTeam())
-                    createdTeam.members.forEach {member ->
+                    createdTeam.members.forEach { member ->
                         userRepository.saveUserResponse(member)
-                        val userClientId = userRepository.mUserDao.getByServerIdNoLiveData(member.id)!!.userClientId
+                        val userClientId =
+                            userRepository.mUserDao.getByServerIdNoLiveData(member.id)!!.userClientId
                         mTeamDao.insertUserTeamCross(
                             UserTeamCrossRef(
                                 userClientId,
@@ -96,22 +93,19 @@ class TeamRepository(application: Application) {
                 if (response.isSuccessful) {
                     val teams = response.body()!!
                     teams.forEach { team ->
-                        val lastFetch = mTeamDao.getLastFetch(team.id)
-                        if (lastFetch == null || lastFetch + FRESH_TIMEOUT < System.currentTimeMillis()) {
-                            refreshTeamInDb(team)
-                            val currentTeamId = mTeamDao.getByServerId(team.id)!!.teamClientId
+                        refreshTeamInDb(team)
+                        val currentTeamId = mTeamDao.getByServerId(team.id)!!.teamClientId
 
-                            team.members.forEach { member ->
-                                userRepository.saveUserResponse(member)
-                                val userClientId =
-                                    userRepository.mUserDao.getByServerIdNoLiveData(member.id)!!.userClientId
-                                mTeamDao.insertUserTeamCross(
-                                    UserTeamCrossRef(
-                                        userClientId,
-                                        currentTeamId
-                                    )
+                        team.members.forEach { member ->
+                            userRepository.saveUserResponse(member)
+                            val userClientId =
+                                userRepository.mUserDao.getByServerIdNoLiveData(member.id)!!.userClientId
+                            mTeamDao.insertUserTeamCross(
+                                UserTeamCrossRef(
+                                    userClientId,
+                                    currentTeamId
                                 )
-                            }
+                            )
                         }
                     }
                 } else {

@@ -8,11 +8,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.database.models.entities.Gift
 import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
-import hu.bme.aut.android.gifthing.ui.ErrorActivity
 import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -30,10 +30,7 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         btnCreate.setOnClickListener {
             if (etGiftName.text.toString() == "") {
-                val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Name is required")
-                }
-                startActivity(intent)
+                Toast.makeText(baseContext, "Name is required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             var link: String? = null
@@ -70,10 +67,17 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 lastFetch = System.currentTimeMillis()
             )
 
-            mGiftViewModel.create(newGift)
-            Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
+            mGiftViewModel.create(newGift).observe(
+                this, Observer<Boolean>{ success ->
+                    if(success)
+                        Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(baseContext, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
 
-            finish()
+                    finish()
+                }
+            )
+
         }
 
         btnCancel.setOnClickListener {
