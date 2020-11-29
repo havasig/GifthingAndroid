@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
 @AndroidEntryPoint
-class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+class CreateGiftActivity : AppCompatActivity() {
 
     private val mGiftViewModel: GiftViewModel by viewModels()
 

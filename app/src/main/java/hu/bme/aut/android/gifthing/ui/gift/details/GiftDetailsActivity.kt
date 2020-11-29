@@ -77,7 +77,7 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 tvGiftDescription.text = giftWithOwner.gift.description ?: ""
 
                 giftWithOwner.gift.reservedBy?.let {
-                    if (it == AppPreferences.currentId!!) {
+                    if (it == AppPreferences.currentServerId!!) {
                         btnReserve.text = resources.getString(R.string.free)
                         tvReservedBy.text = getString(R.string.you)
                     } else {
@@ -113,7 +113,7 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun onReserveOrFree() {
         currentGift.reservedBy?.let {
-            if (it == AppPreferences.currentId!!) {
+            if (it == AppPreferences.currentServerId!!) {
                 mGiftViewModel.release(currentGift).observe(
                     this,
                     Observer<Boolean> { success ->

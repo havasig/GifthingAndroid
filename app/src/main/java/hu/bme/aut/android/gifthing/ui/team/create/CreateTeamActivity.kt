@@ -2,6 +2,7 @@ package hu.bme.aut.android.gifthing.ui.team.create
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +29,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
 
     private lateinit var mAdapter: UserAdapter
     private lateinit var usernameAdapter: ArrayAdapter<String>
-    private lateinit var autoTextView: AppCompatAutoCompleteTextView
+    private lateinit var autoTextView: AutoCompleteTextView
     private val mUserViewModel: UserViewModel by viewModels()
     private val mTeamViewModel: TeamViewModel by viewModels()
 
@@ -36,7 +37,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_create_team)
 
-        autoTextView = autoCompleteUsername as AppCompatAutoCompleteTextView
+        autoTextView = autoCompleteUsername as AutoCompleteTextView
 
         usernameAdapter = ArrayAdapter(this, android.R.layout.select_dialog_item, mutableListOf())
         autoTextView.threshold = 1
@@ -105,7 +106,7 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         }
         val newTeam = hu.bme.aut.android.gifthing.database.models.entities.Team(
             name = etTeamName.text.toString(),
-            adminId = AppPreferences.currentId!!,
+            adminId = AppPreferences.currentServerId!!,
             lastFetch = null,
             lastUpdate = System.currentTimeMillis()
         )

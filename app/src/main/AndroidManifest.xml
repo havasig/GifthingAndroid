@@ -26,10 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.gift.CreateGiftActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:name=".ui.gift.CreateGiftActivity" />
         <activity android:name=".ui.team.details.TeamDetailsActivity" />
         <activity android:name=".ui.gift.my.MyGiftDetailsActivity" />
         <activity android:name=".ui.user.UserGiftListActivity" />

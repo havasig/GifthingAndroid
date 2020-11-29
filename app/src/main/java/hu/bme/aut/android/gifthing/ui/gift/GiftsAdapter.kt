@@ -31,7 +31,10 @@ class GiftsAdapter
     override fun onBindViewHolder(holder: GiftsViewHolder, position: Int) {
         val item = gifts[position]
         holder.giftName.text = item.name
-        item.price?.let { holder.giftPrice.text = it.toString() }
+        item.price?.let { holder.giftPrice.text = it.toString() } ?: run {
+            holder.giftPrice.text = "No price given"
+            holder.currency.text = ""
+        }
         holder.item = item
     }
 
@@ -57,6 +60,7 @@ class GiftsAdapter
 
         var giftName: TextView = itemView.findViewById(hu.bme.aut.android.gifthing.R.id.giftName)
         var giftPrice: TextView = itemView.findViewById(hu.bme.aut.android.gifthing.R.id.giftPrice)
+        var currency: TextView = itemView.findViewById(hu.bme.aut.android.gifthing.R.id.huf)
 
         lateinit var item: Gift
 

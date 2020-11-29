@@ -90,7 +90,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
 
     private fun onReserveOrFree() {
         currentGift.reservedBy?.let {
-            if (it == AppPreferences.currentId!!) {
+            if (it == AppPreferences.currentServerId!!) {
                 currentGift.reservedBy = null
                 mGiftViewModel.release(currentGift).observe(
                     this,
@@ -103,7 +103,7 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
                 )
             }
         } ?: run {
-            currentGift.reservedBy = AppPreferences.currentId!!
+            currentGift.reservedBy = AppPreferences.currentServerId!!
             mGiftViewModel.reserve(currentGift).observe(
                 this,
                 Observer<Boolean> { success ->

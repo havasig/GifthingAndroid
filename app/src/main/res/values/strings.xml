@@ -62,5 +62,7 @@
     <string name="addMember">Add Member</string>
     <string name="you">You</string>
     <string name="logout">Logout</string>
+    <string name="price_huf">Price (HUF)</string>
+    <string name="huf">HUF</string>
 
 </resources>
