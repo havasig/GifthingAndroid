@@ -7,68 +7,68 @@
     tools:context=".authentication.LoginActivity"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_margin="18dp"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/ivLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher_round" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/login"
         android:textSize="24sp"
+        android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:weightSum="3"
-        android:padding="10dp">
+        android:layout_marginTop="20dp"
+        android:weightSum="4">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:gravity="right"
-            android:textSize="18sp"/>
+            android:hint="@string/username"
+            app:errorEnabled="true"
+            android:id="@+id/usernameLayout">
 
-        <EditText
-            android:text="a"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/loginUsername"
-            android:inputType="text">
-            <requestFocus />
-        </EditText>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/loginUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text">
+
+                <requestFocus />
+            </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:weightSum="3"
-        android:padding="10dp">
+        android:layout_marginTop="20dp"
+        android:weightSum="4">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:text="@string/password"
-            android:gravity="right"
-            android:textSize="18sp" />
+            android:hint="@string/password"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            android:id="@+id/passwordLayout">
 
-        <EditText
-            android:text="q"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/loginPassword"
-            android:inputType="textPassword"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/loginPassword"
+                android:inputType="textPassword">
+            </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
     <Button
@@ -76,7 +76,16 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:id="@+id/loginBtn"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:layout_gravity="center"
+        android:id="@+id/registerBtn"
+        android:layout_marginTop="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -84,5 +93,6 @@
         android:text="@string/forgot_password"
         android:layout_gravity="center"
         android:id="@+id/forgotBtn"
-        android:layout_margin="24dp"/>
+        android:layout_marginTop="20dp"
+        style="?attr/materialButtonOutlinedStyle"/>
 </LinearLayout>

@@ -27,6 +27,11 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppPreferences.setup(applicationContext)
+
+        if (AppPreferences.currentId != null)
+            startActivity(Intent(this, HomeActivity::class.java))
+
         setContentView(R.layout.activity_login)
 
         showSoftKeyboard(loginUsername)
@@ -40,62 +45,74 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         var wtfCounter = 0
 
         loginBtn.setOnClickListener {
-            if (loginUsername.text.toString() == "" ||
-                loginPassword.text.toString() == ""
-            ) {
-                Toast.makeText(
-                    applicationContext,
-                    "Fill every required field",
-                    Toast.LENGTH_SHORT
-                ).show()
+            var valid = true
+            if (loginUsername.text.toString() == "") {
+                usernameLayout.error = "Username is required"
+                valid = false
             } else {
-                val username = loginUsername.text.toString()
-                val password = loginPassword.text.toString()
+                usernameLayout.error = null
+            }
+            if (loginPassword.text.toString() == "") {
+                passwordLayout.error = "Password is required"
+                valid = false
+            } else {
+                passwordLayout.error = null
+            }
+            if (!valid)
+                return@setOnClickListener
 
-                mUserViewModel.login(username, password).observe(
-                    this,
-                    Observer<LoginData> { result ->
-                        when {
-                            result.id > 0 -> {
-                                if (wtfCounter == 0) {
-                                    AppPreferences.currentId = result.id
-                                    AppPreferences.email = result.email
-                                    AppPreferences.roles = result.roles
-                                    AppPreferences.token = result.accessToken
-                                    AppPreferences.username = result.username
+            val username = loginUsername.text.toString()
+            val password = loginPassword.text.toString()
 
-                                    val intent = Intent(this, HomeActivity::class.java).apply {
-                                        val view = this@LoginActivity.currentFocus
-                                        view?.let { v ->
-                                            val imm =
-                                                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                                            imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                                        }
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            mUserViewModel.login(username, password).observe(
+                this,
+                Observer<LoginData> { result ->
+                    when {
+                        result.id > 0 -> {
+                            if (wtfCounter == 0) {
+                                AppPreferences.currentId = result.id
+                                AppPreferences.email = result.email
+                                AppPreferences.roles = result.roles
+                                AppPreferences.token = result.accessToken
+                                AppPreferences.username = result.username
+
+                                val intent = Intent(this, HomeActivity::class.java).apply {
+                                    val view = this@LoginActivity.currentFocus
+                                    view?.let { v ->
+                                        val imm =
+                                            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
                                     }
-                                    wtfCounter++
-                                    startActivity(intent)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 }
-                            }
-                            result.id == -1L -> {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "User not found",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            result.id == -2L -> {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Server is unavailable, try again later",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                wtfCounter++
+                                startActivity(intent)
                             }
                         }
+                        result.id == -1L -> {
+                            Toast.makeText(
+                                applicationContext,
+                                "Incorrect username or password",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        result.id == -2L -> {
+                            Toast.makeText(
+                                applicationContext,
+                                "Server is unavailable, try again later",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                )
-            }
+                }
+            )
+        }
+
+
+        registerBtn.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 

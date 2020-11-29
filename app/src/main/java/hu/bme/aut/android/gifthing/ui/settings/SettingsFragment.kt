@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.ui.WelcomeActivity
+import hu.bme.aut.android.gifthing.authentication.LoginActivity
 
 class SettingsFragment : Fragment() {
 
@@ -32,7 +32,7 @@ class SettingsFragment : Fragment() {
             AppPreferences.email = null
             AppPreferences.roles = null
             AppPreferences.token = null
-            val intent = Intent(context, WelcomeActivity::class.java).apply{
+            val intent = Intent(context, LoginActivity::class.java).apply{
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             }
             startActivity(intent)
