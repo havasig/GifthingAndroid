@@ -44,14 +44,17 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
 
         mUserViewModel.getAllUsername().observe(
             this,
-            Observer<List<String>> { username ->
+            Observer<List<String>> { usernames ->
                 try {
-                    username.forEach {
+                    if (usernames.contains("")) {
+                        throw Exception("Server is unavailable")
+                    }
+                    usernames.forEach {
                         usernameAdapter.add(it)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Username not found.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Server is unavailable", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -66,7 +69,8 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
             Observer<User> { currentUser ->
                 try {
                     usernameAdapter.remove(currentUser.username)
-                    mAdapter.addUser(currentUser)
+                    if (!mAdapter.contains(currentUser))
+                        mAdapter.addUser(currentUser)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(this, "User not found.", Toast.LENGTH_SHORT).show()
@@ -82,20 +86,10 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
             when (val username = autoCompleteUsername.text.toString()) {
                 "" -> Toast.makeText(baseContext, "Username is empty", Toast.LENGTH_SHORT).show()
                 AppPreferences.username!! -> {
-                    Toast.makeText(
-                        baseContext,
-                        "You are already member of the group",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(baseContext, "You are already member of the group", Toast.LENGTH_SHORT).show()
                     autoCompleteUsername.setText("")
                 }
-                else -> {
-                    if (username.contains(username))
-                        onAdd(username)
-                    else
-                        Toast.makeText(baseContext, "No user found", Toast.LENGTH_SHORT).show()
-
-                }
+                else -> onAdd(username)
             }
         }
 
@@ -123,21 +117,23 @@ class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListen
         mTeamViewModel.create(newTeam, memberIdList).observe(
             this,
             Observer<Boolean> { success ->
-                if(success)
+                if (success)
                     Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
                 else
-                    Toast.makeText(this, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Something went wrong, try again later",
+                        Toast.LENGTH_SHORT).show()
                 onBackPressed()
             }
         )
     }
 
     private fun onAdd(username: String) {
-        mUserViewModel.getAll().observe(
+        mUserViewModel.getByUsername(username).observe(
             this,
-            Observer<List<User>> { users ->
+            Observer<User> { user ->
                 try {
-                    val user = users.find { it.username == username }!!
                     if (!mAdapter.contains(user)) {
                         mAdapter.addUser(user)
                         usernameAdapter.remove(user.username)

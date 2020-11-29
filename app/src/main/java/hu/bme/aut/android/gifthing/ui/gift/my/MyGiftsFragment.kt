@@ -34,11 +34,7 @@ class MyGiftsFragment : Fragment(),
         activity?.startActivity(intent)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(
             hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,
             container,
@@ -68,8 +64,7 @@ class MyGiftsFragment : Fragment(),
         val fab: FloatingActionButton =
             rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
         fab.setOnClickListener {
-            val intent = Intent(activity, CreateGiftActivity::class.java).apply {}
-            startActivity(intent)
+            startActivity(Intent(activity, CreateGiftActivity::class.java))
         }
         return rootView
     }

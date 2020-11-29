@@ -26,13 +26,13 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
         AppPreferences.setup(applicationContext)
 
         if (AppPreferences.currentId != null)
             startActivity(Intent(this, HomeActivity::class.java))
 
-        setContentView(R.layout.activity_login)
 
         showSoftKeyboard(loginUsername)
 

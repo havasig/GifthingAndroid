@@ -11,13 +11,13 @@ interface UserService {
     @Throws(Exception::class)
     fun getById(@Path("id") id: Long): Call<UserResponse>
 
+    @GET("user/username/{username}")
+    @Throws(Exception::class)
+    fun getByUsername(@Path("username") username: String): Call<UserResponse>
+
     @GET("user/email/{email}")
     @Throws(Exception::class)
     suspend fun findByEmail(@Path("email") email: String): User
-
-    @GET("user/username/{username}")
-    @Throws(Exception::class)
-    suspend fun findByUsername(@Path("username") username: String): User
 
     @GET("user/usernames")
     @Throws(Exception::class)

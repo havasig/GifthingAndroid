@@ -43,6 +43,10 @@ class UserViewModel(
         return mRepository.getAllUsers()
     }
 
+    fun getByUsername(username: String): LiveData<User> {
+        return mRepository.getByUsername(username)
+    }
+
     fun login(username: String, password: String): LiveData<LoginData> {
             return mRepository.login(username, password).switchMap {
                 if (it.id > 0)

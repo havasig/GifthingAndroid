@@ -4,6 +4,8 @@ import android.accounts.NetworkErrorException
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.snakydesign.livedataextensions.emptyLiveData
+import com.snakydesign.livedataextensions.liveDataOf
 import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.authentication.dto.LoginRequest
 import hu.bme.aut.android.gifthing.authentication.dto.LoginResponse
@@ -30,7 +32,6 @@ class UserRepository(
     val mUserDao: UserDao
     private val mGiftDao: GiftDao
     private val mTeamDao: TeamDao
-    private val mUsername: LiveData<List<String>>
     private val userService = ServiceBuilder.buildService(UserService::class.java)
     private val authService = ServiceBuilder.buildService(AuthService::class.java)
     private val giftRepository = GiftRepository(application)
@@ -44,12 +45,11 @@ class UserRepository(
         mUserDao = db.userDao()
         mGiftDao = db.giftDao()
         mTeamDao = db.teamDao()
-        mUsername = mUserDao.getAllUsername()
     }
 
     //TODO: refresh all users in 10 minutes anyway? (and here)
     fun getUsername(): LiveData<List<String>> {
-        return mUsername
+        return refreshUsernames()
     }
 
     fun getById(id: Long): LiveData<User> {
@@ -64,6 +64,10 @@ class UserRepository(
 
     fun getAllUsers(): LiveData<List<User>> {
         return mUserDao.getAllUsers()
+    }
+
+    fun getByUsername(username: String): LiveData<User> {
+        return refreshUserByUsername(username)
     }
 
     fun getUserWithOwnedGifts(id: Long): LiveData<UserWithOwnedGifts> {
@@ -138,6 +142,42 @@ class UserRepository(
                 }
             }
         }.join()
+    }
+
+    private fun refreshUsernames(): LiveData<List<String>> {
+        val usernames = emptyLiveData<List<String>>()
+        thread {
+            try {
+                val response = userService.getUsername().execute()
+                if (response.isSuccessful) {
+                    usernames.postValue(response.body()!!)
+                } else {
+                    throw  Exception("refreshUsernames: " + response.code())
+                }
+            } catch (e: Exception) {
+                usernames.postValue(listOf(""))
+                e.printStackTrace()
+            }
+        }
+        return usernames
+    }
+
+    private fun refreshUserByUsername(username: String): LiveData<User> {
+        val user = emptyLiveData<User>()
+        thread {
+            try {
+                val response = userService.getByUsername(username).execute()
+                if (response.isSuccessful) {
+                    saveUserResponse(response.body()!!)
+                    user.postValue(mUserDao.getByServerIdNoLiveData(response.body()!!.id))
+                } else {
+                    throw  Exception("refreshUserByUsername: " + response.code())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return user
     }
 
     @Throws(NetworkErrorException::class)

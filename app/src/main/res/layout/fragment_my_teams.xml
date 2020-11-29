@@ -17,6 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="20dp"
         android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/colorAccent"
         android:id="@+id/fabAddTeam"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
