@@ -32,7 +32,7 @@ class GiftsAdapter
         val item = gifts[position]
         holder.giftName.text = item.name
         item.price?.let { holder.giftPrice.text = it.toString() } ?: run {
-            holder.giftPrice.text = "No price given"
+            holder.giftPrice.text = ""
             holder.currency.text = ""
         }
         holder.item = item

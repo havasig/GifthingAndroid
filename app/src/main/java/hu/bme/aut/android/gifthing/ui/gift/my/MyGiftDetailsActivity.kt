@@ -1,7 +1,9 @@
 package hu.bme.aut.android.gifthing.ui.gift.my
 
 import android.content.DialogInterface
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -35,9 +37,9 @@ class MyGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope()
                     try {
                         tvOwnerName.text = getString(R.string.you)
                         tvGiftName.text = gift.name
-                        tvGiftDescription.text = gift.description ?: ""
-                        tvGiftPrice.text = gift.price?.toString() ?: ""
-                        tvGiftLink.text = gift.link ?: ""
+                        gift.price?.let { tvGiftPrice.text = it.toString() } ?: run { priceLL.visibility = View.GONE }
+                        gift.description?.let { tvGiftDescription.text = it } ?: run { descriptionLL.visibility = View.GONE }
+                        gift.link?.let { tvGiftLink.text = it } ?: run { linkLL.visibility = View.GONE }
                         currentGift = gift
                     } catch (e: Exception) {
                         Toast.makeText(this, "Gift not found.", Toast.LENGTH_SHORT).show()

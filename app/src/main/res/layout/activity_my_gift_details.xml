@@ -18,22 +18,20 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:text="@string/delete"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
-
-        <Button
             android:id="@+id/btnEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="@string/edit"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
+            android:text="@string/edit"/>
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="@string/delete"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

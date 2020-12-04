@@ -72,9 +72,9 @@ class GiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     }
 
                 tvGiftName.text = giftWithOwner.gift.name
-                tvGiftPrice.text = giftWithOwner.gift.price?.toString() ?: ""
-                tvGiftLink.text = giftWithOwner.gift.link ?: ""
-                tvGiftDescription.text = giftWithOwner.gift.description ?: ""
+                giftWithOwner.gift.price?.let { tvGiftPrice.text = it.toString() } ?: run { priceLL.visibility = View.GONE }
+                giftWithOwner.gift.description?.let { tvGiftDescription.text = it } ?: run { descriptionLL.visibility = View.GONE }
+                giftWithOwner.gift.link?.let { tvGiftLink.text = it } ?: run { linkLL.visibility = View.GONE }
 
                 giftWithOwner.gift.reservedBy?.let {
                     if (it == AppPreferences.currentServerId!!) {

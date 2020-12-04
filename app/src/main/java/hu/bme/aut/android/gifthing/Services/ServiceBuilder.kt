@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit
 object ServiceBuilder {
     private const val URL = "http://192.168.1.84:8080/api/"
 
-
-
     fun <T> buildService(serviceType: Class<T>): T {
         val okHttpClient = OkHttpClient.Builder()
         val headerInterceptor = HeaderInterceptor()

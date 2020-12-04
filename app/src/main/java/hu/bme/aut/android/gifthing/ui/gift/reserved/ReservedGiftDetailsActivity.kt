@@ -2,6 +2,7 @@ package hu.bme.aut.android.gifthing.ui.gift.reserved
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -64,9 +65,9 @@ class ReservedGiftDetailsActivity : AppCompatActivity(), CoroutineScope by MainS
                         }
 
                     tvGiftName.text = giftWithOwner.gift.name
-                    tvGiftDescription.text = giftWithOwner.gift.description ?: ""
-                    tvGiftPrice.text = giftWithOwner.gift.price?.toString() ?: ""
-                    tvGiftLink.text = giftWithOwner.gift.link ?: ""
+                    giftWithOwner.gift.price?.let { tvGiftPrice.text = it.toString() } ?: run { priceLL.visibility = View.GONE }
+                    giftWithOwner.gift.description?.let { tvGiftDescription.text = it } ?: run { descriptionLL.visibility = View.GONE }
+                    giftWithOwner.gift.link?.let { tvGiftLink.text = it } ?: run { linkLL.visibility = View.GONE }
 
                     giftWithOwner.gift.reservedBy?.let {
                         if (it == AppPreferences.currentServerId!!) {
