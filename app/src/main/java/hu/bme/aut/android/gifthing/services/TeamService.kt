@@ -14,9 +14,12 @@ interface TeamService {
     @GET("team/my-teams")
     fun getMyTeams(): Call<MutableList<TeamResponse>>
 
+    @POST("team/create")
+    fun create(@Body newTeam: TeamRequest): Call<TeamResponse>
+
+    /*
     @DELETE("team/delete/{id}")
     suspend fun deleteById(@Path("id") id: Long): Boolean
 
-    @POST("team/create")
-    fun create(@Body newTeam: TeamRequest): Call<TeamResponse>
+ */
 }

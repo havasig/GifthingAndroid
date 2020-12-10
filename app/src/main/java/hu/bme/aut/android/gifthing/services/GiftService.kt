@@ -21,8 +21,10 @@ interface GiftService {
     @GET("gift/release/{id}")
     fun release(@Path("id") id: Long): Call<GiftResponse>
 
+    /*
     @GET("gift/{id}/with-owner")
     fun findByIdWithOwner(@Path("id") id: Long): Call<Gift>
 
     //TODO: update
+     */
 }
