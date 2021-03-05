@@ -7,97 +7,65 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.Gift
-import hu.bme.aut.android.gifthing.models.User
+import dagger.hilt.android.AndroidEntryPoint
+import hu.bme.aut.android.gifthing.AppPreferences
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
 import hu.bme.aut.android.gifthing.ui.gift.CreateGiftActivity
 import hu.bme.aut.android.gifthing.ui.gift.GiftsAdapter
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
+@AndroidEntryPoint
 class MyGiftsFragment : Fragment(),
     GiftsAdapter.OnGiftSelectedListener,
     CoroutineScope by MainScope() {
 
-    private val GIFT_CREATE_REQUEST = 1
     private lateinit var mAdapter: GiftsAdapter
 
-    override fun onGiftSelected(gift: Gift) {
+    override fun onGiftSelected(gift: hu.bme.aut.android.gifthing.database.models.entities.Gift) {
         val intent = Intent(activity, MyGiftDetailsActivity::class.java).apply {
-            putExtra("GIFT_ID", gift.id)
+            putExtra("GIFT_ID", gift.giftClientId)
         }
         activity?.startActivity(intent)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts, container, false)
-        val recyclerView: RecyclerView = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(
+            hu.bme.aut.android.gifthing.R.layout.fragment_my_gifts,
+            container,
+            false
+        )
+        val recyclerView: RecyclerView =
+            rootView.findViewById(hu.bme.aut.android.gifthing.R.id.myGiftsContainer)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         mAdapter = GiftsAdapter(this, mutableListOf())
 
-        launch {
-            val currentUser: User?
-            try {
-                currentUser = getUser(HomeActivity.CURRENT_USER_ID)
-                mAdapter = GiftsAdapter(
-                    this@MyGiftsFragment,
-                    currentUser.gifts
-                )
-                recyclerView.adapter = mAdapter
-            } catch (e: HttpException) {
-                val intent = Intent(activity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "User not found")
+        val mUserViewModel: UserViewModel by viewModels()
+
+        try {
+            mUserViewModel.getUserWithOwnedGifts(AppPreferences.currentId!!).observe(
+                viewLifecycleOwner,
+                Observer<hu.bme.aut.android.gifthing.database.models.entities.UserWithOwnedGifts> { user ->
+                    mAdapter.setGifts(user.ownedGifts)
                 }
-                activity?.startActivity(intent)
-            }
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "lol", Toast.LENGTH_SHORT).show()
         }
 
-        val fab: FloatingActionButton = rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
-        fab.setOnClickListener{
-            val intent = Intent(activity, CreateGiftActivity::class.java).apply {}
-            startActivityForResult(intent, GIFT_CREATE_REQUEST)
+        recyclerView.adapter = mAdapter
+
+        val fab: FloatingActionButton =
+            rootView.findViewById(hu.bme.aut.android.gifthing.R.id.fabAddGift)
+        fab.setOnClickListener {
+            startActivity(Intent(activity, CreateGiftActivity::class.java))
         }
         return rootView
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when(requestCode) {
-            GIFT_CREATE_REQUEST -> {
-                saveGift(data)
-            }
-            else -> {
-                Toast.makeText(context, "Create dialog result fail", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private suspend fun getUser(id: Long) : User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
-    }
-
-    private fun saveGift(data: Intent?) {
-        launch {
-            if(data != null) {
-                mAdapter.addGift(data.getSerializableExtra("GIFT") as Gift)
-                Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
-            } else
-                Toast.makeText(context, "cancelled", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+}

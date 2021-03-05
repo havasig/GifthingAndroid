@@ -39,7 +39,7 @@
     <string name="my_teams">My groups</string>
     <string name="my_invites">My invites</string>
     <string name="reserved_gifts">Reserved gifts</string>
-    <string name="create_team">Create team</string>
+    <string name="create_team">Create group</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="create">Create</string>
@@ -47,7 +47,7 @@
     <string name="members">Members</string>
     <string name="name">Name</string>
     <string name="reserve">Reserve</string>
-    <string name="unreserve">Unreserve</string>
+    <string name="free">Free</string>
     <string name="reserved_by">Reserved by</string>
     <string name="currently_free">Currently free</string>
     <string name="groupName">Group name</string>
@@ -56,5 +56,13 @@
     <string name="required">Required</string>
     <string name="lastName">Last Name</string>
     <string name="firstName">First Name</string>
+    <string name="allowed_characters">0123456789qwertzuiopasdfghjklyxcvbnm QWERTZUIOPASDFGHJKLYXCVBNM</string>
+    <string name="name_of_the_group">Name of the group</string>
+    <string name="username">Username</string>
+    <string name="addMember">Add Member</string>
+    <string name="you">You</string>
+    <string name="logout">Logout</string>
+    <string name="price_huf">Price (HUF)</string>
+    <string name="huf">HUF</string>
 
 </resources>

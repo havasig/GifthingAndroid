@@ -23,7 +23,8 @@ class MyGiftsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val navView: NavigationView = findViewById(hu.bme.aut.android.gifthing.R.id.nav_view)
-        val drawerLayout: DrawerLayout = findViewById(hu.bme.aut.android.gifthing.R.id.drawer_layout)
+        val drawerLayout: DrawerLayout =
+            findViewById(hu.bme.aut.android.gifthing.R.id.drawer_layout)
 
         val navController = findNavController(hu.bme.aut.android.gifthing.R.id.nav_host_fragment)
         // Passing each main ID as a set of Ids because each

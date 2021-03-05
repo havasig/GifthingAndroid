@@ -1,67 +1,97 @@
 package hu.bme.aut.android.gifthing.ui.team.create
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.bme.aut.android.gifthing.ErrorActivity
+import hu.bme.aut.android.gifthing.AppPreferences
 import hu.bme.aut.android.gifthing.R
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.services.TeamService
-import hu.bme.aut.android.gifthing.services.UserService
-import hu.bme.aut.android.gifthing.models.Team
-import hu.bme.aut.android.gifthing.models.User
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
-import hu.bme.aut.android.gifthing.ui.user.UserListAdapter
+import hu.bme.aut.android.gifthing.database.models.entities.User
+import hu.bme.aut.android.gifthing.database.viewModels.TeamViewModel
+import hu.bme.aut.android.gifthing.database.viewModels.UserViewModel
+import hu.bme.aut.android.gifthing.ui.user.UserAdapter
 import kotlinx.android.synthetic.main.dialog_create_team.*
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 
-class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedListener, CoroutineScope by MainScope() {
+class CreateTeamActivity : AppCompatActivity(), UserAdapter.OnUserSelectedListener,
+    CoroutineScope by MainScope() {
 
     override fun onUserSelected(user: User) {
         //TODO: érintésre kitörli a listából
     }
 
-
-    private lateinit var mAdapter: UserListAdapter
+    private lateinit var mAdapter: UserAdapter
+    private lateinit var usernameAdapter: ArrayAdapter<String>
+    private lateinit var autoTextView: AutoCompleteTextView
+    private val mUserViewModel: UserViewModel by viewModels()
+    private val mTeamViewModel: TeamViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_create_team)
 
-        val recyclerView = emailContainer
+        autoTextView = autoCompleteUsername as AutoCompleteTextView
+
+        usernameAdapter = ArrayAdapter(this, android.R.layout.select_dialog_item, mutableListOf())
+        autoTextView.threshold = 1
+        autoTextView.setAdapter(usernameAdapter)
+
+        mUserViewModel.getAllUsername().observe(
+            this,
+            Observer<List<String>> { usernames ->
+                try {
+                    if (usernames.contains("")) {
+                        throw Exception("Server is unavailable")
+                    }
+                    usernames.forEach {
+                        usernameAdapter.add(it)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Server is unavailable", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+        val recyclerView = usernameContainer
         recyclerView.layoutManager = LinearLayoutManager(this)
-        mAdapter = UserListAdapter(this, mutableListOf())
+        mAdapter = UserAdapter(this, mutableListOf())
         recyclerView.adapter = mAdapter
 
-        launch {
-            try {
-                mAdapter.addUser(getUser(HomeActivity.CURRENT_USER_ID))
-            } catch (e: HttpException) {
-                val intent = Intent(this@CreateTeamActivity, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "User is not logged in")
+        mUserViewModel.getById(AppPreferences.currentId!!).observe(
+            this,
+            Observer<User> { currentUser ->
+                try {
+                    usernameAdapter.remove(currentUser.username)
+                    if (!mAdapter.contains(currentUser))
+                        mAdapter.addUser(currentUser)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "User not found.", Toast.LENGTH_SHORT).show()
                 }
-                startActivity(intent)
             }
-        }
+        )
 
         btnCreateTeam.setOnClickListener {
-            onCreate()
+            onTeamCreate()
         }
 
         btnAdd.setOnClickListener {
-            val userEmail = etEmail.text.toString()
-            if(userEmail != "")
-                onAdd(userEmail)
-            else
-                Toast.makeText(baseContext, "email field is empty", Toast.LENGTH_SHORT).show()
+            when (val username = autoCompleteUsername.text.toString()) {
+                "" -> Toast.makeText(baseContext, "Username is empty", Toast.LENGTH_SHORT).show()
+                AppPreferences.username!! -> {
+                    Toast.makeText(baseContext, "You are already member of the group", Toast.LENGTH_SHORT).show()
+                    autoCompleteUsername.setText("")
+                }
+                else -> onAdd(username)
+            }
         }
 
         btnCancelTeam.setOnClickListener {
@@ -69,68 +99,53 @@ class CreateTeamActivity : AppCompatActivity(), UserListAdapter.OnUserSelectedLi
         }
     }
 
-    private fun onCreate() {
+    private fun onTeamCreate() {
         if (etTeamName.text.toString() == "") {
-            val intent = Intent(this, ErrorActivity::class.java).apply {
-                putExtra("ERROR_MESSAGE", "Name is required")
-            }
-            startActivity(intent)
+            Toast.makeText(baseContext, "Name is required", Toast.LENGTH_SHORT).show()
             return
         }
-        val newTeam = Team()
+        val newTeam = hu.bme.aut.android.gifthing.database.models.entities.Team(
+            name = etTeamName.text.toString(),
+            adminId = AppPreferences.currentServerId!!,
+            lastFetch = null,
+            lastUpdate = System.currentTimeMillis()
+        )
 
-        newTeam.adminId = HomeActivity.CURRENT_USER_ID
-        newTeam.name = etTeamName.text.toString()
-        newTeam.members = mAdapter.getUsers()
-
-        val tmpList = mAdapter.getUsers()
-        val userList = mutableListOf<User>()
-        for (user in tmpList) {
-            userList.add(user)
+        val memberIdList = mutableListOf<Long>()
+        mAdapter.getUsers().forEach {
+            memberIdList.add(it.userClientId)
         }
-
-        newTeam.members = userList
-
-
-        launch {
-            val savedTeam = createTeam(newTeam)
-            Toast.makeText(baseContext, "created successfully", Toast.LENGTH_SHORT).show()
-
-            val result = Intent().apply {
-                putExtra("TEAM", savedTeam)
+        mTeamViewModel.create(newTeam, memberIdList).observe(
+            this,
+            Observer<Boolean> { success ->
+                if (success)
+                    Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(
+                        this,
+                        "Something went wrong, try again later",
+                        Toast.LENGTH_SHORT).show()
+                onBackPressed()
             }
-            setResult(Activity.RESULT_OK, result)
-            onBackPressed()
-        }
+        )
     }
 
-    private fun onAdd(userEmail: String) {
-        launch {
-            val insertedUser: User
-            try {
-                insertedUser = getUser(userEmail)
-                if(insertedUser.id != 0L) { //TODO: team response teljesen szar
-                    mAdapter.addUser(insertedUser)
+    private fun onAdd(username: String) {
+        mUserViewModel.getByUsername(username).observe(
+            this,
+            Observer<User> { user ->
+                try {
+                    if (!mAdapter.contains(user)) {
+                        mAdapter.addUser(user)
+                        usernameAdapter.remove(user.username)
+                        autoTextView.setAdapter(usernameAdapter)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "User cannot be added.", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: HttpException) {
-                Toast.makeText(baseContext, "Not existing user", Toast.LENGTH_SHORT).show()
             }
-        }
-        etEmail.setText("")
-    }
-
-    private suspend fun createTeam(newTeam: Team): Team{
-        val teamService = ServiceBuilder.buildService(TeamService::class.java)
-        return teamService.create(newTeam)
-    }
-
-    private suspend fun getUser(email: String): User{
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getByEmail(email)
-    }
-
-    private suspend fun getUser(id: Long): User {
-        val userService = ServiceBuilder.buildService(UserService::class.java)
-        return userService.getById(id)
+        )
+        autoCompleteUsername.setText("")
     }
 }

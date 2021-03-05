@@ -1,20 +1,30 @@
 package hu.bme.aut.android.gifthing.services
 
-import hu.bme.aut.android.gifthing.models.Gift
+import hu.bme.aut.android.gifthing.database.models.dto.GiftResponse
+import hu.bme.aut.android.gifthing.database.models.server.Gift
+import retrofit2.Call
 import retrofit2.http.*
 
 interface GiftService {
     @GET("gift/{id}")
-    suspend fun getById(@Path("id") id: Long): Gift
+    fun getById(@Path("id") id: Long): Call<GiftResponse>
 
     @DELETE("gift/delete/{id}")
-    suspend fun deleteById(@Path("id") id: Long): Boolean
+    fun deleteById(@Path("id") id: Long): Call<Boolean>
 
     @POST("gift/create")
-    suspend fun create(@Body newGift: Gift): Gift
+     fun create(@Body newGift: Gift): Call<GiftResponse>
 
-    @PUT("gift/reserve/{giftId}/{userId}")
-    suspend fun reserveGift(@Path("giftId") giftId: Long, @Path("userId") userId: Long): Gift
+    @GET("gift/reserve/{id}")
+    fun reserve(@Path("id") id: Long): Call<GiftResponse>
+
+    @GET("gift/release/{id}")
+    fun release(@Path("id") id: Long): Call<GiftResponse>
+
+    /*
+    @GET("gift/{id}/with-owner")
+    fun findByIdWithOwner(@Path("id") id: Long): Call<Gift>
 
     //TODO: update
+     */
 }

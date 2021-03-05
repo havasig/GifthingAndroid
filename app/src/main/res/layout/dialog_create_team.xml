@@ -1,67 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:weightSum="4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"
-        android:id="@+id/nameLL"
-        android:weightSum="3">
+        android:id="@+id/nameLL">
 
-        <TextView
-            android:id="@+id/tvTeamName"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/groupName"
-            android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:hint="@string/groupName"
+            app:errorEnabled="true"
+            android:id="@+id/tvTeamName">
 
-        <EditText
-            android:id="@+id/etTeamName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:hint="Name of the group"
-            android:textSize="18sp"
-            android:layout_weight="2"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTeamName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:digits="@string/allowed_characters">
+                <requestFocus />
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/addMemberLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:weightSum="4"
+        android:id="@+id/addMemberLL"
         app:layout_constraintTop_toBottomOf="@+id/nameLL">
 
-        <TextView
-            android:id="@+id/tvMemberEmail"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_weight="1"
-            android:text="@string/email"
-            android:textSize="18sp" />
+            android:layout_weight="3"
+            android:hint="@string/username"
+            android:id="@+id/tvMemberUsername"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_weight="2"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:textSize="18sp" />
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -72,6 +66,7 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="20dp"
         app:layout_constraintTop_toBottomOf="@+id/addMemberLL">
 
         <Button
@@ -80,10 +75,32 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:id="@+id/btnAdd"
-            android:text="@string/add" />
+            android:text="@string/addMember" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/membersLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addButtonLL">
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/tvMembers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:text="@string/members"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
     <ScrollView
         android:id="@+id/emailSV"
         android:layout_width="match_parent"
@@ -92,11 +109,11 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonsLL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addButtonLL"
+        app:layout_constraintTop_toBottomOf="@+id/membersLL"
         android:layout_height="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/emailContainer"
+            android:id="@+id/usernameContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

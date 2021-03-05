@@ -1,35 +1,36 @@
 package hu.bme.aut.android.gifthing.ui.gift
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import hu.bme.aut.android.gifthing.services.GiftService
-import hu.bme.aut.android.gifthing.services.ServiceBuilder
-import hu.bme.aut.android.gifthing.models.Gift
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import dagger.hilt.android.AndroidEntryPoint
+import hu.bme.aut.android.gifthing.AppPreferences
+import hu.bme.aut.android.gifthing.database.models.entities.Gift
+import hu.bme.aut.android.gifthing.database.viewModels.GiftViewModel
+import kotlinx.android.synthetic.main.dialog_create_gift.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import androidx.appcompat.app.AppCompatActivity
-import hu.bme.aut.android.gifthing.ErrorActivity
-import hu.bme.aut.android.gifthing.ui.home.HomeActivity
-import kotlinx.android.synthetic.main.dialog_create_gift.*
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.lang.Exception
 
+@AndroidEntryPoint
+class CreateGiftActivity : AppCompatActivity() {
 
-class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+    private val mGiftViewModel: GiftViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(hu.bme.aut.android.gifthing.R.layout.dialog_create_gift)
         setFinishOnTouchOutside(false)
+        showSoftKeyboard(etGiftName)
 
         btnCreate.setOnClickListener {
             if (etGiftName.text.toString() == "") {
-                val intent = Intent(this, ErrorActivity::class.java).apply {
-                    putExtra("ERROR_MESSAGE", "Name is required")
-                }
-                startActivity(intent)
+                Toast.makeText(baseContext, "Name is required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             var link: String? = null
@@ -47,59 +48,48 @@ class CreateGiftActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 }*/
             }
 
-            val newGift = Gift()
+            val price = if (etGiftPrice.text.toString() != "") {
+                Integer.parseInt(etGiftPrice.text.toString())
+            } else null
 
-            newGift.name = etGiftName.text.toString()
-            if (etGiftPrice.text.toString() != "") {
-                newGift.price = Integer.parseInt(etGiftPrice.text.toString())
-            }
+            val description = if (etGiftDescription.text.toString() != "") {
+                etGiftDescription.text.toString()
+            } else null
 
-            if (etGiftDescription.text.toString() != "") {
-                newGift.description = etGiftDescription.text.toString()
-            }
+            val newGift = Gift(
+                name = etGiftName.text.toString(),
+                price = price,
+                description = description,
+                link = link,
+                reservedBy = null,
+                owner = AppPreferences.currentId!!,
+                lastUpdate = System.currentTimeMillis(),
+                lastFetch = System.currentTimeMillis()
+            )
 
-            if (link != null) {
-                newGift.link = link
-            }
+            mGiftViewModel.create(newGift).observe(
+                this, Observer<Boolean>{ success ->
+                    if(success)
+                        Toast.makeText(baseContext, "Gift created", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(baseContext, "Something went wrong, try again later", Toast.LENGTH_SHORT).show()
 
-            launch {
-                try {
-                    val currentUserId = HomeActivity.CURRENT_USER_ID
-                    if(currentUserId == 0L) {
-                        throw Exception("User not logged in")
-                    }
-                    newGift.owner = currentUserId
-                    val savedGift = createGift(newGift)
-
-                    val result = Intent().apply {
-                        putExtra("GIFT", savedGift)
-                    }
-                    setResult(Activity.RESULT_OK, result)
-                } catch (e: HttpException) {
-                    val intent = Intent(this@CreateGiftActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", "Something went wrong")
-                    }
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    val intent = Intent(this@CreateGiftActivity, ErrorActivity::class.java).apply {
-                        putExtra("ERROR_MESSAGE", e.message)
-                    }
-                    startActivity(intent)
+                    finish()
                 }
+            )
 
-
-                finish()
-            }
         }
 
-        btnCancel.setOnClickListener{
-            setResult(Activity.RESULT_CANCELED) //TODO: ezt Ok-nak veszi át a mygiftfragment
+        btnCancel.setOnClickListener {
+            Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
-    private suspend fun createGift(newGift: Gift) : Gift {
-        val giftService = ServiceBuilder.buildService(GiftService::class.java)
-        return giftService.create(newGift)
+    private fun showSoftKeyboard(view: View) {
+        if (view.requestFocus()) {
+            val imm = getSystemService((Context.INPUT_METHOD_SERVICE)) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        }
     }
 }
